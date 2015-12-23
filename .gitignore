@@ -1,8 +1,13 @@
+/STM32F30x_DSP_StdPeriph_Lib_V1.2.3/
+/stdperiph_lib.zip
+
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
+*.bin
+*.map
 
 # Precompiled Headers
 *.gch
