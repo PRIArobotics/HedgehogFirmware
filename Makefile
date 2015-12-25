@@ -57,7 +57,7 @@ LDFLAGS = $(MCU) $(FPU) -g -gdwarf-2\
           $(LIBS) \
           -o $(PROJ_NAME).elf
 
-.PHONY: all download unpack template info flash clean
+.PHONY: all download unpack template info flash remote-flash clean
 
 # Default target
 
@@ -103,6 +103,10 @@ info: $(PROJ_NAME).elf
 
 flash:
 	stm32flasher $(PROJ_NAME).bin
+
+remote-flash:
+	rsync -avz $(PROJ_NAME).bin orangepi@10.42.0.226:/tmp/
+	ssh orangepi@10.42.0.226 stm32flasher /tmp/$(PROJ_NAME).bin
 
 # Cleanup
 
