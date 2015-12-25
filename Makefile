@@ -57,7 +57,7 @@ LDFLAGS = $(MCU) $(FPU) -g -gdwarf-2\
           $(LIBS) \
           -o $(PROJ_NAME).elf
 
-.PHONY: all download unpack template flasher info flash clean
+.PHONY: all download unpack template info flash clean
 
 # Default target
 
@@ -77,11 +77,6 @@ template:
 	mkdir src/ inc/
 	cp -f $(STM32_TEMPLATE)/*.c src/
 	cp -f $(STM32_TEMPLATE)/*.h inc/
-
-flasher:
-	rm -rf flasher
-	python3 -m virtualenv flasher
-	. flasher/bin/activate && pip install git+git://github.com/PRIArobotics/STM32Flasher.git && deactivate
 
 # Build
 
@@ -107,7 +102,7 @@ info: $(PROJ_NAME).elf
 # Deployment
 
 flash:
-	flasher/bin/stm32flasher $(PROJ_NAME).bin
+	stm32flasher $(PROJ_NAME).bin
 
 # Cleanup
 
