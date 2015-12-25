@@ -107,7 +107,7 @@ info: $(PROJ_NAME).elf
 # Deployment
 
 flash:
-	sudo flasher/bin/stm32flasher $(PROJ_NAME).bin
+	flasher/bin/stm32flasher $(PROJ_NAME).bin
 
 # Cleanup
 
