@@ -1,5 +1,8 @@
 /*
-*   Originally from https://developer.mbed.org/users/mbed_official/code/mbed-src/file/a11c0372f0ba/targets/cmsis/TARGET_STM/TARGET_STM32F4/TARGET_NUCLEO_F401RE/TOOLCHAIN_GCC_ARM/STM32F401XE.ld
+*   Originally from
+*   https://developer.mbed.org/users/mbed_official/code/mbed-src/file/a11c0372f0ba/targets/cmsis/TARGET_STM/TARGET_STM32F4/TARGET_NUCLEO_F401RE/TOOLCHAIN_GCC_ARM/STM32F401XE.ld
+*   Where it is available under the Apache Licence, V2
+*   https://developer.mbed.org/handbook/Apache-Licence
 *   Modified for STM32F401xB (128K Flash, 64K RAM)
 */
 
