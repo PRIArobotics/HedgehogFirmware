@@ -1,119 +1,131 @@
-PROJ_NAME = stm32_project
-
-# Set toolchain
-TC = arm-none-eabi
-
-# Set Tools
-CC      = $(TC)-gcc
-AR      = $(TC)-ar
-OBJCOPY = $(TC)-objcopy
-OBJDUMP = $(TC)-objdump
-SIZE    = $(TC)-size
-
-# Set Device specific paths and names
-STM32_LIB_URL = http://www.st.com/st-web-ui/static/active/en/st_prod_software_internet/resource/technical/software/firmware/stm32f30x_dsp_stdperiph_lib.zip
-STM32_DEVICE_NAME = STM32F30X
-
-STM32 = STM32F30x_DSP_StdPeriph_Lib_V1.2.3
-STM32_CMSIS = $(STM32)/Libraries/CMSIS
-STM32_CMSIS_DEVICE = $(STM32_CMSIS)/Device/ST/STM32F30x
-STM32_CPAL_DRIVER = $(STM32)/Libraries/STM32F30x_I2C_CPAL_Driver
-STM32_PERIPH_DRIVER = $(STM32)/Libraries/STM32F30x_StdPeriph_Driver
-STM32_TEMPLATE = $(STM32)/Projects/STM32F30x_StdPeriph_Templates
-STM32_LINKER_SCRIPT = $(STM32_TEMPLATE)/TrueSTUDIO/STM32F303xC/STM32F303VC_FLASH.ld
-
-# Set Sources
-LIB_C_SRCS = $(wildcard $(STM32_PERIPH_DRIVER)/src/*.c)
-LIB_C_SRCS+= $(wildcard $(STM32_CMSIS)/Source/Templates/*.c)
-LIB_S_SRCS = $(STM32_CMSIS_DEVICE)/Source/Templates/TrueSTUDIO/startup_stm32f30x.s
-C_SRCS = $(wildcard src/*.c)
-
-# Set Objects
-LIB_OBJS = $(LIB_C_SRCS:.c=.o) $(LIB_S_SRCS:.s=.o)
-OBJS     = $(C_SRCS:.c=.o)
-
-# Set Include Paths
-INCLUDES = -I$(STM32_PERIPH_DRIVER)/inc/ \
-           -I$(STM32_CMSIS)/Include/ \
-           -I$(STM32_CMSIS_DEVICE)/Include/ \
-           -Iinc/
-			
-# Set Libraries
-LIBS = -lm -lc
+# name of the project, the binaries will be generated with this name
+PROJ_NAME = HedgehogLLC
 
 
-# Set Board
-MCU     = -mthumb -mcpu=cortex-m4
-FPU     = -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
-DEFINES = -D$(STM32_DEVICE_NAME) -DUSE_STDPERIPH_DRIVER
+#compiler
+export CC = arm-none-eabi-gcc
+#linker
+export LD = arm-none-eabi-gcc
+#objcopy
+export OC = arm-none-eabi-objcopy
+#size
+export SZ = arm-none-eabi-size
 
-# Set Compilation and Linking Flags
-CFLAGS  = $(MCU) $(FPU) $(DEFINES) $(INCLUDES) \
-          -g -Wall -std=gnu90 -O0 -ffunction-sections -fdata-sections
-ASFLAGS = $(MCU) $(FPU) -g -Wa,--warn -x assembler-with-cpp
-LDFLAGS = $(MCU) $(FPU) -g -gdwarf-2\
-          -T$(STM32_LINKER_SCRIPT) \
-          -Xlinker --gc-sections -Wl,-Map=$(PROJ_NAME).map \
-          $(LIBS) \
-          -o $(PROJ_NAME).elf
+#linker flags
+export LDFLAGS = -mcpu=cortex-m4 -DSTM32F401xC -mlittle-endian -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -static -Wl,--gc-sections
+#compiler flags
+export CFLAGS = -mcpu=cortex-m4 -DSTM32F401xC -mlittle-endian -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fno-common -ffunction-sections -fdata-sections -Wall -Og -g -c
 
-.PHONY: all download unpack template info flash remote-flash clean
+###################################################
 
-# Default target
+#root directory containing the makefile and user source files
+ROOTDIR := $(CURDIR)
 
-all: $(PROJ_NAME).bin info
+#directory containing system files
+SYSTEMDIR := system
 
-# Setup targets
+#directory for binary output files
+BUILDDIR := build
 
-download:
-	rm -f stdperiph_lib.zip
-	curl -o stdperiph_lib.zip $(STM32_LIB_URL)
+#directory for object files
+OBJDIR := build/obj
 
-unpack:
-	rm -rf $(STM32)
-	unzip stdperiph_lib.zip
 
-template:
-	mkdir src/ inc/
-	cp -f $(STM32_TEMPLATE)/*.c src/
-	cp -f $(STM32_TEMPLATE)/*.h inc/
+#include directories
+CFLAGS += -I$(SYSTEMDIR)
 
-# Build
+#linker file
+LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
 
-%.o: %.c
-	@$(CC) $(CFLAGS) -c -o $@ $<
-	@echo $@
+#libraries we want to link against
+#LDFLAGS += -lc -lnosys #newlib (e.g. for printf)
+LDFLAGS += -lm #math
 
-%.o: %.s
-	@$(CC) $(ASFLAGS) -c -o $@ $<
-	@echo $@
+#system source files
+SOURCES = startup_stm32f401xc.s system.c
 
-$(PROJ_NAME).elf: $(LIB_OBJS) $(OBJS)
-	@$(CC) $(LIB_OBJS) $(OBJS) $(LDFLAGS)
-	@echo $@
+#user source files
+SOURCES += main.c
 
-$(PROJ_NAME).bin: $(PROJ_NAME).elf
-	@$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
-	@echo $@
 
-info: $(PROJ_NAME).elf
-	@$(SIZE) --format=berkeley $(PROJ_NAME).elf
+#object files (with build dir --> $(OBJDIR)/name.o)
+OBJS = $(addprefix $(OBJDIR)/,$(subst .c,.o,$(subst .s,.o,$(SOURCES))))
 
-# Deployment
 
+###################################################
+
+.PHONY: all buildAll flash remote-flash flash-stlink size clean
+
+#build and show size
+all: buildAll size
+
+#build all output formats
+buildAll: $(BUILDDIR)/$(PROJ_NAME).elf $(BUILDDIR)/$(PROJ_NAME).hex $(BUILDDIR)/$(PROJ_NAME).bin
+	@echo build finished
+
+#flash using stm32flasher
 flash:
-	stm32flasher $(PROJ_NAME).bin
+	stm32flasher $(BUILDDIR)/$(PROJ_NAME).bin
 
+#flashe remotely via orange pi in network
 remote-flash:
-	rsync -avz $(PROJ_NAME).bin orangepi@10.42.0.226:/tmp/
+	rsync -avz $(BUILDDIR)/$(PROJ_NAME).bin orangepi@10.42.0.226:/tmp/
 	ssh orangepi@10.42.0.226 stm32flasher /tmp/$(PROJ_NAME).bin
 
-# Cleanup
+#flash using github.com/texane/stlink
+flash-stlink:
+	st-flash --reset write $(BUILDDIR)/$(PROJ_NAME).bin 0x8000000
+	@echo flash finished
 
+
+#shows size of .elf
+size: $(BUILDDIR)/$(PROJ_NAME).elf
+	$(SZ) $<
+
+
+#create .hex from .elf
+$(BUILDDIR)/$(PROJ_NAME).hex: $(BUILDDIR)/$(PROJ_NAME).elf | $(BUILDDIR)
+	@echo creating $@ from $<
+	@$(OC) -Oihex $< $@
+
+#create .bin from .elf
+$(BUILDDIR)/$(PROJ_NAME).bin: $(BUILDDIR)/$(PROJ_NAME).elf | $(BUILDDIR)
+	@echo creating $@ from $<
+	@$(OC) -Obinary $< $@
+
+#link objects to .elf
+$(BUILDDIR)/$(PROJ_NAME).elf: $(OBJS) | $(OBJDIR) $(BUILDDIR)
+	@echo linking $@ from $(OBJS)
+	@$(LD) $(LDFLAGS) -o $@ $(OBJS)
+
+
+#compile .c file to .o
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	@echo compiling $@ from $<
+	@$(CC) $(CFLAGS) -o $@ $<
+
+#compile system .c file to .o
+$(OBJDIR)/%.o: $(SYSTEMDIR)/%.c | $(OBJDIR)
+	@echo compiling $@ from $<
+	@$(CC) $(CFLAGS) -o $@ $<
+
+#compile system .s file to .o
+$(OBJDIR)/%.o: $(SYSTEMDIR)/%.s | $(OBJDIR)
+	@echo compiling $@ from $<
+	@$(CC) $(CFLAGS) -o $@ $<
+
+
+#create directory for objects
+$(OBJDIR):
+	mkdir -p $@
+
+#create directory for output files
+$(BUILDDIR):
+	mkdir -p $@
+
+
+#delete all build products
 clean:
-	rm -f $(LIB_OBJS)
-	rm -f $(OBJS)
-	rm -f $(PROJ_NAME).elf
-	rm -f $(PROJ_NAME).bin
-	rm -f $(PROJ_NAME).map
-
+	rm -f $(OBJDIR)/*.o
+	rm -f $(BUILDDIR)/$(PROJ_NAME).*
+	@echo
