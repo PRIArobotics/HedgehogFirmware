@@ -1,5 +1,5 @@
 # name of the project, the binaries will be generated with this name
-PROJ_NAME = HedgehogLLC
+PROJ_NAME = HedgehogLightFirmware
 
 
 #compiler
