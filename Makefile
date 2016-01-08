@@ -24,6 +24,9 @@ ROOTDIR := $(CURDIR)
 #directory containing system files
 SYSTEMDIR := system
 
+#directory containing user sources
+SRCDIR := src
+
 #directory for binary output files
 BUILDDIR := build
 
@@ -42,15 +45,17 @@ LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
 LDFLAGS += -lm #math
 
 #system source files
-SOURCES = startup_stm32f401xc.s system.c
+SRC = startup_stm32f401xc.s system.c
 
 #user source files
-SOURCES += main.c
+SRC += main.c
 
 
 #object files (with build dir --> $(OBJDIR)/name.o)
-OBJS = $(addprefix $(OBJDIR)/,$(subst .c,.o,$(subst .s,.o,$(SOURCES))))
+OBJS = $(addprefix $(OBJDIR)/,$(subst .c,.o,$(subst .s,.o,$(SRC))))
 
+#source files (with source dir)
+SOURCES = $(addprefix $(SRCDIR)/,$(SRC))
 
 ###################################################
 
@@ -99,8 +104,8 @@ $(BUILDDIR)/$(PROJ_NAME).elf: $(OBJS) | $(OBJDIR) $(BUILDDIR)
 	@$(LD) $(LDFLAGS) -o $@ $(OBJS)
 
 
-#compile .c file to .o
-$(OBJDIR)/%.o: %.c | $(OBJDIR)
+#compile user .c file to .o
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
 	@$(CC) $(CFLAGS) -o $@ $<
 

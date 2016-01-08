@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stm32f4xx.h>
  
 int main()
@@ -7,7 +8,7 @@ int main()
 	/* Configure GPIOD pin 12 as output */
 	GPIOD->MODER |= (1 << (12 << 1));
  
-	uint_32t i;
+	uint32_t i;
 
 	/* Blink the LED on Servo0 Pin */
 	while(1)
