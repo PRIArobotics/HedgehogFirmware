@@ -1,21 +1,25 @@
 #include <stdint.h>
 #include <stm32f4xx.h>
+#include "gpio.h"
  
+
+#define PIN_SERVO0 (gpio_pin_t){GPIOD,12}
+
+
 int main()
 {
-	/* Enbale GPIOD clock */
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-	/* Configure GPIOD pin 12 as output */
-	GPIOD->MODER |= (1 << (12 << 1));
+	gpio_init();
+	
+	gpio_pinCfg(PIN_SERVO0, MODE_OUT, 0);
  
 	uint32_t i;
 
 	/* Blink the LED on Servo0 Pin */
 	while(1)
 	{
-		GPIOD->BSRR |= (1 << 12);
+		gpio_pinSet(PIN_SERVO0, true);
 		for (i = 0; i < 5000000; i++);
-		GPIOD->BSRR |= (1 << (12+16));
+		gpio_pinSet(PIN_SERVO0, false);
 		for (i = 0; i < 5000000; i++);
 	}
 
