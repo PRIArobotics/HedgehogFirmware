@@ -43,7 +43,7 @@ void gpio_pinCfg(gpio_pin_t pin, uint8_t cfg, uint8_t af);
 //sets pin to high/low, pin = struct containing port & pinNr, state = true (high) or false (low)
 void gpio_pinSet(gpio_pin_t pin, bool state);
 
-//returns pin logic level, pin = struct containing port & pinNr
+//returns pin logic level: true (high) or false (low), pin = struct containing port & pinNr
 bool gpio_pinGet(gpio_pin_t pin);
 
 
