@@ -48,7 +48,7 @@ LDFLAGS += -lm #math
 SRC = startup_stm32f401xc.s system.c
 
 #user source files
-SRC += main.c gpio.c digitalInput.c
+SRC += main.c gpio.c output.c digitalInput.c
 
 
 #object files (with build dir --> $(OBJDIR)/name.o)

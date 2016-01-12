@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stm32f4xx.h>
 #include "gpio.h"
+#include "output.h"
 #include "digitalInput.h"
  
 
@@ -10,6 +11,7 @@
 int main()
 {
 	gpio_init();
+	output_init();
 	digitalInput_init();
 
 	gpio_pinCfg(PIN_SERVO0, MODE_OUT, 0);
