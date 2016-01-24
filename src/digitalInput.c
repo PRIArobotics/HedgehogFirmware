@@ -1,5 +1,5 @@
 #include "digitalInput.h"
-
+#include "gpio.h"
 
 static gpio_pin_t digitalInputPin[8] = {
 	{GPIOE, 8},

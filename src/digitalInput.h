@@ -2,7 +2,8 @@
 #define DIGITALINPUT_H_
 
 
-#include "gpio.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 
 //initializes input pins as inputs without pullup, call gpio_init() first

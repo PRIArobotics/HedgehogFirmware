@@ -3,8 +3,8 @@
 
 
 #include <stdint.h>
-#include <stm32f4xx.h>
 #include <stdbool.h>
+#include <stm32f4xx.h>
 
 
 //Defines to be used with gpio_pinCfg():
