@@ -9,14 +9,11 @@ static gpio_pin_t servoPin[4] = {
 	{GPIOD, 14},
 	{GPIOD, 15}};
 
-
+//TODO: maybe use soft-pwm for smoother current draw?
 void servo_init()
 {
 	uint8_t i;
-	for(i=0; i<4; i++)
-	{
-		gpio_pinCfg(servoPin[i], MODE_AF|OTYPE_PP|SPEED_LOW, 2); //servo pin output, AF2
-	}
+	for(i=0; i<4; i++) gpio_pinCfg(servoPin[i], MODE_AF|OTYPE_PP|SPEED_LOW, 2); //servo pins output, AF2
 
 	//Timer 4 Init
 	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN; //enable clock (42MHz)
@@ -39,6 +36,7 @@ void servo_init()
 
 void servo_set(uint8_t servo, bool enabled, uint16_t position)
 {
+	if(servo > 3) return;
 	if(!enabled)
 	{
 		if(servo == 0) TIM4->CCR1 = 0;

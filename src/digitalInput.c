@@ -15,21 +15,20 @@ static gpio_pin_t digitalInputPin[8] = {
 void digitalInput_init()
 {
 	uint8_t i;
-	for(i=0; i<8; i++)
-	{
-		gpio_pinCfg(digitalInputPin[i], MODE_IN|PULL_FL, 0);
-	}
+	for(i=0; i<8; i++) gpio_pinCfg(digitalInputPin[i], MODE_IN|PULL_FL, 0); //pins to input, no pullup
 }
 
 
-void digitalInput_setPullup(uint8_t input, bool pullup)
+void digitalInput_setPullup(uint8_t input, bool enabled)
 {
-	if(pullup) gpio_pinCfg(digitalInputPin[input], MODE_IN|PULL_PU, 0);
+	if(input > 7) return;
+	if(enabled) gpio_pinCfg(digitalInputPin[input], MODE_IN|PULL_PU, 0);
 	else gpio_pinCfg(digitalInputPin[input], MODE_IN|PULL_FL, 0);
 }
 
 
 bool digitalInput_getState(uint8_t input)
 {
+	if(input > 7) return 0;
 	return gpio_pinGet(digitalInputPin[input]);
 }
