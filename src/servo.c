@@ -17,7 +17,7 @@ void servo_init()
 
 	//Timer 4 Init
 	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN; //enable clock (42MHz)
-	TIM4->PSC = 42; //prescaler = 20 --> 1MHz
+	TIM4->PSC = 42; //prescaler = 42 --> 1MHz
 	TIM4->ARR = 40000; //auto-reload value = 40000 --> 50Hz
 	TIM4->CCMR1 |= (TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2M_1); //channel 1+2 pwm mode 1
 	TIM4->CCMR2 |= (TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1); //channel 3+4 pwm mode 1

@@ -15,7 +15,7 @@ static gpio_pin_t digitalInputPin[8] = {
 void digitalInput_init()
 {
 	uint8_t i;
-	for(i=0; i<8; i++) gpio_pinCfg(digitalInputPin[i], MODE_IN|PULL_FL, 0); //pins to input, no pullup
+	for(i=0; i<8; i++) gpio_pinCfg(digitalInputPin[i], MODE_IN|PULL_PU, 0); //pins to input, with pullup
 }
 
 

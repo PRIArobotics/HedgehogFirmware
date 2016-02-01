@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 
-//initializes timer and outputs for 4 servos
+//initializes timer 4 and outputs for 4 servos
 void servo_init();
 
 //sets servo enabled and position, servo: 0-3, enabled: trueor false, position: 0-2000
