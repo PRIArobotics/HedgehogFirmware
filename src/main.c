@@ -17,10 +17,10 @@ int main()
 
 	uint32_t i;
 
+
 	//uint8_t n;
 	//for(n=0; n<8; n++) adc_setPullup(n,true);
 
-	// led1&2, speaker and servo0-3 test
 	while(1)
 	{
 		/*led1(true);
@@ -39,7 +39,8 @@ int main()
 		servo_set(2,true,2000);
 		servo_set(3,true,2000);
 		for (i = 0; i < 10000000; i++);*/
-
+		if(!digitalInput_getState(0)) buzzer(true);
+		else buzzer(false);
 		servo_set(0,true,adc_getAnalogInput(0));
 		servo_set(1,true,adc_getAnalogInput(1));
 		servo_set(2,true,adc_getAnalogInput(2));

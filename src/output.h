@@ -16,7 +16,10 @@ void led1(bool state);
 void led2(bool state);
 
 //sets speaker frequency, frequency: 50-15000Hz, anything else-->speaker off
-void speaker(uint16_t frequency);
+//void speaker(uint16_t frequency);
+
+//switches the piezo-buzzer on/off, state: true (on) or false (off)
+void buzzer(bool enabled); 
 
 
 #endif /* OUTPUT_H_ */

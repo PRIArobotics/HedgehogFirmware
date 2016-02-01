@@ -13,7 +13,10 @@ void output_init()
 	gpio_pinCfg(pin_led1, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 	gpio_pinCfg(pin_led2, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 
-	gpio_pinCfg(pin_speaker, MODE_AF|OTYPE_PP|SPEED_LOW, 1); //speaker pin output, AF1
+	//gpio_pinCfg(pin_speaker, MODE_AF|OTYPE_PP|SPEED_LOW, 1); //speaker pin output, AF1
+	gpio_pinCfg(pin_speaker, MODE_OUT|OTYPE_PP|SPEED_LOW, 0); //buzzer pin output
+	gpio_pinSet(pin_speaker,false);
+
 	//Timer 2 Init
 	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN; //enable clock (42MHz)
 	TIM2->PSC = 0; //no prescaler
@@ -34,17 +37,22 @@ void led2(bool state)
 }
 
 
-void speaker(uint16_t frequency)
+// void speaker(uint16_t frequency)
+// {
+// 	if((frequency < 50) || (frequency > 15000))
+// 	{
+// 		TIM2->CR1 &= ~TIM_CR1_CEN; //disable timer 2
+// 	}
+// 	else
+// 	{
+// 		TIM2->CR1 &= ~TIM_CR1_CEN; //disable timer 2
+// 		TIM2->CNT = 0; //reset counter value
+// 		TIM2->ARR = (uint32_t)(42000000/frequency+0.5); //set auto-reload value to control frequency
+// 		TIM2->CR1 |= TIM_CR1_CEN; //enable timer 2
+// 	}
+// }
+
+void buzzer(bool enabled)
 {
-	if((frequency < 50) || (frequency > 15000))
-	{
-		TIM2->CR1 &= ~TIM_CR1_CEN; //disable timer 2
-	}
-	else
-	{
-		TIM2->CR1 &= ~TIM_CR1_CEN; //disable timer 2
-		TIM2->CNT = 0; //reset counter value
-		TIM2->ARR = (uint32_t)(42000000/frequency+0.5); //set auto-reload value to control frequency
-		TIM2->CR1 |= TIM_CR1_CEN; //enable timer 2
-	}
+	gpio_pinSet(pin_speaker,enabled);
 }
