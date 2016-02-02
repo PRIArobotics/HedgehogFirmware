@@ -12,9 +12,9 @@ export OC = arm-none-eabi-objcopy
 export SZ = arm-none-eabi-size
 
 #linker flags
-export LDFLAGS = -mcpu=cortex-m4 -DSTM32F401xC -mlittle-endian -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -static -Wl,--gc-sections
+export LDFLAGS = -mcpu=cortex-m4 -DSTM32F401xC -mlittle-endian -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -static -Wl,--gc-sections
 #compiler flags
-export CFLAGS = -mcpu=cortex-m4 -DSTM32F401xC -mlittle-endian -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fno-common -ffunction-sections -fdata-sections -Wall -Og -g -c
+export CFLAGS = -mcpu=cortex-m4 -DSTM32F401xC -mlittle-endian -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -fno-common -ffunction-sections -fdata-sections -Wall -Og -g -c
 
 ###################################################
 
@@ -42,13 +42,13 @@ LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
 
 #libraries we want to link against
 #LDFLAGS += -lc -lnosys #newlib (e.g. for printf)
-LDFLAGS += -lm #math
+#LDFLAGS += -lm #math
 
 #system source files
 SRC = startup_stm32f401xc.s system.c
 
 #user source files
-SRC += main.c gpio.c output.c digitalInput.c servo.c adc.c
+SRC += main.c gpio.c output.c digitalInput.c servo.c adc.c motor.c
 
 
 #object files (with build dir --> $(OBJDIR)/name.o)

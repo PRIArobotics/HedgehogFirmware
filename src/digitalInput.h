@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 
-//initializes input pins as inputs without pullup, call gpio_init() first
+//initializes input pins as inputs with pullup, call gpio_init() first
 void digitalInput_init();
 
 //switches pullup on/off, input: digital input number 0...7, enabled: true (pullup on) or false (pullup off / floating)

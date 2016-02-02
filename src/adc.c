@@ -78,5 +78,5 @@ uint16_t adc_getAnalogInput(uint8_t input)
 
 float adc_getBatteryVoltage()
 {
-	return (float)(analogData[8]*MAX_BATTERY_VOLTAGE)/1023;
+	return (float)(analogData[8] * MAX_BATTERY_VOLTAGE / 1023);
 }

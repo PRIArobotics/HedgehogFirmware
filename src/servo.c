@@ -9,6 +9,7 @@ static gpio_pin_t servoPin[4] = {
 	{GPIOD, 14},
 	{GPIOD, 15}};
 
+//TODO: change min and max duty cycle to use full range of motion of the servos
 //TODO: maybe use soft-pwm for smoother current draw?
 void servo_init()
 {
@@ -16,8 +17,8 @@ void servo_init()
 	for(i=0; i<4; i++) gpio_pinCfg(servoPin[i], MODE_AF|OTYPE_PP|SPEED_LOW, 2); //servo pins output, AF2
 
 	//Timer 4 Init
-	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN; //enable clock (42MHz)
-	TIM4->PSC = 42; //prescaler = 42 --> 1MHz
+	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN; //enable clock (84MHz)
+	TIM4->PSC = 42; //prescaler = 42 --> 2MHz
 	TIM4->ARR = 40000; //auto-reload value = 40000 --> 50Hz
 	TIM4->CCMR1 |= (TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2M_1); //channel 1+2 pwm mode 1
 	TIM4->CCMR2 |= (TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1); //channel 3+4 pwm mode 1
