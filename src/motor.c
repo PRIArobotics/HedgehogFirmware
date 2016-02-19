@@ -46,6 +46,7 @@ void motor_init()
 	TIM3->CCR4 = dutyCycle[3]; //motor 3 dutyCycle 0-1000
 	TIM3->CR1 |= TIM_CR1_CEN; //enable timer
 	NVIC_EnableIRQ(TIM3_IRQn); //enable TIM3 global Interrupt
+	//NVIC_SetPriority(TIM3_IRQn, 0x0B); //TODO: interrupt priorities
 }
 
 
@@ -107,7 +108,7 @@ void motor_setMode(uint8_t motor, uint8_t motorMode)
 }
 
 
-void motor_setPower(uint8_t motor, uint16_t power)
+void motor_setPower(uint8_t motor, uint16_t power) //FIXME: weird pwm waveform at some low values
 {
 	if((motor > 3) || (power > 1000)) return;
 	setPower[motor] = power;
