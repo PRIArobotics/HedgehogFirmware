@@ -7,6 +7,15 @@ static gpio_pin_t pinTxD = {GPIOA, 9};
 static gpio_pin_t pinRxD = {GPIOA, 10};
 
 
+static ringbuffer_t uart_rx_rb;
+static ringbuffer_t uart_tx_rb;
+static uint8_t rx_buffer[256];
+static uint8_t tx_buffer[256];
+
+
+static void uart_startFifoTransmit();
+
+
 void uart_init()
 {
 	gpio_pinCfg(pinTxD, MODE_AF|OTYPE_PP|SPEED_LOW, 7);
@@ -19,6 +28,10 @@ void uart_init()
 	USART1->CR1 |= USART_CR1_UE; //enable UART
 	NVIC_EnableIRQ(USART1_IRQn); //enable UART1 global interrupts
 	//NVIC_SetPriority(USART1_IRQn, 0x0B); //TODO: interrupt priorities
+
+	ringbuffer_init(&uart_rx_rb, rx_buffer, sizeof(rx_buffer));
+	ringbuffer_init(&uart_tx_rb, tx_buffer, sizeof(tx_buffer));
+	ringbuffer_setStartReadFunction(&uart_tx_rb, &uart_startFifoTransmit);
 }
 
 
@@ -27,18 +40,32 @@ void USART1_IRQHandler(void)
 	if(USART1->SR & USART_SR_TC) //transmission complete
 	{
 		USART1->SR &= ~USART_SR_TC; //clear interrupt flag
+		if(ringbuffer_getFilled(&uart_tx_rb) > 0) //more data to send available
+			USART1->DR = ringbuffer_pop(&uart_tx_rb); //send data from buffer
 	}
+
 	if(USART1->SR & USART_SR_RXNE) //Rx data register not emty
 	{
 		USART1->SR &= ~USART_SR_RXNE; //clear interrupt flag
-		uint8_t data = (uint8_t) USART1->DR; //read data
-		uart_putChar(data); //test
+		if(ringbuffer_getFree(&uart_rx_rb) > 0) //free space available
+			ringbuffer_push(&uart_rx_rb, USART1->DR); //write new data to buffer
+		//else //buffer full //TODO: add buffer overflow error
 	}
 }
 
 
-void uart_putChar(uint8_t ch) //TODO: make sure this doesn't interrupt fifo transmit
+static void uart_startFifoTransmit()
 {
-	while(!(USART1->SR & USART_SR_TXE)); //wait for emty transmit buffer
-	USART1->DR = ch; //transmit data
+	USART1->DR = ringbuffer_pop(&uart_tx_rb); //send first byte to start transmission
+}
+
+
+ringbuffer_t *uart_getRxRingbuffer()
+{
+	return &uart_rx_rb;
+}
+
+ringbuffer_t *uart_getTxRingbuffer()
+{
+	return &uart_tx_rb;
 }

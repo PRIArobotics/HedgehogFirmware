@@ -4,13 +4,15 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "ringbuffer.h"
 
 
 //initializes UART1
 void uart_init();
 
-//wait for emty transmit buffer and then send character
-void uart_putChar(uint8_t ch);
+//get rx and tx ringbuffer pointers
+ringbuffer_t *uart_getRxRingbuffer();
+ringbuffer_t *uart_getTxRingbuffer();
 
 
 #endif /* UART_H_ */

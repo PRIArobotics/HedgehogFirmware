@@ -7,6 +7,8 @@
 #include "motor.h"
 #include "uart.h"
 
+#include "ringbuffer.h"
+
 
 int main()
 {
@@ -18,10 +20,10 @@ int main()
 	motor_init();
 	uart_init();
 
-
-	uint32_t i;
-
 	motor_setMode(0,MOTOR_MODE_FORWARD);
+
+	ringbuffer_t *uartRxBuffer = uart_getRxRingbuffer();
+	ringbuffer_t *uartTxBuffer = uart_getTxRingbuffer();
 
 	while(1)
 	{
@@ -48,11 +50,20 @@ int main()
 		motor_setPower(0,adc_getAnalogInput(0));
 		
 		servo_set(0,true,adc_getAnalogInput(0)*2);
+
+		while(ringbuffer_getFilled(uartRxBuffer) > 0)
+		{
+			uint8_t data = ringbuffer_pop(uartRxBuffer);
+			if(ringbuffer_getFree(uartTxBuffer) > 0)
+				ringbuffer_push(uartTxBuffer, data);
+		}
 		
 		//servo_set(1,true,adc_getAnalogInput(1));
 		//servo_set(2,true,adc_getAnalogInput(2));
 		//servo_set(3,true,adc_getAnalogInput(3));
 		//speaker(adc_getAnalogInput(4)*20);
+
+		uint32_t i;
 		for (i = 0; i < 1000000; i++);
 	}
 
