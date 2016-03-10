@@ -56,6 +56,7 @@ void USART1_IRQHandler(void)
 
 static void uart_startFifoTransmit()
 {
+	//TODO: wait until Tx register emty?
 	USART1->DR = ringbuffer_pop(&uart_tx_rb); //send first byte to start transmission
 }
 

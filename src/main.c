@@ -8,7 +8,7 @@
 #include "uart.h"
 
 #include "ringbuffer.h"
-
+#include <stdlib.h>
 
 int main()
 {
@@ -47,15 +47,24 @@ int main()
 		if(!digitalInput_getState(0)) buzzer(true);
 		else buzzer(false);
 
-		motor_setPower(0,adc_getAnalogInput(0));
-		
-		servo_set(0,true,adc_getAnalogInput(0)*2);
+		uint16_t analogValue = adc_getAnalogInput(0);
 
-		while(ringbuffer_getFilled(uartRxBuffer) > 0)
+		char str[6];
+		itoa(analogValue, str, 10);
+		str[4] = '\n';
+		str[5] = '\r';
+		if(ringbuffer_getFree(uartTxBuffer) > 0)
+			ringbuffer_push_multiple(uartTxBuffer, (uint8_t*)str, sizeof(str));
+		
+		servo_set(0,true,analogValue*2);
+		motor_setPower(0,analogValue);
+
+		size_t filled = ringbuffer_getFilled(uartRxBuffer);
+		if(filled > 5)
 		{
-			uint8_t data = ringbuffer_pop(uartRxBuffer);
-			if(ringbuffer_getFree(uartTxBuffer) > 0)
-				ringbuffer_push(uartTxBuffer, data);
+			uint8_t data[filled];
+			ringbuffer_pop_multiple(uartRxBuffer, data, filled);
+			ringbuffer_push_multiple(uartTxBuffer, data, filled);
 		}
 		
 		//servo_set(1,true,adc_getAnalogInput(1));
