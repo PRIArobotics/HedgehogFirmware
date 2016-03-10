@@ -27,7 +27,7 @@ void adc_init()
 	//ADC1 init
 	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN; //enable clock for ADC1 (84MHz)
 	ADC->CCR |= ADC_CCR_ADCPRE; //prescaler = 8
-	ADC1->CR1 |= ADC_CR1_RES_0; //10bit resolution
+	ADC1->CR1 |= ADC_CR1_RES_0; //10bit resolution TODO: change to 12bit?
 	ADC1->CR1 |= ADC_CR1_SCAN; //scan mode enabled
 	ADC1->CR2 |= ADC_CR2_EOCS; //EOC bit is set at the end of each regular conversion
 	ADC1->CR2 |= ADC_CR2_DDS; //DMA requests are issued as long as data are converted and DMA=1

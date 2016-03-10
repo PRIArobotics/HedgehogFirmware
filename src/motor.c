@@ -50,7 +50,7 @@ void motor_init()
 }
 
 
-void TIM3_IRQHandler(void) //FIXME: when dutyCycle==ARR (100%) then compare and overflow interrupt at the same time --> short low pulse in pwm
+void TIM3_IRQHandler(void)
 {
 	if(TIM3->SR & TIM_SR_CC1IF) //compare 1 interrupt flag, end of motor 0 pwm period
 	{
@@ -108,9 +108,10 @@ void motor_setMode(uint8_t motor, uint8_t motorMode)
 }
 
 
-void motor_setPower(uint8_t motor, uint16_t power) //FIXME: weird pwm waveform at some low values
+void motor_setPower(uint8_t motor, uint16_t power)
 {
-	if((motor > 3) || (power > 1000)) return;
+	if(motor > 3) return;
+	if(power > 1000) power = 1000;
 	setPower[motor] = power;
 	motor_updateDutyCycle(motor);
 }
@@ -118,7 +119,8 @@ void motor_setPower(uint8_t motor, uint16_t power) //FIXME: weird pwm waveform a
 
 void motor_updateDutyCycle(uint8_t motor) //FIXME: motor has nonlinear response to dutycycle ond/or voltage
 {
-	dutyCycle[motor] = (uint16_t)(setPower[motor] * MOTOR_MAX_VOLTAGE / adc_getBatteryVoltage() + 0.5); //if dutyCycle > 1000: interpreted as 1000
+	dutyCycle[motor] = (uint16_t)(setPower[motor] * MOTOR_MAX_VOLTAGE / adc_getBatteryVoltage() + 0.5); //correct for battery voltage
+	if(dutyCycle[motor] >= 1000) dutyCycle[motor] = 1001; //1001 instead of 1000 to not get short pulse in PWM
 	TIM3->CCR1 = dutyCycle[0];
 	TIM3->CCR2 = dutyCycle[1];
 	TIM3->CCR3 = dutyCycle[2];

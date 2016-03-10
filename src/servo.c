@@ -48,7 +48,7 @@ void servo_set(uint8_t servo, bool enabled, uint16_t position)
 	}
 	else
 	{
-		if(position > 2000) return;
+		if(position > 2000) position = 2000;
 		if(servo == 0) TIM4->CCR1 = 2000 + position;
 		if(servo == 1) TIM4->CCR2 = 2000 + position;
 		if(servo == 2) TIM4->CCR3 = 2000 + position;
