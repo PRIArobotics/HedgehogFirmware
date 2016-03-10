@@ -87,14 +87,16 @@ uint8_t ringbuffer_peek_at(ringbuffer_t *rb, size_t position)
 
 void ringbuffer_peek_at_multiple(ringbuffer_t *rb, size_t position, uint8_t *data, size_t size)
 {
-	size_t length;
-	if((position & (rb->size -1)) + size > rb->size) //wrap
+	if((position & (rb->size -1)) + size < rb->size) //no wrap
 	{
-		length = rb->size - (position & (rb->size -1)); //number of values before wrap
+		memcpy(data, &rb->buffer[rb->tail & (rb->size -1)], size); //copy data
+	}
+	else //wrap
+	{
+		size_t length = rb->size - (position & (rb->size -1)); //number of values before wrap
+		memcpy(data, &rb->buffer[rb->tail & (rb->size -1)], length); //copy data before wrap
 		memcpy(&data[length], rb->buffer, size - length); //copy data after wrap
 	}
-	else length = size; //no wrap
-	memcpy(data, &rb->buffer[rb->tail], length); //copy data before wrap
 }
 
 uint8_t ringbuffer_peek_relative(ringbuffer_t *rb, size_t offset)
@@ -132,20 +134,30 @@ void ringbuffer_pop_multiple(ringbuffer_t *rb, uint8_t *data, size_t size)
 
 void ringbuffer_peek_multiple_trans(ringbuffer_t *rb, ringbuffer_t *dst, size_t size)
 {
-	//TODO
+	ringbuffer_peek_at_multiple_trans(rb, rb->tail, dst, size);
 }
 
 void ringbuffer_peek_at_multiple_trans(ringbuffer_t *rb, size_t position, ringbuffer_t *dst, size_t size)
 {
-	//TODO
+	if((position & (rb->size -1)) + size < rb->size) //no wrap
+	{
+		ringbuffer_push_multiple(dst, &rb->buffer[rb->tail & (rb->size -1)], size); //copy data
+	}
+	else //wrap
+	{
+		size_t length = rb->size - (position & (rb->size -1)); //number of values before wrap
+		ringbuffer_push_multiple(dst, &rb->buffer[rb->tail & (rb->size -1)], length); //copy data before wrap
+		ringbuffer_push_multiple(dst, &rb->buffer[rb->tail & (rb->size -1)], size - length); //copy data after wrap
+	}
 }
 
 void ringbuffer_peek_relative_multiple_trans(ringbuffer_t *rb, size_t offset, ringbuffer_t *dst, size_t size)
 {
-	//TODO
+	ringbuffer_peek_at_multiple_trans(rb, rb->tail + offset, dst, size);
 }
 
 void ringbuffer_pop_multiple_trans(ringbuffer_t *rb, ringbuffer_t *dst, size_t size)
 {
-	//TODO
+	ringbuffer_peek_multiple_trans(rb, dst, size);
+	ringbuffer_consume(rb, size);
 }
