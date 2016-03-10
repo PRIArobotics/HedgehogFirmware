@@ -15,7 +15,7 @@ void adc_init();
 //enables or disables pullup of analog input, input: 0-7, enabled: true or false
 void adc_setPullup(uint8_t input, bool enabled);
 
-//returns 10bit (0-1023) analog input value, input: 0-7
+//returns 12bit (0-4095) analog input value, input: 0-7
 uint16_t adc_getAnalogInput(uint8_t input);
 
 //returns battery voltage

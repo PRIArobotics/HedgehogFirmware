@@ -56,8 +56,8 @@ int main()
 		if(ringbuffer_getFree(uartTxBuffer) > 0)
 			ringbuffer_push_multiple(uartTxBuffer, (uint8_t*)str, sizeof(str));
 		
-		servo_set(0,true,analogValue*2);
-		motor_setPower(0,analogValue);
+		servo_set(0,true,analogValue/2);
+		motor_setPower(0,analogValue/4);
 
 		size_t filled = ringbuffer_getFilled(uartRxBuffer);
 		if(filled > 5)
