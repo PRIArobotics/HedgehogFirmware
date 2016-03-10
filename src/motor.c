@@ -46,7 +46,7 @@ void motor_init()
 	TIM3->CCR4 = dutyCycle[3]; //motor 3 dutyCycle 0-1000
 	TIM3->CR1 |= TIM_CR1_CEN; //enable timer
 	NVIC_EnableIRQ(TIM3_IRQn); //enable TIM3 global Interrupt
-	//NVIC_SetPriority(TIM3_IRQn, 0x0B); //TODO: interrupt priorities
+	NVIC_SetPriority(TIM3_IRQn, 0); //highest interrupt priority
 }
 
 

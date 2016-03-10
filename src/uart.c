@@ -27,7 +27,7 @@ void uart_init()
 	USART1->CR1 |= (USART_CR1_TE | USART_CR1_RE); //enable Tx & Rx
 	USART1->CR1 |= USART_CR1_UE; //enable UART
 	NVIC_EnableIRQ(USART1_IRQn); //enable UART1 global interrupts
-	//NVIC_SetPriority(USART1_IRQn, 0x0B); //TODO: interrupt priorities
+	NVIC_SetPriority(USART1_IRQn, 7); //medium interrupt priority
 
 	ringbuffer_init(&uart_rx_rb, rx_buffer, sizeof(rx_buffer));
 	ringbuffer_init(&uart_tx_rb, tx_buffer, sizeof(tx_buffer));
