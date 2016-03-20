@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "systick.h"
 #include "gpio.h"
 #include "output.h"
 #include "digitalInput.h"
@@ -10,8 +11,13 @@
 #include "ringbuffer.h"
 #include <stdlib.h>
 
+//#include <core_cm4.h>
+
+
 int main()
 {
+	//NVIC_SetPriorityGrouping(0);
+	systick_init();
 	gpio_init();
 	output_init();
 	digitalInput_init();
@@ -19,6 +25,7 @@ int main()
 	adc_init();
 	motor_init();
 	uart_init();
+
 
 	motor_setMode(0,MOTOR_MODE_FORWARD);
 

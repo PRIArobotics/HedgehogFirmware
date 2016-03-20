@@ -52,6 +52,7 @@ void motor_init()
 
 void TIM3_IRQHandler(void)
 {
+	led1(true); //FIXME: without this line: 100% pwm duty-cycle when dutyCycle[]==4 when systick is active
 	if(TIM3->SR & TIM_SR_CC1IF) //compare 1 interrupt flag, end of motor 0 pwm period
 	{
 		TIM3->SR &= ~TIM_SR_CC1IF;
@@ -84,8 +85,6 @@ void TIM3_IRQHandler(void)
 		uint8_t i;
 		for(i = 0; i < 4; i++) //for each motor
 		{
-			motor_updateDutyCycle(i); //TODO: call this somewhere else (less often, maybe with battery voltage smoothing)
-
 			if((mode[i] == MOTOR_MODE_COAST) || (dutyCycle[i] == 0)) //motor off
 			{
 				gpio_pinSet(in1Pin[i],false);

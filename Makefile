@@ -48,7 +48,7 @@ LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
 SRC = startup_stm32f401xc.s system.c
 
 #user source files
-SRC += main.c gpio.c output.c digitalInput.c servo.c adc.c motor.c uart.c ringbuffer.c
+SRC += main.c gpio.c output.c digitalInput.c servo.c adc.c motor.c uart.c ringbuffer.c systick.c
 
 
 #object files (with build dir --> $(OBJDIR)/name.o)

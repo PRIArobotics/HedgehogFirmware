@@ -8,6 +8,9 @@
 
 #define MAX_BATTERY_VOLTAGE 8.0 //battery voltage when adc-input = 3.3V
 
+#define BATTERY_EMTY_THRESHOLD 6.4 //battery voltage below which the buzzer starts to beep
+#define BATTERY_NOTEMTY_THRESHOLD  6.6 //battery voltage above which the buzzer stops to beep
+
 
 //inits ADC1 Channel 1-9 for analog inputs and battery voltage
 void adc_init();
