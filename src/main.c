@@ -7,6 +7,7 @@
 #include "adc.h"
 #include "motor.h"
 #include "uart.h"
+#include "battery.h"
 
 #include "ringbuffer.h"
 #include <stdlib.h>
@@ -17,7 +18,6 @@
 int main()
 {
 	//NVIC_SetPriorityGrouping(0);
-	systick_init();
 	gpio_init();
 	output_init();
 	digitalInput_init();
@@ -25,6 +25,8 @@ int main()
 	adc_init();
 	motor_init();
 	uart_init();
+	battery_init();
+	systick_init();
 
 
 	motor_setMode(0,MOTOR_MODE_FORWARD);

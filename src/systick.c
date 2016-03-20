@@ -9,10 +9,6 @@
 
 static volatile uint64_t systick_count = 0;
 
-uint8_t batteryLowCount = 0;
-uint8_t batteryHighCount = 0;
-bool batteryStatus = true; //false = emty
-
 
 void systick_init()
 {
@@ -44,38 +40,5 @@ uint32_t systick_timeToTicks(uint16_t h, uint8_t m, uint8_t s, uint16_t ms)
 void SysTick_Handler()
 {
 	systick_count++;
-
-	//motor pwm update
-	motor_updateDutyCycle(0);
-	motor_updateDutyCycle(1);
-	motor_updateDutyCycle(2);
-	motor_updateDutyCycle(3);
-
-	//battery monitoring TODO: improve, move to separate function
-	if(batteryStatus) //battery not emty
-	{
-		if(adc_getBatteryVoltage() < BATTERY_EMTY_THRESHOLD)
-		{
-			batteryLowCount++;
-			if(batteryLowCount > 254)
-			{
-				batteryLowCount = 0;
-				batteryStatus = false;
-			}
-		}
-	}
-	else //battery emty
-	{
-		if(adc_getBatteryVoltage() > BATTERY_NOTEMTY_THRESHOLD)
-		{
-			batteryHighCount++;
-			if(batteryHighCount > 254)
-			{
-				batteryLowCount = 0;
-				batteryStatus = true;
-			}
-		}
-	}
-	if(batteryStatus) buzzer(false);
-	else buzzer(true);
+	battery_update();
 }
