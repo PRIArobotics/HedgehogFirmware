@@ -1,5 +1,8 @@
 #include "battery.h"
 #include <stdbool.h>
+#include "motor.h"
+#include "adc.h"
+#include "output.h"
 
 
 static uint8_t batteryLowCount;

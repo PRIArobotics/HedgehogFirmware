@@ -2,9 +2,6 @@
 #include "system_stm32f4xx.h"
 #include <stm32f4xx.h>
 #include <stdbool.h>
-#include "motor.h"
-#include "adc.h"
-#include "output.h"
 
 
 static volatile uint64_t systick_count = 0;
