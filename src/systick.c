@@ -1,7 +1,6 @@
 #include "systick.h"
-#include "system_stm32f4xx.h"
 #include <stm32f4xx.h>
-#include <stdbool.h>
+#include "battery.h"
 
 
 static volatile uint64_t systick_count = 0;
