@@ -27,6 +27,9 @@ SYSTEMDIR := system
 #directory containing user sources
 SRCDIR := src
 
+#directory containing ACP souce files
+ACPDIR := src/acp
+
 #directory for binary output files
 BUILDDIR := build
 
@@ -35,7 +38,7 @@ OBJDIR := build/obj
 
 
 #include directories
-CFLAGS += -I$(SYSTEMDIR)
+CFLAGS += -I$(SYSTEMDIR) -I$(ACPDIR)
 
 #linker file
 LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
@@ -50,12 +53,12 @@ SRC = startup_stm32f401xc.s system.c
 #user source files
 SRC += main.c gpio.c output.c digitalInput.c servo.c adc.c motor.c uart.c ringbuffer.c systick.c battery.c
 
+#user acp source files
+SRC += acp.c
 
-#object files (with build dir --> $(OBJDIR)/name.o)
+
+#object files (with object directory --> $(OBJDIR)/name.o)
 OBJS = $(addprefix $(OBJDIR)/,$(subst .c,.o,$(subst .s,.o,$(SRC))))
-
-#source files (with source dir)
-SOURCES = $(addprefix $(SRCDIR)/,$(SRC))
 
 ###################################################
 
@@ -106,6 +109,11 @@ $(BUILDDIR)/$(PROJ_NAME).elf: $(OBJS) | $(OBJDIR) $(BUILDDIR)
 
 #compile user .c file to .o
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+	@echo compiling $@ from $<
+	@$(CC) $(CFLAGS) -o $@ $<
+	
+#compile user acp .c file to .o
+$(OBJDIR)/%.o: $(ACPDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
 	@$(CC) $(CFLAGS) -o $@ $<
 

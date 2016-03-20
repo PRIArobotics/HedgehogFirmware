@@ -1,7 +1,9 @@
 #include "motor.h"
+#include <stm32f4xx.h>
 #include "gpio.h"
 #include "adc.h"
-#include <stm32f4xx.h>
+
+#include "output.h"
 
 
 static gpio_pin_t modePin = {GPIOC, 0};
