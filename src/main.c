@@ -9,13 +9,12 @@
 #include "uart.h"
 #include "battery.h"
 #include "acp.h"
-
 //#include <core_cm4.h>
 
 
 int main()
 {
-	//NVIC_SetPriorityGrouping(0);
+	//NVIC_SetPriorityGrouping(0); //TODO: change this (maybe helpful for fix_me in motor.c)
 	gpio_init();
 	output_init();
 	digitalInput_init();

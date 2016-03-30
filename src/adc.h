@@ -6,6 +6,8 @@
 #include <stdbool.h>
 
 
+#define ANALOG_COUNT 8
+
 #define MAX_BATTERY_VOLTAGE 8.0 //battery voltage when adc-input = 3.3V
 
 

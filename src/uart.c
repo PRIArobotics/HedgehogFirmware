@@ -9,7 +9,7 @@ static gpio_pin_t pinRxD = {GPIOA, 10};
 
 static ringbuffer_t uart_rx_rb;
 static ringbuffer_t uart_tx_rb;
-static uint8_t rx_buffer[256];
+static uint8_t rx_buffer[256]; //FIXME: needs to be bigger for 256 bytes payload (?)
 static uint8_t tx_buffer[256];
 
 

@@ -6,6 +6,8 @@
 #include <stdbool.h>
 
 
+#define MOTOR_COUNT 4
+
 //motor modes, in coast mode power setting has no influence
 #define MOTOR_MODE_COAST 0
 #define MOTOR_MODE_BREAK 1

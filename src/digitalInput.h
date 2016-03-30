@@ -6,6 +6,9 @@
 #include <stdbool.h>
 
 
+#define DIGITAL_COUNT 8
+
+
 //initializes input pins as inputs with pullup, call gpio_init() first
 void digitalInput_init();
 

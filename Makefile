@@ -38,7 +38,7 @@ OBJDIR := build/obj
 
 
 #include directories
-CFLAGS += -I$(SYSTEMDIR) -I$(ACPDIR)
+CFLAGS += -I$(SYSTEMDIR) -I$(SRCDIR) -I$(ACPDIR)
 
 #linker file
 LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
@@ -54,7 +54,7 @@ SRC = startup_stm32f401xc.s system.c
 SRC += main.c gpio.c output.c digitalInput.c servo.c adc.c motor.c uart.c ringbuffer.c systick.c battery.c
 
 #user acp source files
-SRC += acp.c
+SRC += acp.c acp_commands.c acp_handler_impl.c acp_handler_analog.c acp_handler_digital.c acp_handler_motor.c acp_handler_servo.c acp_handler_misc.c
 
 
 #object files (with object directory --> $(OBJDIR)/name.o)
