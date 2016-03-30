@@ -55,6 +55,8 @@ void ringbuffer_peek_relative_multiple(ringbuffer_t *rb, size_t offset, uint8_t 
 uint8_t ringbuffer_pop(ringbuffer_t *rb);
 //pop multiple values out of buffer
 void ringbuffer_pop_multiple(ringbuffer_t *rb, uint8_t *data, size_t size);
+//like ringbuffer_pop_multiple but doesn't save data
+void ringbuffer_consume(ringbuffer_t *rb, size_t size);
 
 //transfer functions,ringbuffer as the data destination, make sure the buffer is not emty and the destination buffer is not full!
 //peek at next multiple values in ringbuffer *rb and push data to destination ringbuffer *dst

@@ -33,6 +33,7 @@
 //Battery
 #define HWC_BATTERY_VOLTAGE_REQUEST				 60
 #define HWC_BATTERY_VOLTAGE_REPLY				 61
+#define HWC_BATTERY_VOLTAGE_UPDATE				 68 //TODO
 //Others
 #define HWC_OFF_ACTION							 90
 #define HWC_RESET_ACTION						 91

@@ -3,7 +3,9 @@
 #include "acp_opcodes.h"
 #include "acp_commands.h"
 #include "acp_errorcodes.h"
+#include "acp_handler.h"
 #include "acp_handler_impl.h"
+#include "systick.h"
 
 
 static uint8_t connectionState;
@@ -11,6 +13,7 @@ static uint8_t opcode;
 static acp_cmd_t cmd;
 static size_t payloadLength;
 static acp_conn_t acp_conn;
+static uint64_t subscriptions_lastSent = 0;
 
 
 static void acp_receive(acp_conn_t conn);
@@ -30,7 +33,12 @@ void acp_init()
 void acp_update()
 {
 	acp_receive(acp_conn);
-	//TODO: send subscription responses
+	if((systick_getUptime() - subscriptions_lastSent) > 100) //last subscription update was more than 100ms ago
+	{
+		subscriptions_lastSent = systick_getUptime();
+		acp_analog_sendSubUpdate(acp_conn);
+		acp_digital_sendSubUpdate(acp_conn);
+	}
 }
 
 

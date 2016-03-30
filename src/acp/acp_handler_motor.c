@@ -2,10 +2,11 @@
 #include "acp_opcodes.h"
 #include "acp_errorcodes.h"
 #include "acp_handler_impl.h"
+#include "ringbuffer.h"
 #include "motor.h"
 
 
-void acp_handler_motor_offAct(acp_conn_t conn, uint8_t opcode, size_t payload)
+void acp_handler_motor_offAct(acp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
 	uint8_t port = ringbuffer_pop(conn.rxBuffer);
 	if(port >= MOTOR_COUNT)
@@ -17,7 +18,7 @@ void acp_handler_motor_offAct(acp_conn_t conn, uint8_t opcode, size_t payload)
 }
 
 
-void acp_handler_motor_powerAct(acp_conn_t conn, uint8_t opcode, size_t payload)
+void acp_handler_motor_powerAct(acp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
 	uint8_t port = ringbuffer_pop(conn.rxBuffer);
 	uint8_t dir = ringbuffer_pop(conn.rxBuffer);
@@ -32,7 +33,7 @@ void acp_handler_motor_powerAct(acp_conn_t conn, uint8_t opcode, size_t payload)
 }
 
 
-void acp_handler_motor_brakeAct(acp_conn_t conn, uint8_t opcode, size_t payload)
+void acp_handler_motor_brakeAct(acp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
 	uint8_t port = ringbuffer_pop(conn.rxBuffer);
 	if(port >= MOTOR_COUNT)
