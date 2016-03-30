@@ -9,6 +9,9 @@ static gpio_pin_t servoPin[4] = {
 	{GPIOD, 14},
 	{GPIOD, 15}};
 
+bool servoEnabled[4] = {0,0,0,0};
+uint16_t servoPosition[4] = {0,0,0,0};
+
 //TODO: change min and max duty cycle to use full range of motion of the servos
 //TODO: maybe use soft-pwm for smoother current draw?
 void servo_init()
@@ -35,23 +38,36 @@ void servo_init()
 }
 
 
-void servo_set(uint8_t servo, bool enabled, uint16_t position)
+void servo_update(servo)
 {
-	if(servo > 3) return;
-	if(!enabled)
+	if(servoEnabled[servo])
 	{
-		if(servo == 0) TIM4->CCR1 = 0;
-		if(servo == 1) TIM4->CCR2 = 0;
-		if(servo == 2) TIM4->CCR3 = 0;
-		if(servo == 3) TIM4->CCR4 = 0;
-		return;
+		if(servo == 0) TIM4->CCR1 = 2000 + servoPosition[0];
+		else if(servo == 1) TIM4->CCR2 = 2000 + servoPosition[1];
+		else if(servo == 2) TIM4->CCR3 = 2000 + servoPosition[2];
+		else if(servo == 3) TIM4->CCR4 = 2000 + servoPosition[3];
 	}
 	else
 	{
-		if(position > 2000) position = 2000;
-		if(servo == 0) TIM4->CCR1 = 2000 + position;
-		if(servo == 1) TIM4->CCR2 = 2000 + position;
-		if(servo == 2) TIM4->CCR3 = 2000 + position;
-		if(servo == 3) TIM4->CCR4 = 2000 + position;
+		if(servo == 0) TIM4->CCR1 = 0;
+		else if(servo == 1) TIM4->CCR2 = 0;
+		else if(servo == 2) TIM4->CCR3 = 0;
+		else if(servo == 3) TIM4->CCR4 = 0;
 	}
+}
+
+
+void servo_setEnabled(uint8_t servo, bool enabled)
+{
+	if(servo > 3) return;
+	servoEnabled[servo] = enabled;
+	servo_update(servo);
+}
+
+
+void servo_setPosition(uint8_t servo, uint16_t position)
+{
+	if(servo > 3) return;
+	servoPosition[servo] = position;
+	servo_update(servo);
 }
