@@ -37,7 +37,7 @@ void acp_handler_HWC_typeReq(acp_conn_t conn, uint8_t opcode, size_t payloadLeng
 //void acp_handler_extPort_sendAct(acp_conn_t conn, uint8_t opcode, size_t payloadLength);
 //void acp_extPort_sendReceived(acp_conn_t conn);
 
-void acp_handler_battery_voltageReq(acp_conn_t conn, uint8_t opcode, size_t payloadLength);
+void acp_handler_battery_chargeReq(acp_conn_t conn, uint8_t opcode, size_t payloadLength);
 
 
 #endif /* ACP_HANDLER_H_ */

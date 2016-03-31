@@ -9,8 +9,6 @@
 
 //variable payload flag
 #define ACP_VPL_FLAG 0x01
-//receiving such commands turns off all motors and servos
-#define ACP_OFF_FLAG 0x10
 
 #define ACP_NO_PAYLOAD 0
 

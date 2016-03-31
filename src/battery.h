@@ -6,6 +6,7 @@
 
 #define BATTERY_EMTY_THRESHOLD 6.4 //battery voltage below which the buzzer starts to beep
 #define BATTERY_NOTEMTY_THRESHOLD  6.6 //battery voltage above which the buzzer stops to beep
+#define BATTERY_FULL_VOLTAGE 8.4
 
 
 //initialize battery monitoring

@@ -63,7 +63,7 @@ acp_cmd_t acp_cmds[256] = {
 	{ACP_UNUSED},																		//  57
 	{ACP_UNUSED},																		//  58
 	{ACP_UNUSED},																		//  59
-	{HWC_BATTERY_VOLTAGE_REQUEST, 0, ACP_NO_PAYLOAD, acp_handler_battery_voltageReq},	//  60
+	{HWC_BATTERY_CHARGE_REQUEST, 0, ACP_NO_PAYLOAD, acp_handler_battery_chargeReq},	//  60
 	{ACP_UNUSED},																		//  61
 	{ACP_UNUSED},																		//  62
 	{ACP_UNUSED},																		//  63

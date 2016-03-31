@@ -31,9 +31,9 @@
 #define SERVO_POSITION_ACTION					 51 //Move the Servo on a defined position
 #define SERVO_POSITION_SYNC_ACTION				 52
 //Battery
-#define HWC_BATTERY_VOLTAGE_REQUEST				 60
-#define HWC_BATTERY_VOLTAGE_REPLY				 61
-#define HWC_BATTERY_VOLTAGE_UPDATE				 68 //TODO
+#define HWC_BATTERY_CHARGE_REQUEST				 60
+#define HWC_BATTERY_CHARGE_REPLY				 61
+#define HWC_BATTERY_CHARGE_UPDATE				 68
 //Others
 #define HWC_OFF_ACTION							 90
 #define HWC_RESET_ACTION						 91
