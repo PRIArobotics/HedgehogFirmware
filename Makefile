@@ -1,6 +1,9 @@
 # name of the project, the binaries will be generated with this name
 PROJ_NAME = HedgehogLightFirmware
 
+# remote flashing target
+REMOTE = hedgehog@10.42.0.115
+REMOTE_BUNDLE = /home/hedgehog/HedgehogFirmwareBundle
 
 #compiler
 export CC = arm-none-eabi-gcc
@@ -71,14 +74,14 @@ all: buildAll size
 buildAll: $(BUILDDIR)/$(PROJ_NAME).elf $(BUILDDIR)/$(PROJ_NAME).hex $(BUILDDIR)/$(PROJ_NAME).bin
 	@echo build finished
 
-#flash using stm32flasher
+#flash locally via HedgehogFirmwareBundle
 flash:
-	stm32flasher $(BUILDDIR)/$(PROJ_NAME).bin
+	hedgehog-hwc-flasher $(BUILDDIR)/$(PROJ_NAME).bin
 
-#flashe remotely via orange pi in network
+#flash remotely via HedgehogFirmwareBundle
 remote-flash:
-	rsync -avz $(BUILDDIR)/$(PROJ_NAME).bin orangepi@10.42.0.226:/tmp/
-	ssh orangepi@10.42.0.226 stm32flasher /tmp/$(PROJ_NAME).bin
+	rsync -avz $(BUILDDIR)/$(PROJ_NAME).bin $(REMOTE):/tmp/
+	ssh $(REMOTE) "cd $(REMOTE_BUNDLE) && make flash-tmp"
 
 #flash using github.com/texane/stlink
 flash-stlink:
