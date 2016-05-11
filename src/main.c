@@ -8,7 +8,7 @@
 #include "motor.h"
 #include "uart.h"
 #include "battery.h"
-#include "acp.h"
+#include "hcp.h"
 //#include <core_cm4.h>
 
 
@@ -24,11 +24,11 @@ int main()
 	uart_init();
 	battery_init();
 	systick_init();
-	acp_init();
+	hcp_init();
 
 	while(1)
 	{
-		acp_update();
+		hcp_update();
 	}
 
 	return 0;

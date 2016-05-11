@@ -30,8 +30,8 @@ SYSTEMDIR := system
 #directory containing user sources
 SRCDIR := src
 
-#directory containing ACP souce files
-ACPDIR := src/acp
+#directory containing HCP souce files
+HCPDIR := src/hcp
 
 #directory for binary output files
 BUILDDIR := build
@@ -41,7 +41,7 @@ OBJDIR := build/obj
 
 
 #include directories
-CFLAGS += -I$(SYSTEMDIR) -I$(SRCDIR) -I$(ACPDIR)
+CFLAGS += -I$(SYSTEMDIR) -I$(SRCDIR) -I$(HCPDIR)
 
 #linker file
 LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
@@ -56,8 +56,8 @@ SRC = startup_stm32f401xc.s system.c
 #user source files
 SRC += main.c gpio.c output.c digitalInput.c servo.c adc.c motor.c uart.c ringbuffer.c systick.c battery.c
 
-#user acp source files
-SRC += acp.c acp_commands.c acp_handler_impl.c acp_handler_analog.c acp_handler_digital.c acp_handler_motor.c acp_handler_servo.c acp_handler_misc.c
+#user hcp source files
+SRC += hcp.c hcp_commands.c hcp_handler_analogReq.c hcp_handler_digitalReq.c hcp_handler_ioState.c hcp_handler_motor.c hcp_handler_servo.c hcp_handler_serial.c
 
 
 #object files (with object directory --> $(OBJDIR)/name.o)
@@ -115,8 +115,8 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
 	@$(CC) $(CFLAGS) -o $@ $<
 	
-#compile user acp .c file to .o
-$(OBJDIR)/%.o: $(ACPDIR)/%.c | $(OBJDIR)
+#compile user hcp .c file to .o
+$(OBJDIR)/%.o: $(HCPDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
 	@$(CC) $(CFLAGS) -o $@ $<
 

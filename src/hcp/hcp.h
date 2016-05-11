@@ -1,12 +1,9 @@
-#ifndef ACP_H_
-#define ACP_H_
+#ifndef HCP_H_
+#define HCP_H_
 
 
 #include <stdint.h>
 #include "ringbuffer.h"
-
-
-#define HWC_TYPE 4
 
 
 //connection states
@@ -17,13 +14,13 @@
 typedef struct {
 	ringbuffer_t *txBuffer;
 	ringbuffer_t *rxBuffer;
-} acp_conn_t;
+} hcp_conn_t;
 
-//initialize ACP
-void acp_init();
+//initialize HCP
+void hcp_init();
 
-//update the acp handler, call this regularly
-void acp_update();
+//update the HCP handler, call this regularly
+void hcp_update();
 
 
-#endif /* ACP_H_ */
+#endif /* HCP_H_ */
