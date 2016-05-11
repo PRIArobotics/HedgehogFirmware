@@ -23,7 +23,7 @@ void uart_init()
 
 	RCC->APB2ENR |= RCC_APB2ENR_USART1EN; //enable UART1 clock (84MHz)
 	USART1->BRR = (45<<4) | 4;//Baudrate = 115200, 42MHz / (8 * 115200) = 45.5729, 0.5729 * 7 = ~4 
-	USART1->CR1 |= (USART_CR1_TCIE | USART_CR1_RXNEIE); //transmission complete & Rx not emty interrupts enable
+	USART1->CR1 |= (USART_CR1_TCIE | USART_CR1_RXNEIE); //transmission complete & Rx not empty interrupts enable
 	USART1->CR1 |= (USART_CR1_TE | USART_CR1_RE); //enable Tx & Rx
 	USART1->CR1 |= USART_CR1_UE; //enable UART
 	NVIC_EnableIRQ(USART1_IRQn); //enable UART1 global interrupts
@@ -44,7 +44,7 @@ void USART1_IRQHandler(void)
 			USART1->DR = ringbuffer_pop(&uart_tx_rb); //send data from buffer
 	}
 
-	if(USART1->SR & USART_SR_RXNE) //Rx data register not emty
+	if(USART1->SR & USART_SR_RXNE) //Rx data register not empty
 	{
 		USART1->SR &= ~USART_SR_RXNE; //clear interrupt flag
 		if(ringbuffer_getFree(&uart_rx_rb) > 0) //free space available
@@ -56,7 +56,7 @@ void USART1_IRQHandler(void)
 
 static void uart_startFifoTransmit()
 {
-	while(!(USART1->SR & USART_SR_TXE)); //wait until Tx data register is emty
+	while(!(USART1->SR & USART_SR_TXE)); //wait until Tx data register is empty
 	USART1->DR = ringbuffer_pop(&uart_tx_rb); //send first byte to start transmission
 }
 

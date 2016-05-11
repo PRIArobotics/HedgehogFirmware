@@ -7,7 +7,7 @@
 
 static uint8_t batteryLowCount;
 static uint8_t batteryHighCount;
-static bool batteryStatus; //false = emty
+static bool batteryStatus; //false = empty
 
 
 void battery_init()
@@ -27,9 +27,9 @@ void battery_update()
 	motor_updateDutyCycle(3);
 
 	//battery voltage monitoring beeper TODO: improve
-	if(batteryStatus) //battery not emty
+	if(batteryStatus) //battery not empty
 	{
-		if(adc_getBatteryVoltage() < BATTERY_EMTY_THRESHOLD)
+		if(adc_getBatteryVoltage() < BATTERY_EMPTY_THRESHOLD)
 		{
 			batteryLowCount++;
 			if(batteryLowCount > 254)
@@ -39,9 +39,9 @@ void battery_update()
 			}
 		}
 	}
-	else //battery emty
+	else //battery empty
 	{
-		if(adc_getBatteryVoltage() > BATTERY_NOTEMTY_THRESHOLD)
+		if(adc_getBatteryVoltage() > BATTERY_NOTEMPTY_THRESHOLD)
 		{
 			batteryHighCount++;
 			if(batteryHighCount > 254)
@@ -54,5 +54,5 @@ void battery_update()
 	if(batteryStatus) buzzer(false);
 	else buzzer(true);
 
-	//TODO: ad power-off when battery completely emty
+	//TODO: ad power-off when battery completely empty
 }

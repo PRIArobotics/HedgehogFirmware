@@ -39,8 +39,8 @@ void acp_handler_HWC_typeReq(acp_conn_t conn, uint8_t opcode, size_t payloadLeng
 void acp_handler_battery_chargeReq(acp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
 	uint8_t charge;
-	if(adc_getBatteryVoltage() <= BATTERY_EMTY_THRESHOLD) charge = 0;
-	else charge = (adc_getBatteryVoltage() - BATTERY_EMTY_THRESHOLD) * 255 / (BATTERY_FULL_VOLTAGE - BATTERY_EMTY_THRESHOLD);
+	if(adc_getBatteryVoltage() <= BATTERY_EMPTY_THRESHOLD) charge = 0;
+	else charge = (adc_getBatteryVoltage() - BATTERY_EMPTY_THRESHOLD) * 255 / (BATTERY_FULL_VOLTAGE - BATTERY_EMPTY_THRESHOLD);
 
 	uint8_t buf[2];
 	uint8_t len = 0;

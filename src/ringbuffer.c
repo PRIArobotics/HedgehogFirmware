@@ -25,11 +25,11 @@ void ringbuffer_setStartReadFunction(ringbuffer_t *rb, void (*function)(void))
 size_t ringbuffer_getFree(ringbuffer_t *rb)
 {
 	size_t num = rb->tail - rb->head;
-	if(num == 0) //tail=head --> completely emty
+	if(num == 0) //tail=head --> completely empty
 	{
 		return rb->size;
 	}
-	else //not emty
+	else //not empty
 	{
 		num &= (rb->size - 1); //cut away leading ones in case tail<head
 		return num;
@@ -49,7 +49,7 @@ void ringbuffer_push(ringbuffer_t *rb, uint8_t value)
 	rb->buffer[(rb->head) & (rb->size -1)] = value;
 	rb->head++;
 
-	if((ringbuffer_getFilled(rb) == 1) && (rb->startReadFunction != NULL)) //buffer was emty before, and start-read-function is specified
+	if((ringbuffer_getFilled(rb) == 1) && (rb->startReadFunction != NULL)) //buffer was empty before, and start-read-function is specified
 		(rb->startReadFunction)(); //execute start-read-function
 }
 
@@ -65,7 +65,7 @@ void ringbuffer_push_multiple(ringbuffer_t *rb, uint8_t *data, size_t size)
 	memcpy(&rb->buffer[(rb->head) & (rb->size -1)], data, length); //copy data before wrap
 	rb->head += size;
 
-	if((ringbuffer_getFilled(rb) == size) && (rb->startReadFunction != NULL)) //buffer was emty before, and start-read-function is specified
+	if((ringbuffer_getFilled(rb) == size) && (rb->startReadFunction != NULL)) //buffer was empty before, and start-read-function is specified
 		(rb->startReadFunction)(); //execute start-read-function
 }
 
