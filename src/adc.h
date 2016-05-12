@@ -20,8 +20,11 @@ void adc_setPullup(uint8_t input, bool enabled);
 //returns 12bit (0-4095) analog input value, input: 0-7
 uint16_t adc_getAnalogInput(uint8_t input);
 
-//returns battery voltage
+//returns battery voltage in V
 float adc_getBatteryVoltage();
+
+//returns battery voltage in mV
+uint16_t adc_getBatteryVoltage_mV();
 
 
 #endif /* ADC_H_ */

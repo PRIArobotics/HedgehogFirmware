@@ -7,6 +7,7 @@
 
 
 #define SERVO_COUNT 4
+#define SERVO_MAX_POSITION 2000
 
 
 //initializes timer 4 and outputs for 4 servos

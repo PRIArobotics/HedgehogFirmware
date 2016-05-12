@@ -80,3 +80,8 @@ float adc_getBatteryVoltage()
 {
 	return (float)(analogData[8] * MAX_BATTERY_VOLTAGE / 4095);
 }
+
+uint16_t adc_getBatteryVoltage_mV()
+{
+	return (uint16_t)(analogData[8] * (MAX_BATTERY_VOLTAGE * 1000) / 4095);
+}

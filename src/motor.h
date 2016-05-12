@@ -7,6 +7,7 @@
 
 
 #define MOTOR_COUNT 4
+#define MOTOR_MAX_POWER 1000
 
 //motor modes, in coast mode power setting has no influence
 #define MOTOR_MODE_COAST 0
