@@ -30,9 +30,11 @@ void hcp_update()
 		opcode = ringbuffer_pop(conn.rxBuffer);
 		cmd = hcp_cmds[opcode];
 //#ifdef HCP_UNUSED
-		if(cmd.opcode == HCP_UNUSED)
+		if(cmd.opcode == HCP_UNUSED) //opcode unknown
 		{
-			//TODO: send unknown opcode error message, what else to do?
+			ringbuffer_push(conn.txBuffer, HCP_UNKNOWN_OPCODE);
+			systick_busyWait(10); //wait 10ms
+			ringbuffer_consume(conn.rxBuffer, ringbuffer_getFilled(conn.rxBuffer));
 			return;
 		}
 //#endif
@@ -60,9 +62,10 @@ void hcp_update()
 		{
 			cmd.handler(conn, opcode, payloadLength);
 		}
-		else
+		else //opcode not implemented (e.g. reply codes)
 		{
-			//TODO: send unimplemented opcode error message, what else to do?
+			ringbuffer_push(conn.txBuffer, HCP_UNSUPPORTED_OPCODE);
+			ringbuffer_consume(conn.rxBuffer, payloadLength);
 			return;
 		}
 		connectionState = WAIT_OPCODE;
