@@ -3,6 +3,7 @@
 #include "hcp_opcodes.h"
 #include "hcp_commands.h"
 #include "hcp_handler.h"
+#include "systick.h"
 
 
 static uint8_t connectionState;
