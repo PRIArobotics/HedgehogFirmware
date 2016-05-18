@@ -3,9 +3,10 @@
 
 
 #include <stddef.h>
+#include <stdbool.h>
 #include "hcp.h"
 
-
+//handlers
 void hcp_handler_ioState(hcp_conn_t conn, uint8_t opcode, size_t payloadLength);
 void hcp_handler_analogReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLength);
 void hcp_handler_digitalReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLength);

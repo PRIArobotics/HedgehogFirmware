@@ -5,14 +5,14 @@
 
 //0-7 = analog inputs, 8 = battery voltage
 static gpio_pin_t analogPin[9] = {
-	{GPIOA, 1},
-	{GPIOA, 2},
-	{GPIOA, 3},
-	{GPIOA, 4},
-	{GPIOA, 5},
-	{GPIOA, 6},
-	{GPIOA, 7},
-	{GPIOB, 0},
+	{GPIOA, 1}, //connected to PD0
+	{GPIOA, 2}, //connected to PD1
+	{GPIOA, 3}, //connected to PD2
+	{GPIOA, 4}, //connected to PD3
+	{GPIOA, 5}, //connected to PD4
+	{GPIOA, 6}, //connected to PD5
+	{GPIOA, 7}, //connected to PD6
+	{GPIOB, 0}, //connected to PD7
 	{GPIOB, 1}};
 
 static uint16_t analogData[9] = {0,0,0,0,0,0,0,0,0};
@@ -20,9 +20,9 @@ static uint16_t analogData[9] = {0,0,0,0,0,0,0,0,0};
 
 void adc_init()
 {
-	//all adc pins to analog mode, no pullup
+	//all adc pins to analog mode
 	uint8_t i;
-	for(i=0; i<9; i++) gpio_pinCfg(analogPin[i], MODE_ANA|PULL_FL, 0);
+	for(i=0; i<9; i++) gpio_pinCfg(analogPin[i], MODE_ANA, 0);
 
 	//ADC1 init
 	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN; //enable clock for ADC1 (84MHz)
@@ -50,7 +50,7 @@ void adc_init()
 	DMA2_Stream0->M0AR = (uint32_t)analogData; //data array as memory destination
 	DMA2_Stream0->NDTR = 9; //9 data items
 	DMA2_Stream0->CR &= ~DMA_SxCR_CHSEL; //channel 0
-	DMA2_Stream0->CR |= DMA_SxCR_PL; //highest proirity
+	DMA2_Stream0->CR |= DMA_SxCR_PL; //highest priority
 	DMA2_Stream0->CR |= DMA_SxCR_MSIZE_0; //16bit memory data size
 	DMA2_Stream0->CR |= DMA_SxCR_PSIZE_0; //16bit peripheral data size
 	DMA2_Stream0->CR |= DMA_SxCR_MINC; //memory address is incremented by 2bytes after each transfer
@@ -58,14 +58,6 @@ void adc_init()
 	DMA2_Stream0->CR |= DMA_SxCR_EN; //stream enabled
 
 	ADC1->CR2 |= ADC_CR2_SWSTART; //start adc conversion
-}
-
-
-void adc_setPullup(uint8_t input, bool enabled) //FIXME: pullup doesn't work in analog mode
-{
-	if(input > 7) return;
-	if(enabled) gpio_pinCfg(analogPin[input], MODE_ANA|PULL_PU, 2); //pin to analog mode, pullup
-	else gpio_pinCfg(analogPin[input], MODE_ANA|PULL_FL, 2); //pin to analog mode, no pullup
 }
 
 

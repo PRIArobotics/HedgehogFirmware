@@ -1,9 +1,42 @@
 #include "hcp_handler.h"
 #include "hcp_opcodes.h"
 #include "ringbuffer.h"
+#include "digitalIO.h"
 
 
 void hcp_handler_ioState(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
-	//TODO
+	uint8_t port = ringbuffer_pop(conn.rxBuffer);
+	uint8_t flags = ringbuffer_pop(conn.rxBuffer);
+
+	if(port >= DIGITAL_COUNT)
+	{
+		ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
+		return;
+	}
+
+	bool output = flags & 0x01;
+	bool pullup = flags & 0x02;
+	bool pulldown = flags & 0x04;
+	bool state = flags & 0x08;
+
+	if((flags & 0xF0) || (output && (pullup || pulldown)) || (pullup && pulldown) || (!output && state))
+	{
+		ringbuffer_push(conn.txBuffer, HCP_INVALID_FLAGS);
+		return;
+	}
+
+	if(output)
+	{
+		digitalIO_setMode(port, PIN_MODE_OUT);
+		digitalIO_setState(port, state);
+	}
+	else //input
+	{
+		if(pullup) digitalIO_setMode(port, PIN_MODE_IN_PULLUP);
+		else if(pulldown) digitalIO_setMode(port, PIN_MODE_IN_PULLDOWN);
+		else digitalIO_setMode(port, PIN_MODE_IN_FLOATING);
+	}
+
+	ringbuffer_push(conn.txBuffer, HCP_OK);
 }

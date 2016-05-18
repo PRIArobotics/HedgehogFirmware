@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include "systick.h"
 #include "gpio.h"
+#include "digitalIO.h"
 #include "output.h"
-#include "digitalInput.h"
 #include "servo.h"
 #include "adc.h"
 #include "motor.h"
@@ -17,7 +17,7 @@ int main()
 	//NVIC_SetPriorityGrouping(0); //TODO: change this (maybe helpful for fix_me in motor.c)
 	gpio_init();
 	output_init();
-	digitalInput_init();
+	digitalIO_init();
 	servo_init();
 	adc_init();
 	motor_init();

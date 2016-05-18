@@ -27,4 +27,20 @@
 #define HCP_SERIAL_UPDATE   	0xE1
 
 
+//motor modes
+#define HCP_MOTOR_MODE_POWER 0x00
+#define HCP_MOTOR_MODE_BREAK 0x01
+
+
+//special analog/digital ports
+#define HCP_ANALOG_BATTERY_PORT 0x80
+#define HCP_DIGITAL_LED1_PORT 	0x90
+#define HCP_DIGITAL_LED2_PORT 	0x91
+#define HCP_DIGITAL_BUZZER_PORT 0x92
+
+//SPI PORTS
+#define HCP_SPI_PORT_1			0x00
+#define HCP_SPI_PORT_2			0x01
+
+
 #endif /* HCP_OPCODES_H_ */

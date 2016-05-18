@@ -5,10 +5,6 @@
 #include "motor.h"
 
 
-#define HCP_MOTOR_MODE_POWER 0x00
-#define HCP_MOTOR_MODE_BREAK 0x01
-
-
 void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
 	uint8_t port = ringbuffer_pop(conn.rxBuffer);
