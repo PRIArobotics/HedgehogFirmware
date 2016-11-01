@@ -139,7 +139,7 @@ void ringbuffer_peek_multiple_trans(ringbuffer_t *rb, ringbuffer_t *dst, size_t 
 
 void ringbuffer_peek_at_multiple_trans(ringbuffer_t *rb, size_t position, ringbuffer_t *dst, size_t size)
 {
-	if((position & (rb->size -1)) + size < rb->size) //no wrap
+	if((position & (rb->size -1)) + size -1 < rb->size) //no wrap
 	{
 		ringbuffer_push_multiple(dst, &rb->buffer[rb->tail & (rb->size -1)], size); //copy data
 	}
@@ -147,7 +147,7 @@ void ringbuffer_peek_at_multiple_trans(ringbuffer_t *rb, size_t position, ringbu
 	{
 		size_t length = rb->size - (position & (rb->size -1)); //number of values before wrap
 		ringbuffer_push_multiple(dst, &rb->buffer[rb->tail & (rb->size -1)], length); //copy data before wrap
-		ringbuffer_push_multiple(dst, &rb->buffer[rb->tail & (rb->size -1)], size - length); //copy data after wrap
+		ringbuffer_push_multiple(dst, &rb->buffer[(rb->tail + length) & (rb->size -1)], size - length); //copy data after wrap
 	}
 }
 
