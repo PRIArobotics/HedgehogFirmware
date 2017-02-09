@@ -38,7 +38,7 @@ void servo_init()
 }
 
 
-void servo_update(servo)
+void servo_update(uint8_t servo)
 {
 	if(servoEnabled[servo])
 	{
