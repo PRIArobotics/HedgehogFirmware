@@ -2,8 +2,8 @@
 PROJ_NAME = HedgehogLightFirmware
 
 # remote flashing target
-REMOTE = hedgehog@10.42.0.115
-REMOTE_BUNDLE = /home/hedgehog/HedgehogFirmwareBundle
+REMOTE = pi@hedgehog5
+REMOTE_BUNDLE = /home/pi/HedgehogBundle/firmware
 
 #compiler
 export CC = arm-none-eabi-gcc
@@ -114,7 +114,7 @@ $(BUILDDIR)/$(PROJ_NAME).elf: $(OBJS) | $(OBJDIR) $(BUILDDIR)
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
 	@$(CC) $(CFLAGS) -o $@ $<
-	
+
 #compile user hcp .c file to .o
 $(OBJDIR)/%.o: $(HCPDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
