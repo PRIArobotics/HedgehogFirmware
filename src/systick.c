@@ -1,6 +1,7 @@
 #include "systick.h"
 #include <stm32f4xx.h>
 #include "battery.h"
+#include "output.h"
 
 
 static volatile uint64_t systick_count = 0;
@@ -37,4 +38,5 @@ void SysTick_Handler()
 {
 	systick_count++;
 	battery_update();
+	buzzer_update();
 }

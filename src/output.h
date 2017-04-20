@@ -6,6 +6,11 @@
 #include <stdbool.h>
 
 
+//times in systicks (ms) for battery empty beeping
+#define BUZZER_DELAY 30000
+#define BUZZER_ON 2000
+
+
 //initializes LED and speaker gpios and timer for speaker, call gpio_init() first
 void output_init();
 
@@ -20,6 +25,9 @@ void led2(bool state);
 
 //switches the piezo-buzzer on/off, state: true (on) or false (off)
 void buzzer(bool enabled); 
+
+//call regularly, controls the beeping pattern
+void buzzer_update(void);
 
 
 #endif /* OUTPUT_H_ */

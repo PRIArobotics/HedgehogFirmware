@@ -1,11 +1,14 @@
 #include "output.h"
 #include "gpio.h"
 #include <stm32f4xx.h>
+#include "systick.h"
 
 
 static gpio_pin_t pin_led1 = {GPIOA,11};
 static gpio_pin_t pin_led2 = {GPIOA,12};
 static gpio_pin_t pin_speaker = {GPIOA,0};
+
+static bool buzzer_enabled = false;
 
 
 void output_init()
@@ -54,5 +57,13 @@ void led2(bool state)
 
 void buzzer(bool enabled)
 {
-	gpio_pinSet(pin_speaker,enabled);
+	buzzer_enabled = enabled;
+}
+
+void buzzer_update(void) //TODO: improve
+{
+	if(systick_getUptime() % BUZZER_DELAY == 0)
+		gpio_pinSet(pin_speaker,buzzer_enabled);
+	if((systick_getUptime() - BUZZER_ON) % BUZZER_DELAY == 0)
+		gpio_pinSet(pin_speaker,false);
 }
