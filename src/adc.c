@@ -32,14 +32,23 @@ void adc_init()
 	ADC1->CR2 |= ADC_CR2_EOCS; //EOC bit is set at the end of each regular conversion
 	ADC1->CR2 |= ADC_CR2_DDS; //DMA requests are issued as long as data are converted and DMA=1
 	ADC1->CR2 |= ADC_CR2_DMA; //DMA mode enabled
-	ADC1->CR2 |= ADC_CR2_CONT; //continuous mode anabled
+	ADC1->CR2 |= ADC_CR2_CONT; //continuous mode enabled
 
-	//TODO: sample time registers
+	//sample time channel 1-9 = 480 cycles
+	ADC1->SMPR2 |= ADC_SMPR2_SMP1
+				| ADC_SMPR2_SMP2
+				| ADC_SMPR2_SMP3
+				| ADC_SMPR2_SMP4
+				| ADC_SMPR2_SMP5
+				| ADC_SMPR2_SMP6
+				| ADC_SMPR2_SMP7
+				| ADC_SMPR2_SMP8
+				| ADC_SMPR2_SMP9;
 
 	//regular sequence, channel 1-9
 	ADC1->SQR1 = (8<<20); //9 conversions in sequence
-	ADC1->SQR2 = ((9<<10) | (8<<5) | (7<<0));
-	ADC1->SQR3 = ((6<<25) | (5<<20) | (4<<15) | (3<<10) | (2<<5) | (1<<0));
+	ADC1->SQR2 = ((9<<10) | (8<<5) | (7<<0)); //channel 9, 8 and 7
+	ADC1->SQR3 = ((6<<25) | (5<<20) | (4<<15) | (3<<10) | (2<<5) | (1<<0)); //channel 6, 5, 4, 3, 2 and 1
 
 	ADC1->CR2 |= ADC_CR2_ADON; //adc enabled
 
