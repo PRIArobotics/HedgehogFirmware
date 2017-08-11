@@ -1,5 +1,4 @@
-# HedgehogLightFirmware
+# HedgehogFirmware
 
-Firmware for the HedgehogLight controller
-
+Firmware for the Hedgehog Educational Robotics Controller
 

@@ -85,7 +85,7 @@ void TIM3_IRQHandler(void)
 		TIM3->SR &= ~TIM_SR_UIF; //reset interrupt flag
 
 		uint8_t i;
-		for(i = 0; i < 4; i++) //for each motor
+		for(i = 0; i < 4; i++) //for each motor TODO: remove for to increase speed?
 		{
 			if((mode[i] == MOTOR_MODE_COAST) || (dutyCycle[i] == 0)) //motor off
 			{
