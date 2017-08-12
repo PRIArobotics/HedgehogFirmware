@@ -4,25 +4,25 @@
 
 
 //0-7 = analog inputs, 8 = battery voltage
-static gpio_pin_t analogPin[9] = {
-	{GPIOA, 1}, //connected to PD0
-	{GPIOA, 2}, //connected to PD1
-	{GPIOA, 3}, //connected to PD2
-	{GPIOA, 4}, //connected to PD3
-	{GPIOA, 5}, //connected to PD4
-	{GPIOA, 6}, //connected to PD5
-	{GPIOA, 7}, //connected to PD6
-	{GPIOB, 0}, //connected to PD7
+static gpio_pin_t pin_analog[9] = {
+	{GPIOA, 1}, //connected to PD7
+	{GPIOA, 2}, //connected to PD6
+	{GPIOA, 3}, //connected to PD5
+	{GPIOA, 4}, //connected to PD4
+	{GPIOA, 5}, //connected to PD3
+	{GPIOA, 6}, //connected to PD2
+	{GPIOA, 7}, //connected to PD1
+	{GPIOB, 0}, //connected to PD0
 	{GPIOB, 1}};
 
-static uint16_t analogData[9] = {0,0,0,0,0,0,0,0,0};
+static uint16_t analogData[9] = {0,0,0,0,0,0,0,0,0xFFFF};
 
 
 void adc_init()
 {
 	//all adc pins to analog mode
 	uint8_t i;
-	for(i=0; i<9; i++) gpio_pinCfg(analogPin[i], MODE_ANA, 0);
+	for(i=0; i<9; i++) gpio_pinCfg(pin_analog[i], MODE_ANA, 0);
 
 	//ADC1 init
 	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN; //enable clock for ADC1 (84MHz)

@@ -8,7 +8,7 @@
 
 #define ANALOG_COUNT 8
 
-#define MAX_BATTERY_VOLTAGE 8.0 //battery voltage when adc-input = 3.3V
+#define MAX_BATTERY_VOLTAGE 21.63 //battery voltage when adc-input = 3.3V
 
 
 //inits ADC1 Channel 1-9 for analog inputs and battery voltage

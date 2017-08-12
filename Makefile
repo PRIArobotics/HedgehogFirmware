@@ -54,7 +54,7 @@ LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
 SRC = startup_stm32f401xc.s system.c
 
 #user source files
-SRC += main.c gpio.c output.c digitalIO.c servo.c adc.c motor.c uart.c ringbuffer.c systick.c battery.c
+SRC += main.c gpio.c output.c power.c digitalIO.c servo.c adc.c motor.c uart.c ringbuffer.c systick.c
 
 #user hcp source files
 SRC += hcp.c hcp_commands.c hcp_handler_analogReq.c hcp_handler_digitalReq.c hcp_handler_ioState.c hcp_handler_motor.c hcp_handler_servo.c hcp_handler_serial.c

@@ -20,14 +20,14 @@ void led1(bool state);
 //switches LED2 on/off, state: true (on) or false (off)
 void led2(bool state);
 
+//switches power LED on/off, state: true (on) or false (off)
+void powerLed(bool state);
+
 //sets speaker frequency, frequency: 50-15000Hz, anything else-->speaker off
-//void speaker(uint16_t frequency);
+void speaker(uint16_t frequency);
 
-//switches the piezo-buzzer on/off, state: true (on) or false (off)
-void buzzer(bool enabled); 
-
-//call regularly, controls the beeping pattern
-void buzzer_update(void);
+//call regularly, controls beeping and blinking patterns
+void output_update(void);
 
 
 #endif /* OUTPUT_H_ */
