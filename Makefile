@@ -76,17 +76,15 @@ buildAll: $(BUILDDIR)/$(PROJ_NAME).elf $(BUILDDIR)/$(PROJ_NAME).hex $(BUILDDIR)/
 
 #flash locally via HedgehogFirmwareBundle
 flash:
-	hedgehog-hwc-flasher $(BUILDDIR)/$(PROJ_NAME).bin
+	sudo openocd -f openocd/openocd_hedgehog_swd.cfg -c "program $(BUILDDIR)/$(PROJ_NAME).bin 0x8000000 verify; reset run; exit"
 
 #flash remotely via HedgehogFirmwareBundle
 remote-flash:
 	rsync -avz $(BUILDDIR)/$(PROJ_NAME).bin $(REMOTE):/tmp/
 	ssh $(REMOTE) "cd $(REMOTE_BUNDLE) && make flash-tmp"
 
-#flash using github.com/texane/stlink
-flash-stlink:
-	st-flash --reset write $(BUILDDIR)/$(PROJ_NAME).bin 0x8000000
-	@echo flash finished
+flash-tmp:
+	sudo openocd -f openocd/openocd_hedgehog_swd.cfg -c "program /tmp/$(PROJ_NAME).bin 0x8000000 verify; reset run; exit"
 
 
 #shows size of .elf
