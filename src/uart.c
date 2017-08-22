@@ -56,8 +56,8 @@ void USART1_IRQHandler(void)
 
 static void uart_startFifoTransmit()
 {
-	while(!(USART1->SR & USART_SR_TXE)); //wait until Tx data register is empty
-	USART1->DR = ringbuffer_pop(&uart_tx_rb); //send first byte to start transmission
+	if(USART1->SR & USART_SR_TXE) //if Tx data register is empty
+		USART1->DR = ringbuffer_pop(&uart_tx_rb); //send first byte to start transmission
 }
 
 
