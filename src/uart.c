@@ -35,7 +35,7 @@ void uart_init()
 }
 
 
-void USART1_IRQHandler(void)
+void USART1_IRQHandler(void) //FIXME: transmit complete interrupt fires after reset, not really a problem
 {
 	if(USART1->SR & USART_SR_TC) //transmission complete
 	{
