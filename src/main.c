@@ -14,7 +14,7 @@
 
 int main()
 {
-	//NVIC_SetPriorityGrouping(0); //TODO: change this (maybe helpful for fix_me in motor.c)
+	//NVIC_SetPriorityGrouping(0); //TODO
 	systick_init();
 	gpio_init();
 	power_init();
