@@ -2,8 +2,8 @@
 PROJ_NAME = HedgehogFirmware
 
 # remote flashing target
-REMOTE = pi@hedgehog5
-REMOTE_BUNDLE = /home/pi/HedgehogBundle/firmware
+REMOTE = pi@raspberrypi.local
+REMOTE_BUNDLE = /home/pi/HedgehogBundle/firmware/HedgehogFirmware
 
 #compiler
 export CC = arm-none-eabi-gcc
@@ -38,6 +38,9 @@ BUILDDIR := build
 
 #directory for object files
 OBJDIR := build/obj
+
+#directory for openocd flash scripts
+OPENOCDDIR := openocd
 
 
 #include directories
@@ -76,12 +79,15 @@ buildAll: $(BUILDDIR)/$(PROJ_NAME).elf $(BUILDDIR)/$(PROJ_NAME).hex $(BUILDDIR)/
 
 #flash locally via HedgehogFirmwareBundle
 flash:
-	hedgehog-hwc-flasher $(BUILDDIR)/$(PROJ_NAME).bin
+	openocd/flash_hex.sh $(BUILDDIR)/$(PROJ_NAME).hex
 
 #flash remotely via HedgehogFirmwareBundle
 remote-flash:
-	rsync -avz $(BUILDDIR)/$(PROJ_NAME).bin $(REMOTE):/tmp/
+	rsync -avz $(BUILDDIR)/$(PROJ_NAME).hex $(REMOTE):/tmp/
 	ssh $(REMOTE) "cd $(REMOTE_BUNDLE) && make flash-tmp"
+	
+flash-tmp:
+	$(OPENOCDDIR)/flash_hex.sh /tmp/$(PROJ_NAME).hex
 
 #flash using github.com/texane/stlink
 flash-stlink:
