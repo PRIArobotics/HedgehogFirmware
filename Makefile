@@ -86,6 +86,10 @@ remote-flash:
 flash-tmp:
 	sudo openocd -f openocd/openocd_hedgehog_swd.cfg -c "program /tmp/$(PROJ_NAME).bin 0x8000000 verify; reset run; exit"
 
+#flash using github.com/texane/stlink
+flash-stlink:
+	st-flash --reset write $(BUILDDIR)/$(PROJ_NAME).bin 0x8000000
+	@echo flash finished
 
 #shows size of .elf
 size: $(BUILDDIR)/$(PROJ_NAME).elf
