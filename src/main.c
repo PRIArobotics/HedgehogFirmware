@@ -26,6 +26,9 @@ int main()
 	systick_init();
 	hcp_init();
 
+	buzzer_short_beep();
+
+
 	while(1)
 	{
 		hcp_update();

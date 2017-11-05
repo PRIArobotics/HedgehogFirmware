@@ -29,5 +29,8 @@ void buzzer(bool enabled);
 //call regularly, controls the beeping pattern
 void buzzer_update(void);
 
+//beeps for 300ms, blocking
+void buzzer_short_beep(void);
+
 
 #endif /* OUTPUT_H_ */
