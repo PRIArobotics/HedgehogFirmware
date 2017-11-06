@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 
-#define SERVO_COUNT 4
+#define SERVO_COUNT 6
 #define SERVO_MAX_POSITION 2000
 
 

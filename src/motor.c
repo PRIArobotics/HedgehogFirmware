@@ -6,20 +6,20 @@
 #include "output.h"
 
 
-static gpio_pin_t pin_mode_01 = {GPIOC, 0};
-static gpio_pin_t pin_mode_23 = {GPIOC, 5};
+static gpio_pin_t pin_mode_01 = {GPIOC, 13};
+static gpio_pin_t pin_mode_23 = {GPIOB, 5};
 
-static gpio_pin_t pin_a[4] = {
-	{GPIOC, 1},
-	{GPIOC, 2},
-	{GPIOC, 3},
-	{GPIOC, 4}};
+static gpio_pin_t pin_a[MOTOR_COUNT] = {
+	{GPIOC, 9},
+	{GPIOC, 11},
+	{GPIOA, 8},
+	{GPIOB, 10}};
 
-static gpio_pin_t pin_b[4] = {
-	{GPIOC, 6},
-	{GPIOC, 7},
+static gpio_pin_t pin_b[MOTOR_COUNT] = {
+	{GPIOC, 12},
 	{GPIOC, 8},
-	{GPIOC, 9}};
+	{GPIOC, 14},
+	{GPIOC, 15}};
 
 static bool pinStates[4][2] = {
 	{false, false},
@@ -27,8 +27,8 @@ static bool pinStates[4][2] = {
 	{true, false},
 	{false, true}};
 
-static uint16_t dutyCycle[4] = {0, 0, 0, 0}; //0-MOTOR_MAX_POWER, anything above is interpreted as MOTOR_MAX_POWER
-static uint8_t mode[4] = {MOTOR_MODE_COAST, MOTOR_MODE_COAST, MOTOR_MODE_COAST, MOTOR_MODE_COAST}; 
+static uint16_t dutyCycle[MOTOR_COUNT] = {0, 0, 0, 0}; //0-MOTOR_MAX_POWER, anything above is interpreted as MOTOR_MAX_POWER
+static uint8_t mode[MOTOR_COUNT] = {MOTOR_MODE_COAST, MOTOR_MODE_COAST, MOTOR_MODE_COAST, MOTOR_MODE_COAST};
 
 
 void motor_init()
@@ -37,8 +37,8 @@ void motor_init()
 	gpio_pinCfg(pin_mode_01, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 	gpio_pinCfg(pin_mode_23, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 	uint8_t motor;
-	for(motor=0; motor<4; motor++) gpio_pinCfg(pin_a[motor], MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
-	for(motor=0; motor<4; motor++) gpio_pinCfg(pin_b[motor], MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
+	for(motor=0; motor<MOTOR_COUNT; motor++) gpio_pinCfg(pin_a[motor], MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
+	for(motor=0; motor<MOTOR_COUNT; motor++) gpio_pinCfg(pin_b[motor], MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 
 	gpio_pinSet(pin_mode_01, false); //motor driver mode 0
 	gpio_pinSet(pin_mode_23, false); //motor driver mode 0
@@ -123,14 +123,14 @@ void TIM3_IRQHandler(void)
 
 void motor_setMode(uint8_t motor, uint8_t motorMode)
 {
-	if((motor > 3) || (motorMode > 3)) return; 
+	if((motor >= MOTOR_COUNT) || (motorMode >= 4)) return;
 	mode[motor] = motorMode;
 }
 
 
 void motor_setPower(uint8_t motor, uint16_t power)
 {
-	if(motor > 3) return;
+	if(motor >= MOTOR_COUNT) return;
 	if(power > MOTOR_MAX_POWER) power = MOTOR_MAX_POWER;
 	dutyCycle[motor] = power;
 	TIM3->CCR1 = dutyCycle[0];

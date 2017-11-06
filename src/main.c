@@ -22,17 +22,15 @@ int main()
 
 	systick_busyWait(systick_timeToTicks(0, 0, 1, 0)); //wait 1s
 
-	speaker(500);
-
-	systick_busyWait(systick_timeToTicks(0, 0, 0, 200)); //wait 0.2s
-
-	speaker(2000);
-	powerLed(true);
 	power_on();
+	powerLed(true); //TODO: blinking until RPi booted?
 
+	speaker(500);
+	systick_busyWait(systick_timeToTicks(0, 0, 0, 200)); //wait 0.2s
+	speaker(2000);
 	systick_busyWait(systick_timeToTicks(0, 0, 0, 100)); //wait 0.1s
-
 	speaker(0);
+
 	power_regRpiEnable(true);
 	power_regMsEnable(true);
 
@@ -49,15 +47,12 @@ int main()
 	}
 
 	speaker(2000);
-
 	systick_busyWait(systick_timeToTicks(0, 0, 0, 200)); //wait 0.2s
-
 	speaker(500);
-	powerLed(false);
-
 	systick_busyWait(systick_timeToTicks(0, 0, 0, 100)); //wait 0.1s
-
 	speaker(0);
+
+	powerLed(false); //TODO: blinking while RPi still active?
 	power_regMsEnable(false);
 	//TODO: wait for RPi shutdown?
 	power_regRpiEnable(false);

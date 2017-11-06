@@ -1,26 +1,26 @@
 #include "digitalIO.h"
 #include "gpio.h"
 
-static gpio_pin_t digitalPin[16] = {
-	{GPIOE, 0},
-	{GPIOE, 1},
-	{GPIOE, 10},
-	{GPIOE, 11},
-	{GPIOE, 12},
-	{GPIOE, 13},
-	{GPIOE, 14},
-	{GPIOE, 15},
-	{GPIOD, 7},
-	{GPIOD, 6},
-	{GPIOD, 5},
-	{GPIOD, 4},
-	{GPIOD, 3},
-	{GPIOD, 2},
+static gpio_pin_t digitalPin[DIGITAL_COUNT] = {
+	{GPIOD, 0},
 	{GPIOD, 1},
-	{GPIOD, 0}};
+	{GPIOD, 2},
+	{GPIOD, 3},
+	{GPIOD, 4},
+	{GPIOD, 5},
+	{GPIOD, 6},
+	{GPIOD, 7},
+	{GPIOE, 15},
+	{GPIOE, 14},
+	{GPIOE, 13},
+	{GPIOE, 12},
+	{GPIOE, 11},
+	{GPIOE, 10},
+	{GPIOE, 0},
+	{GPIOE, 1}};
 
 
-static uint8_t mode[16] = {
+static uint8_t mode[DIGITAL_COUNT] = {
 	PIN_MODE_IN_FLOATING,
 	PIN_MODE_IN_FLOATING,
 	PIN_MODE_IN_FLOATING,

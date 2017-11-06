@@ -17,7 +17,9 @@ void power_on();
 void power_off();
 void power_regRpiEnable(bool state);
 void power_regMsEnable(bool state);
+bool power_getRegMsPG();
 bool power_getButtonState();
+bool power_getRPiActive();
 bool power_getShutdown();
 void power_update();
 

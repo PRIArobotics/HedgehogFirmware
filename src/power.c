@@ -15,7 +15,9 @@ static bool batteryStatus; //false = empty
 static gpio_pin_t pin_enable_power_in = {GPIOD,10};
 static gpio_pin_t pin_enable_reg_rpi = {GPIOD,8};
 static gpio_pin_t pin_enable_reg_ms = {GPIOD,9};
+static gpio_pin_t pin_pg_reg_ms = {GPIOB,2};
 static gpio_pin_t pin_power_button_state = {GPIOD,11};
+static gpio_pin_t pin_rpi_active = {GPIOC,10};
 
 
 void power_init()
@@ -23,7 +25,9 @@ void power_init()
 	gpio_pinCfg(pin_enable_power_in, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 	gpio_pinCfg(pin_enable_reg_rpi, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 	gpio_pinCfg(pin_enable_reg_ms, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
+	gpio_pinCfg(pin_pg_reg_ms, MODE_IN, 0);
 	gpio_pinCfg(pin_power_button_state, MODE_IN, 0);
+	gpio_pinCfg(pin_rpi_active, MODE_IN, 0);
 
 	batteryLowCount = 0;
 	batteryHighCount = 0;
@@ -50,9 +54,19 @@ void power_regMsEnable(bool state)
 	gpio_pinSet(pin_enable_reg_ms, state);
 }
 
+bool power_getRegMsPG()
+{
+	return gpio_pinGet(pin_pg_reg_ms);
+}
+
 bool power_getButtonState()
 {
 	return gpio_pinGet(pin_power_button_state);
+}
+
+bool power_getRPiActive()
+{
+	return gpio_pinGet(pin_rpi_active);
 }
 
 bool power_getShutdown()
