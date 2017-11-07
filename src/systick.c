@@ -9,7 +9,7 @@ static volatile uint64_t systick_count = 0;
 
 void systick_init()
 {
-	SysTick_Config(84000000 / 1000); //1ms period TODO: use SystemCoreClock variable instead of number
+	SysTick_Config(SystemCoreClock / 1000); //1ms period
 	NVIC_SetPriority(SysTick_IRQn, 15); //lowest interrupt priority
 	systick_count = 0;
 }

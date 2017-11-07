@@ -74,7 +74,7 @@ bool power_getShutdown()
 	return shutdown;
 }
 
-void power_update()
+void power_update() //FIXME when button is not let go after turn on -> turn off
 {
 	//power button monitoring
 	if(power_getButtonState())

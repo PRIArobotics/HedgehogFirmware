@@ -24,11 +24,15 @@
 #define SYSTEM_INIT_ERROR_CLKSRC 0x04
 #define SYSTEM_INIT_ERROR_HSI 0x08
  
-void SystemInitError(uint8_t error_source) {
+uint32_t SystemCoreClock;
+
+void SystemInitError(uint8_t error_source)
+{
 	while(1);
 }
  
-void SystemInit() {
+void SystemInit() //TODO: improve, add optional external crystal
+{
 	/* Enable Power Control clock */
 	RCC->APB1ENR |= RCC_APB1LPENR_PWRLPEN;
 	/* Regulator voltage scaling output selection: Scale 2 */
@@ -90,4 +94,12 @@ void SystemInit() {
  
 	/* SET APB2 High speed srescaler (APB2) DIV1 */
 	RCC->CFGR &= ~(RCC_CFGR_PPRE2);
+
+	SystemCoreClockUpdate();
+}
+
+
+void SystemCoreClockUpdate(void) //TODO: improve
+{
+	SystemCoreClock = 84000000;
 }

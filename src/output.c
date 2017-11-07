@@ -22,7 +22,7 @@ void output_init()
 	gpio_pinCfg(pin_speaker_1, MODE_AF|OTYPE_PP|SPEED_LOW, 1); //speaker pin output, AF1
 	gpio_pinCfg(pin_speaker_2, MODE_AF|OTYPE_PP|SPEED_LOW, 1); //speaker pin output, AF1
 
-	//Timer 1 Init //FIXME
+	//Timer 1 Init
 	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN; //enable clock (42MHz)
 	TIM1->PSC = 419; //100kHz after prescaler
 	TIM1->CCMR1 |= (TIM_CCMR1_OC1M_0 | TIM_CCMR1_OC1M_1); //toggle pin on compare match
