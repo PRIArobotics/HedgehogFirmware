@@ -96,6 +96,9 @@ void SystemInit() //TODO: improve, add optional external crystal
 	RCC->CFGR &= ~(RCC_CFGR_PPRE2);
 
 	SystemCoreClockUpdate();
+
+	//enable FPU
+	SCB->CPACR |= (3 << 20) | (3 << 22);
 }
 
 

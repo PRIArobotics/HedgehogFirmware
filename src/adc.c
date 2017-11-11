@@ -96,16 +96,12 @@ uint16_t adc_getAnalogInput(uint8_t input)
 }
 
 
-float adc_getBatteryVoltage() //FIXME reading from JDR crashes mcu
+float adc_getBatteryVoltage()
 {
-	uint16_t value = 500;
-	//value = ADC1->JDR4;
-	return ((float)(value) * MAX_BATTERY_VOLTAGE / 4095.0);
-	return 12.0;
+	return ((float)(ADC1->JDR4) * MAX_BATTERY_VOLTAGE / 4095.0);
 }
 
-uint16_t adc_getBatteryVoltage_mV() //FIXME reading from JDR crashes mcu
+uint16_t adc_getBatteryVoltage_mV()
 {
-	//return (uint16_t)((float)(ADC1->JDR4) * (MAX_BATTERY_VOLTAGE * 1000.0) / 4095.0);
-	return 12000;
+	return (uint16_t)((float)(ADC1->JDR4) * (MAX_BATTERY_VOLTAGE * 1000.0) / 4095.0);
 }
