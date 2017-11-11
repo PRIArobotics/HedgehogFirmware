@@ -43,8 +43,6 @@ int main()
 
 	while(!power_getShutdown())
 	{
-		power_update();
-		output_update();
 		hcp_update();
 	}
 

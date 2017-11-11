@@ -37,4 +37,6 @@ uint32_t systick_timeToTicks(uint16_t h, uint8_t m, uint8_t s, uint16_t ms)
 void SysTick_Handler()
 {
 	systick_count++;
+	power_update();
+	output_update();
 }
