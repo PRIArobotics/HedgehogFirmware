@@ -4,7 +4,7 @@
 
 
 hcp_cmd_t hcp_cmds[256] = {
-	{HCP_UNUSED},																		//   0
+	{HCP_EMERGENCY_STOP, 0, 0, NULL},													//   0
 	{HCP_UNUSED},																		//   1
 	{HCP_UNUSED},																		//   2
 	{HCP_UNUSED},																		//   3

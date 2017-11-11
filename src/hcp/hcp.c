@@ -4,6 +4,7 @@
 #include "hcp_commands.h"
 #include "hcp_handler.h"
 #include "systick.h"
+#include "power.h"
 
 
 static uint8_t connectionState;
@@ -70,6 +71,12 @@ void hcp_update()
 			return;
 		}
 		connectionState = WAIT_OPCODE;
+	}
+
+	if(power_getEmergencyStop())
+	{
+		ringbuffer_push(conn.txBuffer, HCP_EMERGENCY_STOP);
+		power_clearEmergencyStop();
 	}
 
 }

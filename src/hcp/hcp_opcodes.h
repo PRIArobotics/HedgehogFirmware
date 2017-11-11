@@ -5,7 +5,7 @@
 //unused opcodes, if all 256 opcodes are used, then ACP_UNUSED should not be defined
 #define HCP_UNUSED				0xFF
 
-//commands
+//commands from RPi
 #define HCP_IO_STATE        	0x10
 #define HCP_ANALOG_REQ      	0x20
 #define HCP_DIGITAL_REQ     	0x30
@@ -13,7 +13,7 @@
 #define HCP_SERVO           	0x50
 #define HCP_SERIAL          	0x60
 
-//replies
+//replies to RPi
 #define HCP_OK              	0x80
 #define HCP_UNKNOWN_OPCODE 		0x81
 #define HCP_UNSUPPORTED_OPCODE 	0x82
@@ -25,6 +25,9 @@
 #define HCP_ANALOG_REP      	0xA1
 #define HCP_DIGITAL_REP     	0xB1
 #define HCP_SERIAL_UPDATE   	0xE1
+
+//commands to RPi
+#define HCP_EMERGENCY_STOP		0x00
 
 
 //motor modes

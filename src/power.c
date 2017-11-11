@@ -5,12 +5,14 @@
 #include "adc.h"
 
 
-uint64_t button_pressed_timestamp = 0;
-bool shutdown = false;
+static uint64_t button_pressed_timestamp = 0;
+static bool button_initial_press = true;
+static bool shutdown = false;
+static bool emergency_stop = false;
 
-static uint8_t batteryLowCount;
-static uint8_t batteryHighCount;
-static bool batteryStatus; //false = empty
+static uint8_t batteryLowCount = 0;
+static uint8_t batteryHighCount = 0;
+static bool batteryStatus = true; //false = empty
 
 static gpio_pin_t pin_enable_power_in = {GPIOD,10};
 static gpio_pin_t pin_enable_reg_rpi = {GPIOD,8};
@@ -28,10 +30,6 @@ void power_init()
 	gpio_pinCfg(pin_pg_reg_ms, MODE_IN, 0);
 	gpio_pinCfg(pin_power_button_state, MODE_IN, 0);
 	gpio_pinCfg(pin_rpi_active, MODE_IN, 0);
-
-	batteryLowCount = 0;
-	batteryHighCount = 0;
-	batteryStatus = true;
 }
 
 void power_on()
@@ -74,17 +72,37 @@ bool power_getShutdown()
 	return shutdown;
 }
 
-void power_update() //FIXME when button is not let go after turn on -> turn off
+bool power_getEmergencyStop()
+{
+	return emergency_stop;
+}
+
+void power_clearEmergencyStop()
+{
+	emergency_stop = false;
+}
+
+void power_update()
 {
 	//power button monitoring
-	if(power_getButtonState())
+	if(power_getButtonState()) //button is pressed
 	{
-		if(button_pressed_timestamp == 0)
-			button_pressed_timestamp = systick_getUptime();
-		else if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 2, 0)) //button was pressed for 2s
-			shutdown = true;
+		if(!button_initial_press) //button is not still being held down from switching on
+		{
+			if(button_pressed_timestamp == 0) //has just started being pressed
+			{
+				button_pressed_timestamp = systick_getUptime();
+				emergency_stop = true; //emergency stop message will be sent
+			}
+			else if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 2, 0)) //button was pressed for 2s
+				shutdown = true;
+		}
 	}
-	else button_pressed_timestamp = 0;
+	else
+	{
+		button_initial_press = false;
+		button_pressed_timestamp = 0;
+	}
 
 	//input voltage monitoring TODO: improve
 	if(batteryStatus) //battery not empty
@@ -111,7 +129,7 @@ void power_update() //FIXME when button is not let go after turn on -> turn off
 			}
 		}
 	}
-//	if(batteryStatus) speaker(0); //TODO
+//	if(batteryStatus) speaker(0); //FIXME
 //	else
 //	{
 //		speaker(200);
