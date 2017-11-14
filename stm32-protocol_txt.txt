@@ -3,12 +3,33 @@ remarks:
     a bool|b bool: 000000ab
 
 commands:
+    VERSION_REQ u8
+    --> VERSION_REP u8, hw_version u8, sw_version u8
+
+    (asynchronous)
+    --> SHUTDOWN u8
+
+    (asynchronous)
+    --> EMERGENCY_STOP u8
+
+    EMERGENCY_RELEASE u8
+    --> (status codes)
+
     IO_STATE u8, port u8, on bool|pulldown bool|pullup bool|output bool
     --> (status codes)
 
     ANALOG_REQ u8, port u8
     --> ANALOG_REP u8, port u8, value u16
     --> (error codes)
+
+    IMU_RATE_REQ u8
+    --> IMU_RATE_REP u8, x s16, y s16, z s16
+
+    IMU_ACCEL_REQ u8
+    --> IMU_ACCEL_REP u8, x s16, y s16, z s16
+
+    IMU_POSE_REQ u8
+    --> IMU_POSE_REP u8, x s16, y s16, z s16
 
     DIGITAL_REQ u8, port u8
     --> DIGITAL_REP u8, port u8, value bool
@@ -26,6 +47,9 @@ commands:
     (asynchronous)
     --> SERIAL_UPDATE u8, length u8, port u8, data u8{length-1}
 
+    SPEAKER u8, frequency u16
+    --> (status codes)
+
 status codes:
     OK u8
     UNKNOWN_OPCODE u8 - the opcode is unknown and the connection needs to be reset
@@ -38,34 +62,45 @@ status codes:
 
 codes:
     command opcodes:
-        IO_STATE        0x10
-        ANALOG_REQ      0x20
-        DIGITAL_REQ     0x30
-        MOTOR           0x40
-        SERVO           0x50
-        SERIAL          0x60
+        VERSION_REQ         0x01
+        EMERGENCY_RELEASE   0x05
+        IO_STATE            0x10
+        ANALOG_REQ          0x20
+        IMU_RATE_REQ        0x22
+        IMU_ACCEL_REQ       0x23
+        IMU_POSE_REQ        0x24
+        DIGITAL_REQ         0x30
+        MOTOR               0x40
+        SERVO               0x50
+        SERIAL              0x60
+        SPEAKER             0x70
     reply opcodes:
-        OK              0x80
-		UNKNOWN_OPCODE  0x81
-		INVALID_OPCODE  0x82
-        INVALID_PORT    0x83
-        INVALID_IO      0x84
-        INVALID_MODE    0x85
-        INVALID_FLAGS   0x86
-        INVALID_VALUE   0x87
-        ANALOG_REP      0xA1
-        DIGITAL_REP     0xB1
-        SERIAL_UPDATE   0xE1
+        VERSION_REP         0x01
+        SHUTDOWN            0x03
+        EMERGENCY_STOP      0x04
+        OK                  0x80
+        UNKNOWN_OPCODE      0x81
+        INVALID_OPCODE      0x82
+        INVALID_PORT        0x83
+        INVALID_IO          0x84
+        INVALID_MODE        0x85
+        INVALID_FLAGS       0x86
+        INVALID_VALUE       0x87
+        ANALOG_REP          0xA1
+        IMU_RATE_REP        0xA2
+        IMU_ACCEL_REP       0xA3
+        IMU_POSE_REP        0xA4
+        DIGITAL_REP         0xB1
+        SERIAL_UPDATE       0xE1
     number analog and digital ports together, servo and motor ports separately
     special analog ports:
-        BATTERY_VOLTAGE 0x80
+        BATTERY_VOLTAGE     0x80
     special digital ports (output only):
-        LED1            0x90
-        LED2            0x91
-        BUZZER          0x92
+        LED1                0x90
+        LED2                0x91
     serial ports:
-        SPI1            0x00
-        SPI2            0x01
+        SPI1                0x00
+        SPI2                0x01
     motor modes:
-        POWER           0x00
-        BRAKE           0x01
+        POWER               0x00
+        BRAKE               0x01
