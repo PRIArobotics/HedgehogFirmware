@@ -1,0 +1,71 @@
+remarks:
+    u16, etc.: MSB first
+    a bool|b bool: 000000ab
+
+commands:
+    IO_STATE u8, port u8, on bool|pulldown bool|pullup bool|output bool
+    --> (status codes)
+
+    ANALOG_REQ u8, port u8
+    --> ANALOG_REP u8, port u8, value u16
+    --> (error codes)
+
+    DIGITAL_REQ u8, port u8
+    --> DIGITAL_REP u8, port u8, value bool
+    --> (error codes)
+
+    MOTOR u8, port u8, mode u8, dir bool|value u15
+    --> (status codes)
+
+    SERVO u8, port u8, active bool|value u15
+    --> (status codes)
+
+    SERIAL u8, length u8, port u8, data u8{length-1}
+    --> (status codes)
+
+    (asynchronous)
+    --> SERIAL_UPDATE u8, length u8, port u8, data u8{length-1}
+
+status codes:
+    OK u8
+    UNKNOWN_OPCODE u8 - the opcode is unknown and the connection needs to be reset
+    INVALID_OPCODE u8 - the opcode is known and is decoded properly, but can't be handled
+    INVALID_PORT u8 - port out of range
+    INVALID_IO u8 - sensor request for output port
+    INVALID_MODE u8 - mode is not POWER, BRAKE
+    INVALID_FLAGS u8 - (io_flags & ~0x1F) != 0x00, invalid combination
+    INVALID_VALUE u8 - MOTOR/SERVO value out of range
+
+codes:
+    command opcodes:
+        IO_STATE        0x10
+        ANALOG_REQ      0x20
+        DIGITAL_REQ     0x30
+        MOTOR           0x40
+        SERVO           0x50
+        SERIAL          0x60
+    reply opcodes:
+        OK              0x80
+		UNKNOWN_OPCODE  0x81
+		INVALID_OPCODE  0x82
+        INVALID_PORT    0x83
+        INVALID_IO      0x84
+        INVALID_MODE    0x85
+        INVALID_FLAGS   0x86
+        INVALID_VALUE   0x87
+        ANALOG_REP      0xA1
+        DIGITAL_REP     0xB1
+        SERIAL_UPDATE   0xE1
+    number analog and digital ports together, servo and motor ports separately
+    special analog ports:
+        BATTERY_VOLTAGE 0x80
+    special digital ports (output only):
+        LED1            0x90
+        LED2            0x91
+        BUZZER          0x92
+    serial ports:
+        SPI1            0x00
+        SPI2            0x01
+    motor modes:
+        POWER           0x00
+        BRAKE           0x01
