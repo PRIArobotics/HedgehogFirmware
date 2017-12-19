@@ -9,8 +9,8 @@ static gpio_pin_t pinRxD = {GPIOA, 10};
 
 static ringbuffer_t uart_rx_rb;
 static ringbuffer_t uart_tx_rb;
-static uint8_t rx_buffer[256]; //TODO: needs to be bigger for 256 bytes payload (?)
-static uint8_t tx_buffer[256];
+static uint8_t rx_buffer[512];
+static uint8_t tx_buffer[512];
 
 
 static void uart_startFifoTransmit();
@@ -18,6 +18,10 @@ static void uart_startFifoTransmit();
 
 void uart_init()
 {
+	ringbuffer_init(&uart_rx_rb, rx_buffer, sizeof(rx_buffer));
+	ringbuffer_init(&uart_tx_rb, tx_buffer, sizeof(tx_buffer));
+	ringbuffer_setStartReadFunction(&uart_tx_rb, &uart_startFifoTransmit);
+
 	gpio_pinCfg(pinTxD, MODE_AF|OTYPE_PP|SPEED_LOW, 7);
 	gpio_pinCfg(pinRxD, MODE_AF, 7);
 
@@ -25,19 +29,15 @@ void uart_init()
 	USART1->BRR = (45<<4) | 4;//Baudrate = 115200, 42MHz / (8 * 115200) = 45.5729, 0.5729 * 7 = ~4 
 	USART1->CR1 |= (USART_CR1_TCIE | USART_CR1_RXNEIE); //transmission complete & Rx not empty interrupts enable
 	USART1->CR1 |= (USART_CR1_TE | USART_CR1_RE); //enable Tx & Rx
-	USART1->CR1 |= USART_CR1_UE; //enable UART
 	NVIC_EnableIRQ(USART1_IRQn); //enable UART1 global interrupts
 	NVIC_SetPriority(USART1_IRQn, 7); //medium interrupt priority
-
-	ringbuffer_init(&uart_rx_rb, rx_buffer, sizeof(rx_buffer));
-	ringbuffer_init(&uart_tx_rb, tx_buffer, sizeof(tx_buffer));
-	ringbuffer_setStartReadFunction(&uart_tx_rb, &uart_startFifoTransmit);
+	USART1->CR1 |= USART_CR1_UE; //enable UART
 }
 
 
-void USART1_IRQHandler(void) //FIXME: transmit complete interrupt fires after reset, not really a problem
+void USART1_IRQHandler(void)
 {
-	if(USART1->SR & USART_SR_TC) //transmission complete
+	if(USART1->SR & USART_SR_TC) //transmission complete (also fires after reset, not a problem)
 	{
 		USART1->SR &= ~USART_SR_TC; //clear interrupt flag
 		if(ringbuffer_getFilled(&uart_tx_rb) > 0) //more data to send available
