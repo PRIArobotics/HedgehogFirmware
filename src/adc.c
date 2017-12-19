@@ -96,12 +96,7 @@ uint16_t adc_getAnalogInput(uint8_t input)
 }
 
 //TODO: use VREFINT (CH17) for more accurate input voltage measurement?
-float adc_getInputVoltage() //FIXME offset
-{
-	return (((float)(ADC1->JDR1)) / 4095.0 * MAX_INPUT_VOLTAGE);
-}
-
 uint16_t adc_getInputVoltage_mV() //FIXME offset
 {
-	return (uint16_t)(((float)(ADC1->JDR1)) / 4095.0 * MAX_INPUT_VOLTAGE * 1000.0);
+	return (uint16_t)(((float)(ADC1->JDR1)) / 4095.0 * MAX_INPUT_VOLTAGE + 0.5);
 }

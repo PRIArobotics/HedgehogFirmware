@@ -2,6 +2,7 @@
 #include "hcp_opcodes.h"
 #include "ringbuffer.h"
 #include "adc.h"
+#include "power.h"
 #include "digitalIO.h"
 
 
@@ -21,7 +22,7 @@ void hcp_handler_analogReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLength
 	}
 
 	uint16_t value;
-	if(port == HCP_ANALOG_SUPPLY_PORT) value = adc_getInputVoltage_mV();
+	if(port == HCP_ANALOG_SUPPLY_PORT) value = power_getInputVoltage_mV();
 	else value = adc_getAnalogInput(port);
 
 	ringbuffer_push(conn.txBuffer, HCP_ANALOG_REP);

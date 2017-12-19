@@ -10,7 +10,7 @@ static bool button_initial_press = true;
 static bool shutdown = false;
 static bool emergency_stop = false;
 
-static float input_voltage = 12.0;
+static uint16_t input_voltage_mV = 12000;
 static uint8_t batteryStatus = BATTERY_STATUS_OK;
 
 static gpio_pin_t pin_enable_power_in = {GPIOD,10};
@@ -86,6 +86,11 @@ uint8_t power_getBatteryStatus()
 	return batteryStatus;
 }
 
+uint16_t power_getInputVoltage_mV()
+{
+	return input_voltage_mV;
+}
+
 void power_update()
 {
 	//power button monitoring
@@ -109,18 +114,17 @@ void power_update()
 	}
 
 	//input voltage monitoring
-	input_voltage = input_voltage * 0.9 + adc_getInputVoltage() * 0.1; //TODO: use this value for everything (e.g. hcp)
+	input_voltage_mV = (uint16_t)(input_voltage_mV * 0.9 + adc_getInputVoltage_mV() * 0.1 + 0.5);
 	switch(batteryStatus)
 	{
 		case BATTERY_STATUS_OK:
-			if(input_voltage < BATTERY_LOW_THRESHOLD - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_LOW;
+			if(input_voltage_mV < BATTERY_LOW_THRESHOLD - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_LOW;
 			break;
 		case BATTERY_STATUS_LOW:
-			if(input_voltage > BATTERY_LOW_THRESHOLD + BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_OK;
-			if(input_voltage < BATTERY_EMPTY_THRESHOLD - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_EMPTY;
+			if(input_voltage_mV > BATTERY_LOW_THRESHOLD + BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_OK;
+			if(input_voltage_mV < BATTERY_EMPTY_THRESHOLD - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_EMPTY;
 			break;
 		case BATTERY_STATUS_EMPTY:
-			if(input_voltage > BATTERY_EMPTY_THRESHOLD + BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_LOW;
 			shutdown = true;
 			break;
 	}

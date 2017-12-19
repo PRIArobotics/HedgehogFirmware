@@ -8,7 +8,7 @@
 
 #define ANALOG_COUNT 16
 
-#define MAX_INPUT_VOLTAGE 112.2 //input voltage when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
+#define MAX_INPUT_VOLTAGE 112200 //input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
 
 
 //init ADC for analog inputs and battery voltage
@@ -16,9 +16,6 @@ void adc_init();
 
 //returns 12bit (0-4095) analog input value, input: 0-15
 uint16_t adc_getAnalogInput(uint8_t input);
-
-//returns input voltage in V
-float adc_getInputVoltage();
 
 //returns input voltage in mV
 uint16_t adc_getInputVoltage_mV();
