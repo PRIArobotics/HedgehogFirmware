@@ -6,10 +6,13 @@
 #include <stdbool.h>
 
 
-#define BATTERY_SHUTDOWN_THRESHOLD 6.0 //battery voltage below which the power gets switched off
-#define BATTERY_EMPTY_THRESHOLD 6.4 //battery voltage below which the buzzer starts to beep
-#define BATTERY_NOTEMPTY_THRESHOLD  6.6 //battery voltage above which the buzzer stops to beep
-#define BATTERY_FULL_VOLTAGE 8.4
+#define BATTERY_EMPTY_THRESHOLD 9.1 //battery voltage below which the power gets switched off
+#define BATTERY_LOW_THRESHOLD 9.9 //battery voltage below which low battery indication occurs
+#define BATTERY_VOLTAGE_HYSTERESIS 0.1
+
+#define BATTERY_STATUS_EMPTY 0
+#define BATTERY_STATUS_LOW 1
+#define BATTERY_STATUS_OK 2
 
 
 void power_init();
@@ -23,6 +26,7 @@ bool power_getRPiActive();
 bool power_getShutdown();
 bool power_getEmergencyStop();
 void power_clearEmergencyStop();
+uint8_t power_getBatteryStatus();
 void power_update();
 
 

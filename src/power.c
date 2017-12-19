@@ -10,9 +10,8 @@ static bool button_initial_press = true;
 static bool shutdown = false;
 static bool emergency_stop = false;
 
-static uint8_t batteryLowCount = 0;
-static uint8_t batteryHighCount = 0;
-static bool batteryStatus = true; //false = empty
+static float input_voltage = 12.0;
+static uint8_t batteryStatus = BATTERY_STATUS_OK;
 
 static gpio_pin_t pin_enable_power_in = {GPIOD,10};
 static gpio_pin_t pin_enable_reg_rpi = {GPIOD,8};
@@ -29,7 +28,7 @@ void power_init()
 	gpio_pinCfg(pin_enable_reg_ms, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 	gpio_pinCfg(pin_pg_reg_ms, MODE_IN, 0);
 	gpio_pinCfg(pin_power_button_state, MODE_IN, 0);
-	gpio_pinCfg(pin_rpi_active, MODE_IN, 0);
+	gpio_pinCfg(pin_rpi_active, MODE_IN|PULL_PD, 0);
 }
 
 void power_on()
@@ -82,6 +81,11 @@ void power_clearEmergencyStop()
 	emergency_stop = false;
 }
 
+uint8_t power_getBatteryStatus()
+{
+	return batteryStatus;
+}
+
 void power_update()
 {
 	//power button monitoring
@@ -104,36 +108,20 @@ void power_update()
 		button_pressed_timestamp = 0;
 	}
 
-	//input voltage monitoring TODO: improve
-	if(batteryStatus) //battery not empty
+	//input voltage monitoring
+	input_voltage = input_voltage * 0.9 + adc_getInputVoltage() * 0.1; //TODO: use this value for everything (e.g. hcp)
+	switch(batteryStatus)
 	{
-		if(adc_getBatteryVoltage() < BATTERY_EMPTY_THRESHOLD)
-		{
-			batteryLowCount++;
-			if(batteryLowCount > 254)
-			{
-				batteryLowCount = 0;
-				batteryStatus = false;
-			}
-		}
+		case BATTERY_STATUS_OK:
+			if(input_voltage < BATTERY_LOW_THRESHOLD - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_LOW;
+			break;
+		case BATTERY_STATUS_LOW:
+			if(input_voltage > BATTERY_LOW_THRESHOLD + BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_OK;
+			if(input_voltage < BATTERY_EMPTY_THRESHOLD - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_EMPTY;
+			break;
+		case BATTERY_STATUS_EMPTY:
+			if(input_voltage > BATTERY_EMPTY_THRESHOLD + BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_LOW;
+			shutdown = true;
+			break;
 	}
-	else //battery empty
-	{
-		if(adc_getBatteryVoltage() > BATTERY_NOTEMPTY_THRESHOLD)
-		{
-			batteryHighCount++;
-			if(batteryHighCount > 254)
-			{
-				batteryLowCount = 0;
-				batteryStatus = true;
-			}
-		}
-	}
-//	if(batteryStatus) speaker(0); //FIXME
-//	else
-//	{
-//		speaker(200);
-//		if(adc_getBatteryVoltage() < BATTERY_SHUTDOWN_THRESHOLD)
-//			shutdown = true;
-//	}
 }
