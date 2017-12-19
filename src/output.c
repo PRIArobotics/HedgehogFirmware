@@ -2,6 +2,7 @@
 #include "gpio.h"
 #include <stm32f4xx.h>
 #include "systick.h"
+#include "power.h"
 
 
 static gpio_pin_t pin_led_1 = {GPIOB,8};
@@ -10,7 +11,7 @@ static gpio_pin_t pin_led_power = {GPIOE,7};
 static gpio_pin_t pin_speaker_1 = {GPIOE,8};
 static gpio_pin_t pin_speaker_2 = {GPIOE,9};
 
-//static bool buzzer_enabled = false;
+static uint8_t power_led_mode = POWER_LED_MODE_OFF;
 
 
 void output_init()
@@ -42,9 +43,9 @@ void led2(bool state)
 	gpio_pinSet(pin_led_2, state);
 }
 
-void powerLed(bool state) //TODO: blinking
+void powerLed(uint8_t mode)
 {
-	gpio_pinSet(pin_led_power, state);
+	power_led_mode = mode;
 }
 
 
@@ -63,11 +64,68 @@ void speaker(uint16_t frequency)
 	}
 }
 
-
-void output_update(void) //TODO: led blink, speaker stuff
+void speaker_startup()
 {
-	//if(systick_getUptime() % BUZZER_DELAY == 0)
-	//	gpio_pinSet(pin_speaker,buzzer_enabled);
-	//if((systick_getUptime() - BUZZER_ON) % BUZZER_DELAY == 0)
-	//	gpio_pinSet(pin_speaker,false);
+	speaker(500);
+	systick_busyWait(systick_timeToTicks(0, 0, 0, 200)); //wait 0.2s
+	speaker(2000);
+	systick_busyWait(systick_timeToTicks(0, 0, 0, 100)); //wait 0.1s
+	speaker(0);
+}
+
+void speaker_shutdown()
+{
+	speaker(2000);
+	systick_busyWait(systick_timeToTicks(0, 0, 0, 200)); //wait 0.2s
+	speaker(500);
+	systick_busyWait(systick_timeToTicks(0, 0, 0, 100)); //wait 0.1s
+	speaker(0);
+}
+
+
+void output_update(void)
+{
+	if(power_getBatteryStatus() == BATTERY_STATUS_LOW)
+	{
+		if(systick_getUptime() % SPEAKER_BAT_LOW_INTERVAL == 0)
+			speaker(1000);
+		if((systick_getUptime() - 100) % SPEAKER_BAT_LOW_INTERVAL == 0)
+			speaker(0);
+		if((systick_getUptime() - 200) % SPEAKER_BAT_LOW_INTERVAL == 0)
+			speaker(1000);
+		if((systick_getUptime() - 300) % SPEAKER_BAT_LOW_INTERVAL == 0)
+			speaker(0);
+		if((systick_getUptime() - 400) % SPEAKER_BAT_LOW_INTERVAL == 0)
+			speaker(1000);
+		if((systick_getUptime() - 500) % SPEAKER_BAT_LOW_INTERVAL == 0)
+			speaker(0);
+
+		if(power_led_mode == POWER_LED_MODE_ON) power_led_mode = POWER_LED_MODE_BLINK;
+	}
+	else if(power_getBatteryStatus() == BATTERY_STATUS_OK)
+	{
+		if(power_led_mode == POWER_LED_MODE_BLINK) power_led_mode = POWER_LED_MODE_ON;
+	}
+
+	switch(power_led_mode)
+	{
+		case POWER_LED_MODE_OFF:
+			gpio_pinSet(pin_led_power, 0);
+			break;
+		case POWER_LED_MODE_ON:
+			gpio_pinSet(pin_led_power, 1);
+			break;
+		case POWER_LED_MODE_BLINK:
+			if(systick_getUptime() % 500 == 0)
+				gpio_pinSet(pin_led_power, 1);
+			if(systick_getUptime() % 1000 == 0)
+				gpio_pinSet(pin_led_power, 0);
+			break;
+		case POWER_LED_MODE_BOOT: //TODO
+			gpio_pinSet(pin_led_power, 1);
+			break;
+		case POWER_LED_MODE_SHUTDOWN: //TODO
+			gpio_pinSet(pin_led_power, 0);
+			break;
+	}
 }
