@@ -6,4 +6,6 @@
 void hcp_handler_serial(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
 	//TODO
+	ringbuffer_consume(conn.rxBuffer, payloadLength);
+	ringbuffer_push(conn.txBuffer, HCP_UNSUPPORTED_OPCODE);
 }
