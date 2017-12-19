@@ -4,7 +4,7 @@
 
 void ringbuffer_error()
 {
-
+	//TODO error handling
 }
 
 

@@ -21,7 +21,7 @@ void servo_init()
 	uint8_t i;
 	for(i=0; i<SERVO_COUNT; i++) gpio_pinCfg(servoPin[i], MODE_AF|OTYPE_PP|SPEED_LOW, 2); //servo pins output, AF2
 
-	//Timer 4 Init (servo 3-5)
+	//Timer 4 Init (servo 2-5)
 	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN; //enable clock (84MHz)
 	TIM4->PSC = 42; //prescaler = 42 --> 2MHz
 	TIM4->ARR = 40000; //auto-reload value = 40000 --> 50Hz
