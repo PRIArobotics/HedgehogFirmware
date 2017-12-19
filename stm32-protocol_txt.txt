@@ -4,7 +4,7 @@ remarks:
 
 commands:
     VERSION_REQ u8
-    --> VERSION_REP u8, hw_version u8, sw_version u8
+    --> VERSION_REP u8, uc_id u96, hw_version u8, sw_version u8
 
     (asynchronous)
     --> SHUTDOWN u8
@@ -75,7 +75,7 @@ codes:
         SERIAL              0x60
         SPEAKER             0x70
     reply opcodes:
-        VERSION_REP         0x01
+        VERSION_REP         0x02
         SHUTDOWN            0x03
         EMERGENCY_STOP      0x04
         OK                  0x80
