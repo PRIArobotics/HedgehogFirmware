@@ -4,6 +4,7 @@
 #include "adc.h"
 
 #include "output.h"
+#include "power.h"
 
 
 static gpio_pin_t pin_mode_01 = {GPIOC, 13};

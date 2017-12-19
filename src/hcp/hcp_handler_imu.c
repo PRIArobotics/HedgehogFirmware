@@ -1,12 +1,13 @@
 #include "hcp_handler.h"
 #include "hcp_opcodes.h"
 #include "ringbuffer.h"
+#include "imu.h"
 
 void hcp_handler_imu(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
-	int16_t x;
-	int16_t y;
-	int16_t z;
+	int16_t x = 0;
+	int16_t y = 0;
+	int16_t z = 0;
 
 	if(opcode == HCP_IMU_RATE_REQ)
 	{

@@ -3,6 +3,8 @@
 #include "gpio.h"
 #include "systick.h"
 #include "adc.h"
+#include "motor.h"
+#include "servo.h"
 
 
 static uint64_t button_pressed_timestamp = 0;

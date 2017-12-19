@@ -95,10 +95,10 @@ void servo_setPosition(uint8_t servo, uint16_t position)
 
 void servo_allOff()
 {
-	servoEnabled(0, false);
-	servoEnabled(1, false);
-	servoEnabled(2, false);
-	servoEnabled(3, false);
-	servoEnabled(4, false);
-	servoEnabled(5, false);
+	servo_setEnabled(0, false);
+	servo_setEnabled(1, false);
+	servo_setEnabled(2, false);
+	servo_setEnabled(3, false);
+	servo_setEnabled(4, false);
+	servo_setEnabled(5, false);
 }
