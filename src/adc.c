@@ -95,13 +95,13 @@ uint16_t adc_getAnalogInput(uint8_t input)
 	return analogData[input];
 }
 
-
-float adc_getBatteryVoltage()
+//TODO: use VREFINT (CH17) for more accurate input voltage measurement?
+float adc_getInputVoltage() //FIXME offset
 {
-	return ((float)(ADC1->JDR4) * MAX_BATTERY_VOLTAGE / 4095.0);
+	return (((float)(ADC1->JDR1)) / 4095.0 * MAX_INPUT_VOLTAGE);
 }
 
-uint16_t adc_getBatteryVoltage_mV()
+uint16_t adc_getInputVoltage_mV() //FIXME offset
 {
-	return (uint16_t)((float)(ADC1->JDR4) * (MAX_BATTERY_VOLTAGE * 1000.0) / 4095.0);
+	return (uint16_t)(((float)(ADC1->JDR1)) / 4095.0 * MAX_INPUT_VOLTAGE * 1000.0);
 }

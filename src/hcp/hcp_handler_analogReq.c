@@ -9,7 +9,7 @@ void hcp_handler_analogReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLength
 {
 	uint8_t port = ringbuffer_pop(conn.rxBuffer);
 
-	if((port >= ANALOG_COUNT) && (port != HCP_ANALOG_BATTERY_PORT))
+	if((port >= ANALOG_COUNT) && (port != HCP_ANALOG_SUPPLY_PORT))
 	{
 		ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
 		return;
@@ -21,7 +21,7 @@ void hcp_handler_analogReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLength
 	}
 
 	uint16_t value;
-	if(port == HCP_ANALOG_BATTERY_PORT) value = adc_getBatteryVoltage_mV();
+	if(port == HCP_ANALOG_SUPPLY_PORT) value = adc_getInputVoltage_mV();
 	else value = adc_getAnalogInput(port);
 
 	ringbuffer_push(conn.txBuffer, HCP_ANALOG_REP);
