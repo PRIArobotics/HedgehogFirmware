@@ -80,3 +80,8 @@ void hcp_update()
 	}
 
 }
+
+void hcp_sendShutdown()
+{
+	ringbuffer_push(conn.txBuffer, HCP_SHUTDOWN);
+}

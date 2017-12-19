@@ -4,12 +4,12 @@
 
 
 hcp_cmd_t hcp_cmds[256] = {
-	{HCP_EMERGENCY_STOP, 0, 0, NULL},													//   0
-	{HCP_UNUSED},																		//   1
-	{HCP_UNUSED},																		//   2
-	{HCP_UNUSED},																		//   3
-	{HCP_UNUSED},																		//   4
-	{HCP_UNUSED},																		//   5
+	{HCP_UNUSED},																		//   0 0x00
+	{HCP_VERS_REQ, 0, 0, hcp_handler_version},											//   1 0x01
+	{HCP_VERS_REP, 0, 14, NULL},														//   2 0x02
+	{HCP_SHUTDOWN, 0, 0, NULL},															//   3 0x03
+	{HCP_EMERGENCY_STOP, 0, 0, NULL},													//   4 0x04
+	{HCP_EMERGENCY_RELEASE, 0, 0, hcp_handler_emergency},								//   5 0x05
 	{HCP_UNUSED},																		//   6
 	{HCP_UNUSED},																		//   7
 	{HCP_UNUSED},																		//   8
@@ -20,7 +20,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  13
 	{HCP_UNUSED},																		//  14
 	{HCP_UNUSED},																		//  15
-	{HCP_IO_STATE, 0, 2, hcp_handler_ioState},											//  16
+	{HCP_IO_STATE, 0, 2, hcp_handler_ioState},											//  16 0x10
 	{HCP_UNUSED},																		//  17
 	{HCP_UNUSED},																		//  18
 	{HCP_UNUSED},																		//  19
@@ -36,11 +36,11 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  29
 	{HCP_UNUSED},																		//  30
 	{HCP_UNUSED},																		//  31
-	{HCP_ANALOG_REQ, 0, 1, hcp_handler_analogReq},										//  32
+	{HCP_ANALOG_REQ, 0, 1, hcp_handler_analogReq},										//  32 0x20
 	{HCP_UNUSED},																		//  33
-	{HCP_UNUSED},																		//  34
-	{HCP_UNUSED},																		//  35
-	{HCP_UNUSED},																		//  36
+	{HCP_IMU_RATE_REQ, 0, 0, hcp_handler_imu},											//  34 0x22
+	{HCP_IMU_ACCEL_REQ, 0, 0, hcp_handler_imu},											//  35 0x23
+	{HCP_IMU_POSE_REQ, 0, 0, hcp_handler_imu},											//  36 0x24
 	{HCP_UNUSED},																		//  37
 	{HCP_UNUSED},																		//  38
 	{HCP_UNUSED},																		//  39
@@ -52,7 +52,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  45
 	{HCP_UNUSED},																		//  46
 	{HCP_UNUSED},																		//  47
-	{HCP_DIGITAL_REQ, 0, 1, hcp_handler_digitalReq},									//  48
+	{HCP_DIGITAL_REQ, 0, 1, hcp_handler_digitalReq},									//  48 0x30
 	{HCP_UNUSED},																		//  49
 	{HCP_UNUSED},																		//  50
 	{HCP_UNUSED},																		//  51
@@ -68,7 +68,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  61
 	{HCP_UNUSED},																		//  62
 	{HCP_UNUSED},																		//  63
-	{HCP_MOTOR, 0, 4, hcp_handler_motor},												//  64
+	{HCP_MOTOR, 0, 4, hcp_handler_motor},												//  64 0x40
 	{HCP_UNUSED},																		//  65
 	{HCP_UNUSED},																		//  66
 	{HCP_UNUSED},																		//  67
@@ -84,7 +84,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  77
 	{HCP_UNUSED},																		//  78
 	{HCP_UNUSED},																		//  79
-	{HCP_SERVO, 0, 3, hcp_handler_servo},												//  80
+	{HCP_SERVO, 0, 3, hcp_handler_servo},												//  80 0x50
 	{HCP_UNUSED},																		//  81
 	{HCP_UNUSED},																		//  82
 	{HCP_UNUSED},																		//  83
@@ -100,7 +100,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  93
 	{HCP_UNUSED},																		//  94
 	{HCP_UNUSED},																		//  95
-	{HCP_SERIAL, HCP_VPL_FLAG, 0, hcp_handler_serial},									//  96
+	{HCP_SERIAL, HCP_VPL_FLAG, 0, hcp_handler_serial},									//  96 0x60
 	{HCP_UNUSED},																		//  97
 	{HCP_UNUSED},																		//  98
 	{HCP_UNUSED},																		//  99
@@ -116,7 +116,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 109
 	{HCP_UNUSED},																		// 110
 	{HCP_UNUSED},																		// 111
-	{HCP_UNUSED},																		// 112
+	{HCP_SPEAKER, 0, 2, hcp_handler_speaker},											// 112 0x70
 	{HCP_UNUSED},																		// 113
 	{HCP_UNUSED},																		// 114
 	{HCP_UNUSED},																		// 115
@@ -132,12 +132,12 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 125
 	{HCP_UNUSED},																		// 126
 	{HCP_UNUSED},																		// 127
-	{HCP_OK, 0, 0, NULL},																// 128
-	{HCP_INVALID_PORT, 0, 0, NULL},														// 129
-	{HCP_INVALID_IO, 0, 0, NULL},														// 130
-	{HCP_INVALID_MODE, 0, 0, NULL},														// 131
-	{HCP_INVALID_FLAGS, 0, 0, NULL},													// 132
-	{HCP_INVALID_VALUE, 0, 0, NULL},													// 133
+	{HCP_OK, 0, 0, NULL},																// 128 0x80
+	{HCP_INVALID_PORT, 0, 0, NULL},														// 129 0x81
+	{HCP_INVALID_IO, 0, 0, NULL},														// 130 0x82
+	{HCP_INVALID_MODE, 0, 0, NULL},														// 131 0x83
+	{HCP_INVALID_FLAGS, 0, 0, NULL},													// 132 0x84
+	{HCP_INVALID_VALUE, 0, 0, NULL},													// 133 0x85
 	{HCP_UNUSED},																		// 134
 	{HCP_UNUSED},																		// 135
 	{HCP_UNUSED},																		// 136
@@ -165,10 +165,10 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 158
 	{HCP_UNUSED},																		// 159
 	{HCP_UNUSED},																		// 160
-	{HCP_ANALOG_REP, 0, 3, NULL},														// 161
-	{HCP_UNUSED},																		// 162
-	{HCP_UNUSED},																		// 163
-	{HCP_UNUSED},																		// 164
+	{HCP_ANALOG_REP, 0, 3, NULL},														// 161 0xA1
+	{HCP_IMU_RATE_REP, 0, 6, NULL},														// 162 0xA2
+	{HCP_IMU_ACCEL_REP, 0, 6, NULL},													// 163 0xA3
+	{HCP_IMU_POSE_REP, 0, 6, NULL},														// 164 0xA4
 	{HCP_UNUSED},																		// 165
 	{HCP_UNUSED},																		// 166
 	{HCP_UNUSED},																		// 167
@@ -181,7 +181,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 174
 	{HCP_UNUSED},																		// 175
 	{HCP_UNUSED},																		// 176
-	{HCP_DIGITAL_REP, 0, 2, NULL},														// 177
+	{HCP_DIGITAL_REP, 0, 2, NULL},														// 177 0xB1
 	{HCP_UNUSED},																		// 178
 	{HCP_UNUSED},																		// 179
 	{HCP_UNUSED},																		// 180
@@ -197,7 +197,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 190
 	{HCP_UNUSED},																		// 191
 	{HCP_UNUSED},																		// 192
-	{HCP_SERIAL_UPDATE, HCP_VPL_FLAG, 0, NULL},											// 193
+	{HCP_SERIAL_UPDATE, HCP_VPL_FLAG, 0, NULL},											// 193 0xE1
 	{HCP_UNUSED},																		// 194
 	{HCP_UNUSED},																		// 195
 	{HCP_UNUSED},																		// 196

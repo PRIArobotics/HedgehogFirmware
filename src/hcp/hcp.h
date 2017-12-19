@@ -22,5 +22,8 @@ void hcp_init();
 //update the HCP handler, call this regularly
 void hcp_update();
 
+//send shutdown command
+void hcp_sendShutdown();
+
 
 #endif /* HCP_H_ */
