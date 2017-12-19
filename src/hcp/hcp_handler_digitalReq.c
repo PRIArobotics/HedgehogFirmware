@@ -8,7 +8,7 @@ void hcp_handler_digitalReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLengt
 {
 	uint8_t port = ringbuffer_pop(conn.rxBuffer);
 
-	if((port >= DIGITAL_COUNT) && (port != HCP_DIGITAL_LED1_PORT) && (port != HCP_DIGITAL_LED2_PORT) && (port != HCP_DIGITAL_BUZZER_PORT))
+	if(port >= DIGITAL_COUNT)
 	{
 		ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
 		return;

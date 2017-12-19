@@ -9,7 +9,7 @@ void hcp_handler_ioState(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 	uint8_t port = ringbuffer_pop(conn.rxBuffer);
 	uint8_t flags = ringbuffer_pop(conn.rxBuffer);
 
-	if(port >= DIGITAL_COUNT)
+	if((port >= DIGITAL_COUNT) && (port != HCP_DIGITAL_LED1_PORT) && (port != HCP_DIGITAL_LED2_PORT))
 	{
 		ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
 		return;
@@ -26,7 +26,7 @@ void hcp_handler_ioState(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 		return;
 	}
 
-	if(output)
+	if(output) //TODO: add leds
 	{
 		digitalIO_setMode(port, PIN_MODE_OUT);
 		digitalIO_setState(port, state);
