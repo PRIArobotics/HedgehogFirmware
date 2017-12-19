@@ -73,10 +73,10 @@ void hcp_update()
 		connectionState = WAIT_OPCODE;
 	}
 
-	if(power_getEmergencyStop())
+	if(power_getEmergencyStopSendFlag())
 	{
 		ringbuffer_push(conn.txBuffer, HCP_EMERGENCY_STOP);
-		power_clearEmergencyStop();
+		power_clearEmergencyStopSendFlag();
 	}
 
 }

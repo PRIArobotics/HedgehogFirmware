@@ -8,7 +8,8 @@
 static uint64_t button_pressed_timestamp = 0;
 static bool button_initial_press = true;
 static bool shutdown = false;
-static bool emergency_stop = false;
+static bool emergency_stop_active = false;
+static bool emergency_stop_send_flag = false;
 
 static uint16_t input_voltage_mV = 12000;
 static uint8_t batteryStatus = BATTERY_STATUS_OK;
@@ -73,12 +74,22 @@ bool power_getShutdown()
 
 bool power_getEmergencyStop()
 {
-	return emergency_stop;
+	return emergency_stop_active;
 }
 
 void power_clearEmergencyStop()
 {
-	emergency_stop = false;
+	emergency_stop_active = false;
+}
+
+bool power_getEmergencyStopSendFlag()
+{
+	return emergency_stop_send_flag;
+}
+
+void power_clearEmergencyStopSendFlag()
+{
+	emergency_stop_send_flag = false;
 }
 
 uint8_t power_getBatteryStatus()
@@ -91,6 +102,14 @@ uint16_t power_getInputVoltage_mV()
 	return input_voltage_mV;
 }
 
+static void emergency_stop()
+{
+	emergency_stop_active = true;
+	emergency_stop_send_flag = true;
+	motor_allOff();
+	servo_allOff();
+}
+
 void power_update()
 {
 	//power button monitoring
@@ -101,7 +120,7 @@ void power_update()
 			if(button_pressed_timestamp == 0) //has just started being pressed
 			{
 				button_pressed_timestamp = systick_getUptime();
-				emergency_stop = true; //emergency stop message will be sent
+				emergency_stop();
 			}
 			else if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 2, 0)) //button was pressed for 2s
 				shutdown = true;

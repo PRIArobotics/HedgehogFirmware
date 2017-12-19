@@ -31,4 +31,7 @@ void motor_setPower(uint8_t motor, uint16_t power);
 //updates duty cycle according to setPower and battery voltage, motor: 0-3
 void motor_updateDutyCycle(uint8_t motor);
 
+//all motors to coast and 0 power
+void motor_allOff();
+
 #endif /* MOTOR_H_ */

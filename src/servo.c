@@ -1,5 +1,6 @@
 #include "servo.h"
 #include "gpio.h"
+#include "power.h"
 #include <stm32f4xx.h>
 
 
@@ -79,6 +80,7 @@ void servo_update(uint8_t servo)
 void servo_setEnabled(uint8_t servo, bool enabled)
 {
 	if(servo >= SERVO_COUNT) return;
+	if(power_getEmergencyStop()) return;
 	servoEnabled[servo] = enabled;
 	servo_update(servo);
 }
@@ -89,4 +91,14 @@ void servo_setPosition(uint8_t servo, uint16_t position)
 	if(servo >= SERVO_COUNT) return;
 	servoPosition[servo] = position;
 	servo_update(servo);
+}
+
+void servo_allOff()
+{
+	servoEnabled(0, false);
+	servoEnabled(1, false);
+	servoEnabled(2, false);
+	servoEnabled(3, false);
+	servoEnabled(4, false);
+	servoEnabled(5, false);
 }

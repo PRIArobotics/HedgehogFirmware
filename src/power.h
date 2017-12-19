@@ -27,6 +27,8 @@ bool power_getRPiActive();
 bool power_getShutdown();
 bool power_getEmergencyStop();
 void power_clearEmergencyStop();
+bool power_getEmergencyStopSendFlag();
+void power_clearEmergencyStopSendFlag();
 uint8_t power_getBatteryStatus();
 void power_update();
 uint16_t power_getInputVoltage_mV();
