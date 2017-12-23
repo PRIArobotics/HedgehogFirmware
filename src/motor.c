@@ -125,7 +125,7 @@ void TIM2_IRQHandler(void)
 void motor_setMode(uint8_t motor, uint8_t motorMode)
 {
 	if((motor >= MOTOR_COUNT) || (motorMode >= 4)) return;
-	if(power_getEmergencyStop()) return;
+	if(power_getEmergencyStop() && motorMode) return;
 	mode[motor] = motorMode;
 }
 
@@ -133,7 +133,7 @@ void motor_setMode(uint8_t motor, uint8_t motorMode)
 void motor_setPower(uint8_t motor, uint16_t power)
 {
 	if(motor >= MOTOR_COUNT) return;
-	if(power_getEmergencyStop()) return;
+	if(power_getEmergencyStop() && power) return;
 	if(power > MOTOR_MAX_POWER) power = MOTOR_MAX_POWER;
 	dutyCycle[motor] = power;
 	TIM2->CCR1 = dutyCycle[0];

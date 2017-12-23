@@ -9,12 +9,12 @@
 
 static uint64_t button_pressed_timestamp = 0;
 static bool button_initial_press = true;
-static bool shutdown = false;
-static bool emergency_stop_active = false;
-static bool emergency_stop_send_flag = false;
+volatile static bool shutdown = false;
+volatile static bool emergency_stop_active = false;
+volatile static bool emergency_stop_send_flag = false;
 
-static uint16_t input_voltage_mV = 12000;
-static uint8_t batteryStatus = BATTERY_STATUS_OK;
+volatile static uint16_t input_voltage_mV = 12000;
+volatile static uint8_t batteryStatus = BATTERY_STATUS_OK;
 
 static gpio_pin_t pin_enable_power_in = {GPIOD,10};
 static gpio_pin_t pin_enable_reg_rpi = {GPIOD,8};
@@ -104,13 +104,6 @@ uint16_t power_getInputVoltage_mV()
 	return input_voltage_mV;
 }
 
-static void emergency_stop()
-{
-	emergency_stop_active = true;
-	emergency_stop_send_flag = true;
-	motor_allOff();
-	servo_allOff();
-}
 
 void power_update()
 {
@@ -122,7 +115,8 @@ void power_update()
 			if(button_pressed_timestamp == 0) //has just started being pressed
 			{
 				button_pressed_timestamp = systick_getUptime();
-				emergency_stop();
+				emergency_stop_active = true;
+				emergency_stop_send_flag = true;
 			}
 			else if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 2, 0)) //button was pressed for 2s
 				shutdown = true;
@@ -148,5 +142,11 @@ void power_update()
 		case BATTERY_STATUS_EMPTY:
 			shutdown = true;
 			break;
+	}
+
+	if(emergency_stop_active)
+	{
+		motor_allOff();
+		servo_allOff();
 	}
 }

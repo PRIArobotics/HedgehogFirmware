@@ -80,7 +80,7 @@ void servo_update(uint8_t servo)
 void servo_setEnabled(uint8_t servo, bool enabled)
 {
 	if(servo >= SERVO_COUNT) return;
-	if(power_getEmergencyStop()) return;
+	if(power_getEmergencyStop() && enabled) return;
 	servoEnabled[servo] = enabled;
 	servo_update(servo);
 }
