@@ -97,7 +97,8 @@ flash-stlink:
 
 #shows size of .elf
 size: $(BUILDDIR)/$(PROJ_NAME).elf
-	$(SZ) $<
+	@echo size:
+	@$(SZ) $<
 
 
 #create .hex from .elf
