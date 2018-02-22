@@ -14,7 +14,11 @@ static gpio_pin_t pin_a[MOTOR_COUNT] = {
 	{GPIOC, 9},
 	{GPIOC, 11},
 	{GPIOA, 8},
-	{GPIOB, 10}};
+	#ifdef PROTO_V02
+		{GPIOB, 10}};
+	#else
+		{GPIOE, 7}};
+	#endif
 
 static gpio_pin_t pin_b[MOTOR_COUNT] = {
 	{GPIOC, 12},

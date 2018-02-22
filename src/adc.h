@@ -8,8 +8,11 @@
 
 #define ANALOG_COUNT 16
 
-#define MAX_INPUT_VOLTAGE 112200 //input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
-
+#ifdef PROTO_V02
+	#define MAX_INPUT_VOLTAGE 112200 //input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
+#else
+	#define MAX_INPUT_VOLTAGE 79200 //input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
+#endif
 
 //init ADC for analog inputs and battery voltage
 void adc_init();

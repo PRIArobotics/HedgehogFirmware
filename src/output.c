@@ -7,7 +7,11 @@
 
 static gpio_pin_t pin_led_1 = {GPIOB,8};
 static gpio_pin_t pin_led_2 = {GPIOB,9};
-static gpio_pin_t pin_led_power = {GPIOE,7};
+#ifdef PROTO_V02
+	static gpio_pin_t pin_led_power = {GPIOE,7};
+#else
+	static gpio_pin_t pin_led_power = {GPIOB,10};
+#endif
 static gpio_pin_t pin_speaker_1 = {GPIOE,8};
 static gpio_pin_t pin_speaker_2 = {GPIOE,9};
 
