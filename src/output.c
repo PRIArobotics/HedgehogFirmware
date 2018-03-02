@@ -7,7 +7,7 @@
 
 static gpio_pin_t pin_led_1 = {GPIOB,8};
 static gpio_pin_t pin_led_2 = {GPIOB,9};
-#ifdef PROTO_V02
+#if HW_VERSION==2
 	static gpio_pin_t pin_led_power = {GPIOE,7};
 #else
 	static gpio_pin_t pin_led_power = {GPIOB,10};

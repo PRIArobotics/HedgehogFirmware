@@ -67,7 +67,7 @@ SRC += hcp.c hcp_commands.c hcp_handler_analogReq.c hcp_handler_digitalReq.c hcp
 OBJS = $(addprefix $(OBJDIR)/,$(subst .c,.o,$(subst .s,.o,$(SRC))))
 
 
-#CFLAGS += -DPROTO_V02 #add for prototype pcb v0.2
+#CFLAGS += -DHW_VERSION=2 #add for prototype pcb v0.2
 ###################################################
 
 .PHONY: all buildAll flash remote-flash flash-stlink size clean

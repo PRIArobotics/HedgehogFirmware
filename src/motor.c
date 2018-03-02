@@ -14,7 +14,7 @@ static gpio_pin_t pin_a[MOTOR_COUNT] = {
 	{GPIOC, 9},
 	{GPIOC, 11},
 	{GPIOA, 8},
-	#ifdef PROTO_V02
+	#if HW_VERSION==2
 		{GPIOB, 10}};
 	#else
 		{GPIOE, 7}};

@@ -8,7 +8,7 @@
 
 #define ANALOG_COUNT 16
 
-#ifdef PROTO_V02
+#if HW_VERSION==2
 	#define MAX_INPUT_VOLTAGE 112200 //input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
 #else
 	#define MAX_INPUT_VOLTAGE 79200 //input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)

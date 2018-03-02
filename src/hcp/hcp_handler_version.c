@@ -1,11 +1,9 @@
 #include "hcp_handler.h"
 #include "hcp_opcodes.h"
 #include "ringbuffer.h"
+#include "version.h"
 
 #define STM32_UUID ((uint32_t *)0x1FFF7A10)
-
-#define HW_VERSION 2
-#define SW_VERSION 0
 
 void hcp_handler_version(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
