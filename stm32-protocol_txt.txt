@@ -38,6 +38,15 @@ commands:
     MOTOR u8, port u8, mode u8, dir bool|value u15
     --> (status codes)
 
+    MOTOR_CONFIG_DC u8, port u8
+    --> (status codes)
+
+    MOTOR_CONFIG_ENCODER u8, port u8, encoder_a_port u8, encoder_b_port u8
+    --> (status codes)
+
+    MOTOR_CONFIG_STEPPER u8, port u8
+    --> (status codes)
+
     SERVO u8, port u8, active bool|value u15
     --> (status codes)
 
@@ -52,55 +61,72 @@ commands:
 
 status codes:
     OK u8
-    UNKNOWN_OPCODE u8 - the opcode is unknown and the connection needs to be reset
-    INVALID_OPCODE u8 - the opcode is known and is decoded properly, but can't be handled
-    INVALID_PORT u8 - port out of range
-    INVALID_IO u8 - sensor request for output port
-    INVALID_MODE u8 - mode is not POWER, BRAKE
-    INVALID_FLAGS u8 - (io_flags & ~0x1F) != 0x00, invalid combination
-    INVALID_VALUE u8 - MOTOR/SERVO value out of range
+    UNKNOWN_OPCODE u8
+    - the opcode is unknown and the connection needs to be reset
+    INVALID_OPCODE u8
+    - the opcode is known and is decoded properly, but can't be handled
+    INVALID_PORT u8
+    - port out of range
+    - invalid port for stepper motor mode: only even port n is valid, odd port n+1 is affected as well
+    INVALID_CONFIG u8
+    - sensor request for output port
+    - POWER/BRAKE command for stepper motor
+    - VELOCITY command for DC motor
+    - IO_STATE command for encoder io port
+    - motor command for auxiliary stepper motor port
+    INVALID_MODE u8
+    - mode is not POWER, BRAKE, VELOCITY
+    INVALID_FLAGS u8
+    - (io_flags & ~0x1F) != 0x00
+    - invalid combination: OUTPUT & PULLUP/PULLDOWN; INPUT & ON; PULLUP & PULLDOWN
+    INVALID_VALUE u8
+    - MOTOR/SERVO value out of range
 
 codes:
     command opcodes:
-        VERSION_REQ         0x01
-        EMERGENCY_RELEASE   0x05
-        IO_STATE            0x10
-        ANALOG_REQ          0x20
-        IMU_RATE_REQ        0x22
-        IMU_ACCEL_REQ       0x23
-        IMU_POSE_REQ        0x24
-        DIGITAL_REQ         0x30
-        MOTOR               0x40
-        SERVO               0x50
-        SERIAL              0x60
-        SPEAKER             0x70
+        VERSION_REQ             0x01
+        EMERGENCY_RELEASE       0x05
+        IO_STATE                0x10
+        ANALOG_REQ              0x20
+        IMU_RATE_REQ            0x22
+        IMU_ACCEL_REQ           0x23
+        IMU_POSE_REQ            0x24
+        DIGITAL_REQ             0x30
+        MOTOR                   0x40
+        MOTOR_CONFIG_DC         0x41
+        MOTOR_CONFIG_ENCODER    0x42
+        MOTOR_CONFIG_STEPPER    0x43
+        SERVO                   0x50
+        SERIAL                  0x60
+        SPEAKER                 0x70
     reply opcodes:
-        VERSION_REP         0x02
-        SHUTDOWN            0x03
-        EMERGENCY_STOP      0x04
-        OK                  0x80
-        UNKNOWN_OPCODE      0x81
-        INVALID_OPCODE      0x82
-        INVALID_PORT        0x83
-        INVALID_IO          0x84
-        INVALID_MODE        0x85
-        INVALID_FLAGS       0x86
-        INVALID_VALUE       0x87
-        ANALOG_REP          0xA1
-        IMU_RATE_REP        0xA2
-        IMU_ACCEL_REP       0xA3
-        IMU_POSE_REP        0xA4
-        DIGITAL_REP         0xB1
-        SERIAL_UPDATE       0xE1
+        VERSION_REP             0x02
+        SHUTDOWN                0x03
+        EMERGENCY_STOP          0x04
+        OK                      0x80
+        UNKNOWN_OPCODE          0x81
+        INVALID_OPCODE          0x82
+        INVALID_PORT            0x83
+        INVALID_CONFIG          0x84
+        INVALID_MODE            0x85
+        INVALID_FLAGS           0x86
+        INVALID_VALUE           0x87
+        ANALOG_REP              0xA1
+        IMU_RATE_REP            0xA2
+        IMU_ACCEL_REP           0xA3
+        IMU_POSE_REP            0xA4
+        DIGITAL_REP             0xB1
+        SERIAL_UPDATE           0xE1
     number analog and digital ports together, servo and motor ports separately
     special analog ports:
-        BATTERY_VOLTAGE     0x80
+        BATTERY_VOLTAGE         0x80
     special digital ports (output only):
-        LED1                0x90
-        LED2                0x91
+        LED1                    0x90
+        LED2                    0x91
     serial ports:
-        SPI1                0x00
-        SPI2                0x01
+        SPI1                    0x00
+        SPI2                    0x01
     motor modes:
-        POWER               0x00
-        BRAKE               0x01
+        POWER                   0x00
+        BRAKE                   0x01
+        VELOCITY                0x02
