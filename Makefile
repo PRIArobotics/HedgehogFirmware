@@ -1,6 +1,14 @@
 # name of the project, the binaries will be generated with this name
 PROJ_NAME = HedgehogFirmware
 
+# hardware version, can be overwritten when calling make: make HW_VERSION=3
+# complete rebuild needed after changing version
+# 1: prototype v0.1 (not supported by this firmware)
+# 2: prototype v0.2
+# 3: prototype v0.3
+# 4: prototype v0.4
+HW_VERSION = 4
+
 # remote flashing target
 REMOTE = pi@raspberrypi.local
 REMOTE_BUNDLE = /home/pi/HedgehogBundle/firmware/HedgehogFirmware
@@ -42,14 +50,18 @@ OBJDIR := build/obj
 #directory for openocd flash scripts
 OPENOCDDIR := openocd
 
+###################################################
 
 #include directories
 CFLAGS += -I$(SYSTEMDIR) -I$(SRCDIR) -I$(HCPDIR)
 
+#hw version define
+CFLAGS += -DHW_VERSION=$(HW_VERSION)
+
 #linker file
 LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
 
-#libraries we want to link against
+#libraries
 #LDFLAGS += -lc -lnosys #newlib (e.g. for printf)
 #LDFLAGS += -lm #math
 
@@ -66,8 +78,6 @@ SRC += hcp.c hcp_commands.c hcp_handler_analogReq.c hcp_handler_digitalReq.c hcp
 #object files (with object directory --> $(OBJDIR)/name.o)
 OBJS = $(addprefix $(OBJDIR)/,$(subst .c,.o,$(subst .s,.o,$(SRC))))
 
-
-#CFLAGS += -DHW_VERSION=2 #add for prototype pcb v0.2
 ###################################################
 
 .PHONY: all buildAll flash remote-flash flash-stlink size clean
@@ -77,7 +87,8 @@ all: buildAll size
 
 #build all output formats
 buildAll: $(BUILDDIR)/$(PROJ_NAME).elf $(BUILDDIR)/$(PROJ_NAME).hex $(BUILDDIR)/$(PROJ_NAME).bin
-	@echo build finished
+	@echo
+	@echo build finished with HW_VERSION = $(HW_VERSION)
 
 #flash locally via HedgehogFirmwareBundle
 flash:
@@ -115,8 +126,10 @@ $(BUILDDIR)/$(PROJ_NAME).bin: $(BUILDDIR)/$(PROJ_NAME).elf | $(BUILDDIR)
 
 #link objects to .elf
 $(BUILDDIR)/$(PROJ_NAME).elf: $(OBJS) | $(OBJDIR) $(BUILDDIR)
+	@echo
 	@echo linking $@ from $(OBJS)
 	@$(LD) $(LDFLAGS) -o $@ $(OBJS)
+	@echo
 
 
 #compile user .c file to .o

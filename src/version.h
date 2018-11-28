@@ -1,13 +1,14 @@
 #ifndef SERVO_H_
 #define SERVO_H_
 
-// HW_VERSIONS:
-// 1: prototype v0.1 (not supported by this firmware)
-// 2: prototype v0.2
-// 3: prototype v0.3
+// HW_VERSION, set in Makefile
 #ifndef HW_VERSION
-	#define HW_VERSION 3
+	#error No HW_VERSION defined!
+#elif ((HW_VERSION != 2) && (HW_VERSION != 3) && (HW_VERSION != 4))
+	#error Defined HW_VERSION is not supported by this firmware!
 #endif
+
+//SW_VERSION
 #define SW_VERSION 0
 
 #endif /* SERVO_H_ */

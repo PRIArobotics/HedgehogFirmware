@@ -8,11 +8,15 @@
 
 #define ANALOG_COUNT 16
 
-#if HW_VERSION==2
-	#define MAX_INPUT_VOLTAGE 112200 //input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
+//input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
+#if HW_VERSION==4
+	#define MAX_INPUT_VOLTAGE 101200
+#elif HW_VERSION==2
+	#define MAX_INPUT_VOLTAGE 112200
 #else
-	#define MAX_INPUT_VOLTAGE 79200 //input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
+	#define MAX_INPUT_VOLTAGE 79200
 #endif
+
 
 //init ADC for analog inputs and battery voltage
 void adc_init();
