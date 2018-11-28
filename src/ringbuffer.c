@@ -2,28 +2,26 @@
 #include <string.h>
 
 
-void ringbuffer_error()
+void memcopy(volatile uint8_t *dst, volatile uint8_t *src, size_t n)
 {
-	//TODO error handling
+	size_t i;
+	for(i=0; i<n; i++)
+	{
+		*(dst + i) = *(src + i);
+	}
 }
 
-
-void ringbuffer_init(ringbuffer_t *rb, uint8_t *buf, size_t bufSize)
+uint8_t ringbuffer_init(ringbuffer_t *rb, volatile uint8_t *buf, size_t bufSize, void (*startReadFunction)(void))
 {
-	if((bufSize - 1) & bufSize)  ringbuffer_error();
-	if(bufSize > MAX_BUFFER_SIZE) ringbuffer_error();
+	if((bufSize - 1) & bufSize) return RB_ERROR_CONFIG;
 
 	rb->size = bufSize;
 	rb->buffer = buf;
 	rb->head = 0;
 	rb->tail = 0;
-	rb->startReadFunction = NULL;
-}
+	rb->startReadFunction = startReadFunction;
 
-
-void ringbuffer_setStartReadFunction(ringbuffer_t *rb, void (*function)(void))
-{
-	rb->startReadFunction = function;
+	return RB_SUCCESS;
 }
 
 
@@ -38,133 +36,152 @@ size_t ringbuffer_getFilled(ringbuffer_t *rb)
 }
 
 
-void ringbuffer_push(ringbuffer_t *rb, uint8_t value)
+uint8_t ringbuffer_push(ringbuffer_t *rb, uint8_t value)
 {
-	if(ringbuffer_getFree(rb) == 0) ringbuffer_error();
+	if(ringbuffer_getFree(rb) == 0) return RB_ERROR_OVERFLOW;
 
-	rb->buffer[(rb->head) & (rb->size -1)] = value;
+	rb->buffer[TRUNC(rb->head)] = value;
 	rb->head++;
 
 	if(rb->startReadFunction != NULL) //start-read-function is specified
 		(rb->startReadFunction)(); //execute start-read-function
+
+	return RB_SUCCESS;
 }
 
-void ringbuffer_push_multiple(ringbuffer_t *rb, uint8_t *data, size_t size)
+uint8_t ringbuffer_push_multiple(ringbuffer_t *rb, volatile uint8_t *data, size_t n)
 {
-	if(ringbuffer_getFree(rb) < size) ringbuffer_error();
+	if(ringbuffer_getFree(rb) < n) return RB_ERROR_OVERFLOW;
 
-	size_t length;
-	if((rb->head & (rb->size-1)) + size > rb->size) //wrap
+	if((TRUNC(rb->head) + n) <= rb->size) //no wrap
 	{
-		length = rb->size - (rb->head & (rb->size-1)); //number of values before wrap
-		memcpy(&rb->buffer[0], &data[length], size - length); //copy data after wrap
+		memcopy(&rb->buffer[TRUNC(rb->head)], data, n); //copy data
 	}
-	else length = size; //no wrap
-	memcpy(&rb->buffer[(rb->head) & (rb->size -1)], data, length); //copy data before wrap
-	rb->head += size;
+	else //wrap
+	{
+		size_t length = rb->size - TRUNC(rb->head); //number of values before wrap
+		memcopy(&rb->buffer[TRUNC(rb->head)], data, length); //copy data before wrap
+		memcopy(&rb->buffer[0], &data[length], n - length); //copy data after wrap
+	}
+	
+	rb->head += n;
 
 	if(rb->startReadFunction != NULL) //start-read-function is specified
 		(rb->startReadFunction)(); //execute start-read-function
+
+	return RB_SUCCESS;
 }
 
 
-uint8_t ringbuffer_peek(ringbuffer_t *rb)
+uint8_t ringbuffer_peek(ringbuffer_t *rb, volatile uint8_t *data)
 {
-	if(ringbuffer_getFilled(rb) == 0) ringbuffer_error();
-	return rb->buffer[(rb->tail) & (rb->size -1)];
+	if(ringbuffer_getFilled(rb) == 0) return RB_ERROR_UNDERFLOW;
+	memcopy(data, &rb->buffer[TRUNC(rb->tail)], 1);
+	return RB_SUCCESS;
 }
 
-void ringbuffer_peek_multiple(ringbuffer_t *rb, uint8_t *data, size_t size)
+uint8_t ringbuffer_peek_multiple(ringbuffer_t *rb, volatile uint8_t *data, size_t n)
 {
-	if(ringbuffer_getFilled(rb) < size) ringbuffer_error();
-	ringbuffer_peek_at_multiple(rb, rb->tail, data, size);
+	return ringbuffer_peek_at_multiple(rb, rb->tail, data, n);
 }
 
-uint8_t ringbuffer_peek_at(ringbuffer_t *rb, size_t position)
+uint8_t ringbuffer_peek_at(ringbuffer_t *rb, size_t position, volatile uint8_t *data)
 {
-	return rb->buffer[position & (rb->size-1)];
+	if(!IS_BETWEEN(TRUNC(position), TRUNC(rb->tail), TRUNC(rb->head))) return RB_ERROR_UNDERFLOW; //position is not between tail and head
+	memcopy(data, &rb->buffer[TRUNC(position)], 1);
+	return RB_SUCCESS;
 }
 
-void ringbuffer_peek_at_multiple(ringbuffer_t *rb, size_t position, uint8_t *data, size_t size)
+uint8_t ringbuffer_peek_at_multiple(ringbuffer_t *rb, size_t position, volatile uint8_t *data, size_t n)
 {
-	if((position & (rb->size -1)) + size - 1 < rb->size) //no wrap
+	//if not all data is between tail and head
+	if(!IS_BETWEEN(TRUNC(position), TRUNC(rb->tail), TRUNC(rb->head))) return RB_ERROR_UNDERFLOW;
+	if(!IS_BETWEEN(TRUNC(position + n), TRUNC(rb->tail), TRUNC(rb->head))) return RB_ERROR_UNDERFLOW;
+
+	if((TRUNC(position) + n) <= rb->size) //no wrap
 	{
-		memcpy(data, &rb->buffer[position & (rb->size -1)], size); //copy data
+		memcopy(data, &rb->buffer[TRUNC(position)], n); //copy data
 	}
 	else //wrap
 	{
-		size_t length = rb->size - (position & (rb->size -1)); //number of values before wrap
-		memcpy(data, &rb->buffer[position & (rb->size -1)], length); //copy data before wrap
-		memcpy(&data[length], &rb->buffer[0], size - length); //copy data after wrap
+		size_t length = rb->size - TRUNC(position); //number of values before wrap
+		memcopy(data, &rb->buffer[TRUNC(position)], length); //copy data before wrap
+		memcopy(&data[length], &rb->buffer[0], n - length); //copy data after wrap
 	}
+	return RB_SUCCESS;
 }
 
-uint8_t ringbuffer_peek_relative(ringbuffer_t *rb, size_t offset)
+uint8_t ringbuffer_peek_relative(ringbuffer_t *rb, size_t offset, volatile uint8_t *data)
 {
-	return ringbuffer_peek_at(rb, (rb->tail + offset));
+	return ringbuffer_peek_at(rb, (rb->tail + offset), data);
 }
 
-void ringbuffer_peek_relative_multiple(ringbuffer_t *rb, size_t offset, uint8_t *data, size_t size)
+uint8_t ringbuffer_peek_relative_multiple(ringbuffer_t *rb, size_t offset, volatile uint8_t *data, size_t n)
 {
-	ringbuffer_peek_at_multiple(rb, rb->tail + offset, data, size);
-}
-
-
-void ringbuffer_consume(ringbuffer_t *rb, size_t size)
-{
-	if(ringbuffer_getFilled(rb) < size) ringbuffer_error();
-	rb->tail += size;
+	return ringbuffer_peek_at_multiple(rb, rb->tail + offset, data, n);
 }
 
 
-uint8_t ringbuffer_pop(ringbuffer_t *rb)
+uint8_t ringbuffer_consume(ringbuffer_t *rb, size_t n)
 {
-	if(ringbuffer_getFilled(rb) == 0) ringbuffer_error();
-
-	uint8_t value = ringbuffer_peek(rb);
-	ringbuffer_consume(rb, 1);
-	return value;
-}
-
-void ringbuffer_pop_multiple(ringbuffer_t *rb, uint8_t *data, size_t size)
-{
-	if(ringbuffer_getFilled(rb) < size) ringbuffer_error();
-
-	ringbuffer_peek_multiple(rb, data, size);
-	ringbuffer_consume(rb, size);
+	if(ringbuffer_getFilled(rb) < n) return RB_ERROR_UNDERFLOW;
+	rb->tail += n;
+	return RB_SUCCESS;
 }
 
 
-void ringbuffer_peek_multiple_trans(ringbuffer_t *rb, ringbuffer_t *dst, size_t size)
+uint8_t ringbuffer_pop(ringbuffer_t *rb, volatile uint8_t *data)
 {
-	if(ringbuffer_getFilled(rb) < size) ringbuffer_error();
-	
-	ringbuffer_peek_at_multiple_trans(rb, rb->tail, dst, size);
+	uint8_t errcode = ringbuffer_peek(rb, data);
+	if(errcode != RB_SUCCESS) return errcode;
+	return ringbuffer_consume(rb, 1);
 }
 
-void ringbuffer_peek_at_multiple_trans(ringbuffer_t *rb, size_t position, ringbuffer_t *dst, size_t size)
+uint8_t ringbuffer_pop_multiple(ringbuffer_t *rb, volatile uint8_t *data, size_t n)
 {
-	if((position & (rb->size -1)) + size - 1 < rb->size) //no wrap
+	uint8_t errcode = ringbuffer_peek_multiple(rb, data, n);
+	if(errcode != RB_SUCCESS) return errcode;
+	return ringbuffer_consume(rb, n);
+}
+
+
+uint8_t ringbuffer_peek_multiple_trans(ringbuffer_t *rb, ringbuffer_t *dst, size_t n)
+{
+	return ringbuffer_peek_at_multiple_trans(rb, rb->tail, dst, n);
+}
+
+uint8_t ringbuffer_peek_at_multiple_trans(ringbuffer_t *rb, size_t position, ringbuffer_t *dst, size_t n)
+{
+	//if not all data is between tail and head
+	if(!IS_BETWEEN(TRUNC(position), TRUNC(rb->tail), TRUNC(rb->head))) return RB_ERROR_UNDERFLOW;
+	if(!IS_BETWEEN(TRUNC(position + n), TRUNC(rb->tail), TRUNC(rb->head))) return RB_ERROR_UNDERFLOW;
+	if(ringbuffer_getFree(dst) < n) return RB_ERROR_OVERFLOW;
+
+	if((TRUNC(position) + n) <= rb->size) //no wrap
 	{
-		ringbuffer_push_multiple(dst, &rb->buffer[position & (rb->size -1)], size); //copy data
+		uint8_t errcode = ringbuffer_push_multiple(dst, &rb->buffer[TRUNC(position)], n); //copy data
+		if(errcode != RB_SUCCESS) return errcode;
 	}
 	else //wrap
 	{
-		size_t length = rb->size - (position & (rb->size -1)); //number of values before wrap
-		ringbuffer_push_multiple(dst, &rb->buffer[position & (rb->size -1)], length); //copy data before wrap
-		ringbuffer_push_multiple(dst, &rb->buffer[0], size - length); //copy data after wrap
+		size_t length = rb->size - TRUNC(position); //number of values before wrap
+		uint8_t errcode = ringbuffer_push_multiple(dst, &rb->buffer[TRUNC(position)], length); //copy data before wrap
+		if(errcode != RB_SUCCESS) return errcode;
+		errcode = ringbuffer_push_multiple(dst, &rb->buffer[0], n - length); //copy data after wrap
+		if(errcode != RB_SUCCESS) return errcode;
 	}
+
+	return RB_SUCCESS;
 }
 
-void ringbuffer_peek_relative_multiple_trans(ringbuffer_t *rb, size_t offset, ringbuffer_t *dst, size_t size)
+uint8_t ringbuffer_peek_relative_multiple_trans(ringbuffer_t *rb, size_t offset, ringbuffer_t *dst, size_t n)
 {
-	ringbuffer_peek_at_multiple_trans(rb, rb->tail + offset, dst, size);
+	return ringbuffer_peek_at_multiple_trans(rb, rb->tail + offset, dst, n);
 }
 
-void ringbuffer_pop_multiple_trans(ringbuffer_t *rb, ringbuffer_t *dst, size_t size)
+uint8_t ringbuffer_pop_multiple_trans(ringbuffer_t *rb, ringbuffer_t *dst, size_t n)
 {
-	if(ringbuffer_getFilled(rb) < size) ringbuffer_error();
-
-	ringbuffer_peek_multiple_trans(rb, dst, size);
-	ringbuffer_consume(rb, size);
+	uint8_t errcode = ringbuffer_peek_multiple_trans(rb, dst, n);
+	if(errcode != RB_SUCCESS) return errcode;
+	return ringbuffer_consume(rb, n);
 }

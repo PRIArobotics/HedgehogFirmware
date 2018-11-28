@@ -7,8 +7,10 @@
 
 void hcp_handler_ioState(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
-	uint8_t port = ringbuffer_pop(conn.rxBuffer);
-	uint8_t flags = ringbuffer_pop(conn.rxBuffer);
+	uint8_t port;
+	if(ringbuffer_pop(conn.rxBuffer, &port)) return;
+	uint8_t flags;
+	if(ringbuffer_pop(conn.rxBuffer, &flags)) return;
 
 	if((port >= DIGITAL_COUNT) && (port != HCP_DIGITAL_LED1_PORT) && (port != HCP_DIGITAL_LED2_PORT))
 	{

@@ -3,14 +3,13 @@
 #include <stm32f4xx.h>
 
 
-static gpio_pin_t pinTxD = {GPIOA, 9};
-static gpio_pin_t pinRxD = {GPIOA, 10};
-
+static const gpio_pin_t pinTxD = {GPIOA, 9};
+static const gpio_pin_t pinRxD = {GPIOA, 10};
 
 static ringbuffer_t uart_rx_rb;
 static ringbuffer_t uart_tx_rb;
-static uint8_t rx_buffer[512];
-static uint8_t tx_buffer[512];
+volatile static uint8_t rx_buffer[512];
+volatile static uint8_t tx_buffer[512];
 
 
 static void uart_startFifoTransmit();
@@ -18,9 +17,8 @@ static void uart_startFifoTransmit();
 
 void uart_init()
 {
-	ringbuffer_init(&uart_rx_rb, rx_buffer, sizeof(rx_buffer));
-	ringbuffer_init(&uart_tx_rb, tx_buffer, sizeof(tx_buffer));
-	ringbuffer_setStartReadFunction(&uart_tx_rb, &uart_startFifoTransmit);
+	ringbuffer_init(&uart_rx_rb, rx_buffer, sizeof(rx_buffer), NULL);
+	ringbuffer_init(&uart_tx_rb, tx_buffer, sizeof(tx_buffer), &uart_startFifoTransmit);
 
 	gpio_pinCfg(pinTxD, MODE_AF|OTYPE_PP|SPEED_LOW, 7);
 	gpio_pinCfg(pinRxD, MODE_AF, 7);
@@ -40,16 +38,13 @@ void USART1_IRQHandler(void)
 	if(USART1->SR & USART_SR_TC) //transmission complete (also fires after reset, not a problem)
 	{
 		USART1->SR &= ~USART_SR_TC; //clear interrupt flag
-		if(ringbuffer_getFilled(&uart_tx_rb) > 0) //more data to send available
-			USART1->DR = ringbuffer_pop(&uart_tx_rb); //send data from buffer
+		ringbuffer_pop(&uart_tx_rb, (uint8_t*)(&USART1->DR)); //send data if more data to send available
 	}
 
 	if(USART1->SR & USART_SR_RXNE) //Rx data register not empty
 	{
 		USART1->SR &= ~USART_SR_RXNE; //clear interrupt flag
-		if(ringbuffer_getFree(&uart_rx_rb) > 0) //free space available
-			ringbuffer_push(&uart_rx_rb, USART1->DR); //write new data to buffer
-		//else //buffer full //TODO: add buffer overflow error
+		ringbuffer_push(&uart_rx_rb, USART1->DR); //write new data to buffer TODO: add buffer overflow error
 	}
 }
 
@@ -57,7 +52,7 @@ void USART1_IRQHandler(void)
 static void uart_startFifoTransmit()
 {
 	if(USART1->SR & USART_SR_TXE) //if Tx data register is empty
-		USART1->DR = ringbuffer_pop(&uart_tx_rb); //send first byte to start transmission
+		ringbuffer_pop(&uart_tx_rb, (uint8_t*)(&USART1->DR)); //send first byte to start transmission TODO: add buffer underflow error
 }
 
 

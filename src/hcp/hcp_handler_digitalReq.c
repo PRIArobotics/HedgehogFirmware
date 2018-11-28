@@ -6,7 +6,8 @@
 
 void hcp_handler_digitalReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
-	uint8_t port = ringbuffer_pop(conn.rxBuffer);
+	uint8_t port;
+	if(ringbuffer_pop(conn.rxBuffer, &port)) return;
 
 	if(port >= DIGITAL_COUNT)
 	{

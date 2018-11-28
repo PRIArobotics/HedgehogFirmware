@@ -10,7 +10,7 @@
 static uint8_t connectionState;
 static uint8_t opcode;
 static hcp_cmd_t cmd;
-static size_t payloadLength;
+static uint8_t payloadLength;
 static hcp_conn_t conn;
 
 
@@ -28,10 +28,9 @@ void hcp_update()
 {
 	if(connectionState == WAIT_OPCODE)
 	{
-		if(ringbuffer_getFilled(conn.rxBuffer) < 1) return;
-		opcode = ringbuffer_pop(conn.rxBuffer);
+		if(ringbuffer_pop(conn.rxBuffer, &opcode)) return; //get opcode if available
 		cmd = hcp_cmds[opcode];
-//#ifdef HCP_UNUSED
+#ifdef HCP_UNUSED
 		if(cmd.opcode == HCP_UNUSED) //opcode unknown
 		{
 			ringbuffer_push(conn.txBuffer, HCP_UNKNOWN_OPCODE);
@@ -39,7 +38,7 @@ void hcp_update()
 			ringbuffer_consume(conn.rxBuffer, ringbuffer_getFilled(conn.rxBuffer));
 			return;
 		}
-//#endif
+#endif
 		if(!(cmd.flags & HCP_VPL_FLAG))
 		{
 			payloadLength = cmd.payloadLength;
@@ -53,8 +52,7 @@ void hcp_update()
 	}
 	if(connectionState == WAIT_LENGTH)
 	{
-		if(ringbuffer_getFilled(conn.rxBuffer) < 1) return;
-		payloadLength = ringbuffer_pop(conn.rxBuffer);
+		if(ringbuffer_pop(conn.rxBuffer, &payloadLength)) return; //get payloadLength if available
 		connectionState = WAIT_PAYLOAD;
 	}
 	if(connectionState == WAIT_PAYLOAD)
