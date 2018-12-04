@@ -15,7 +15,7 @@ commands:
     EMERGENCY_RELEASE u8
     --> (status codes)
 
-    IO_STATE u8, port u8, on bool|pulldown bool|pullup bool|output bool
+    IO_CONFIG u8, port u8, on bool|pulldown bool|pullup bool|output bool
     --> (status codes)
 
     ANALOG_REQ u8, port u8
@@ -35,7 +35,7 @@ commands:
     --> DIGITAL_REP u8, port u8, value bool
     --> (error codes)
 
-    MOTOR u8, port u8, mode u8, dir bool|value u15
+    MOTOR u8, port u8, mode u8, s16
     --> (status codes)
 
     MOTOR_CONFIG_DC u8, port u8
@@ -50,11 +50,11 @@ commands:
     SERVO u8, port u8, active bool|value u15
     --> (status codes)
 
-    SERIAL u8, length u8, port u8, data u8{length-1}
+    UART u8, length u8, data u8{length}
     --> (status codes)
 
     (asynchronous)
-    --> SERIAL_UPDATE u8, length u8, port u8, data u8{length-1}
+    --> UART_UPDATE u8, length u8, data u8{length}
 
     SPEAKER u8, frequency u16
     --> (status codes)
@@ -69,8 +69,7 @@ status codes:
     - port out of range
     - invalid port for stepper motor mode: only even port n is valid, odd port n+1 is affected as well
     INVALID_CONFIG u8
-    - sensor request for output port
-    - POWER/BRAKE command for stepper motor
+    - POWER(with value!=0)/BRAKE command for stepper motor
     - VELOCITY command for DC motor
     - IO_STATE command for encoder io port
     - motor command for auxiliary stepper motor port
@@ -121,12 +120,10 @@ codes:
     special analog ports:
         BATTERY_VOLTAGE         0x80
     special digital ports (output only):
-        LED1                    0x90
-        LED2                    0x91
-    serial ports:
-        SPI1                    0x00
-        SPI2                    0x01
+        LED0                    0x90
+        LED1                    0x91
     motor modes:
         POWER                   0x00
         BRAKE                   0x01
         VELOCITY                0x02
+        POSITION                0x03
