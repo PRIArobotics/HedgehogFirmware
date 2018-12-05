@@ -20,7 +20,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  13
 	{HCP_UNUSED},																		//  14
 	{HCP_UNUSED},																		//  15
-	{HCP_IO_STATE, 0, 2, hcp_handler_ioState},											//  16 0x10
+	{HCP_IO_CONFIG, 0, 2, hcp_handler_ioConfig},											//  16 0x10
 	{HCP_UNUSED},																		//  17
 	{HCP_UNUSED},																		//  18
 	{HCP_UNUSED},																		//  19
@@ -69,9 +69,9 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  62
 	{HCP_UNUSED},																		//  63
 	{HCP_MOTOR, 0, 4, hcp_handler_motor},												//  64 0x40
-	{HCP_UNUSED},																		//  65
-	{HCP_UNUSED},																		//  66
-	{HCP_UNUSED},																		//  67
+	{HCP_MOTOR_CONFIG_DC, 0, 1, hcp_handler_motor},										//  65 0x41
+	{HCP_MOTOR_CONFIG_ENC, 0, 3, hcp_handler_motor},									//  66 0x42
+	{HCP_MOTOR_CONFIG_STEP, 0, 1, hcp_handler_motor},									//  67 0x43
 	{HCP_UNUSED},																		//  68
 	{HCP_UNUSED},																		//  69
 	{HCP_UNUSED},																		//  70
@@ -100,7 +100,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  93
 	{HCP_UNUSED},																		//  94
 	{HCP_UNUSED},																		//  95
-	{HCP_SERIAL, HCP_VPL_FLAG, 0, hcp_handler_serial},									//  96 0x60
+	{HCP_UART, HCP_VPL_FLAG, 0, hcp_handler_uart},									//  96 0x60
 	{HCP_UNUSED},																		//  97
 	{HCP_UNUSED},																		//  98
 	{HCP_UNUSED},																		//  99
@@ -134,7 +134,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 127
 	{HCP_OK, 0, 0, NULL},																// 128 0x80
 	{HCP_INVALID_PORT, 0, 0, NULL},														// 129 0x81
-	{HCP_INVALID_IO, 0, 0, NULL},														// 130 0x82
+	{HCP_INVALID_CONFIG, 0, 0, NULL},													// 130 0x82
 	{HCP_INVALID_MODE, 0, 0, NULL},														// 131 0x83
 	{HCP_INVALID_FLAGS, 0, 0, NULL},													// 132 0x84
 	{HCP_INVALID_VALUE, 0, 0, NULL},													// 133 0x85
@@ -197,7 +197,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 190
 	{HCP_UNUSED},																		// 191
 	{HCP_UNUSED},																		// 192
-	{HCP_SERIAL_UPDATE, HCP_VPL_FLAG, 0, NULL},											// 193 0xE1
+	{HCP_UART_UPDATE, HCP_VPL_FLAG, 0, NULL},											// 193 0xE1
 	{HCP_UNUSED},																		// 194
 	{HCP_UNUSED},																		// 195
 	{HCP_UNUSED},																		// 196

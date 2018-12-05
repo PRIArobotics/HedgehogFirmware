@@ -11,9 +11,12 @@
 #define BATTERY_LOW_THRESHOLD 9900 //battery voltage below which low battery indication occurs
 #define BATTERY_VOLTAGE_HYSTERESIS 100
 
-#define BATTERY_STATUS_EMPTY 0
-#define BATTERY_STATUS_LOW 1
-#define BATTERY_STATUS_OK 2
+typedef enum battery_status_e
+{
+	BATTERY_STATUS_EMPTY,
+	BATTERY_STATUS_LOW,
+	BATTERY_STATUS_OK
+} battery_status_t;
 
 
 void power_init();
@@ -29,7 +32,7 @@ bool power_getEmergencyStop();
 void power_clearEmergencyStop();
 bool power_getEmergencyStopSendFlag();
 void power_clearEmergencyStopSendFlag();
-uint8_t power_getBatteryStatus();
+battery_status_t power_getBatteryStatus();
 void power_update();
 uint16_t power_getInputVoltage_mV();
 

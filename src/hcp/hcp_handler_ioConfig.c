@@ -5,14 +5,14 @@
 #include "output.h"
 
 
-void hcp_handler_ioState(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
+void hcp_handler_ioConfig(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //TODO: avoid enc pins getting set as output
 {
 	uint8_t port;
 	if(ringbuffer_pop(conn.rxBuffer, &port)) return;
 	uint8_t flags;
 	if(ringbuffer_pop(conn.rxBuffer, &flags)) return;
 
-	if((port >= DIGITAL_COUNT) && (port != HCP_DIGITAL_LED1_PORT) && (port != HCP_DIGITAL_LED2_PORT))
+	if((port >= DIGITAL_COUNT) && (port != HCP_DIGITAL_LED0_PORT) && (port != HCP_DIGITAL_LED1_PORT))
 	{
 		ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
 		return;
@@ -29,15 +29,15 @@ void hcp_handler_ioState(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 		return;
 	}
 
-	if(port == HCP_DIGITAL_LED1_PORT)
+	if(port == HCP_DIGITAL_LED0_PORT)
 	{
-		led1(state);
+		led0(state);
 		ringbuffer_push(conn.txBuffer, HCP_OK);
 		return;
 	}
-	if(port == HCP_DIGITAL_LED2_PORT)
+	if(port == HCP_DIGITAL_LED1_PORT)
 	{
-		led2(state);
+		led1(state);
 		ringbuffer_push(conn.txBuffer, HCP_OK);
 		return;
 	}

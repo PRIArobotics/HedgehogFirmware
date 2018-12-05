@@ -14,7 +14,7 @@ volatile static bool emergency_stop_active = false;
 volatile static bool emergency_stop_send_flag = false;
 
 volatile static uint16_t input_voltage_mV = 12000;
-volatile static uint8_t batteryStatus = BATTERY_STATUS_OK;
+volatile static battery_status_t batteryStatus = BATTERY_STATUS_OK;
 
 static gpio_pin_t pin_enable_power_in = {GPIOD,10};
 static gpio_pin_t pin_enable_reg_rpi = {GPIOD,8};
@@ -94,7 +94,7 @@ void power_clearEmergencyStopSendFlag()
 	emergency_stop_send_flag = false;
 }
 
-uint8_t power_getBatteryStatus()
+battery_status_t power_getBatteryStatus()
 {
 	return batteryStatus;
 }

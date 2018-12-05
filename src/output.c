@@ -5,8 +5,8 @@
 #include "power.h"
 
 
-static gpio_pin_t pin_led_1 = {GPIOB,8};
-static gpio_pin_t pin_led_2 = {GPIOB,9};
+static gpio_pin_t pin_led_0 = {GPIOB,8};
+static gpio_pin_t pin_led_1 = {GPIOB,9};
 #if HW_VERSION==2
 	static gpio_pin_t pin_led_power = {GPIOE,7};
 #else
@@ -15,13 +15,13 @@ static gpio_pin_t pin_led_2 = {GPIOB,9};
 static gpio_pin_t pin_speaker_1 = {GPIOE,8};
 static gpio_pin_t pin_speaker_2 = {GPIOE,9};
 
-static uint8_t power_led_mode = POWER_LED_MODE_OFF;
+static power_led_mode_t power_led_mode = POWER_LED_MODE_OFF;
 
 
 void output_init()
 {
+	gpio_pinCfg(pin_led_0, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 	gpio_pinCfg(pin_led_1, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
-	gpio_pinCfg(pin_led_2, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 	gpio_pinCfg(pin_led_power, MODE_OUT|OTYPE_PP|SPEED_LOW, 0);
 
 	gpio_pinCfg(pin_speaker_1, MODE_AF|OTYPE_PP|SPEED_LOW, 1); //speaker pin output, AF1
@@ -36,15 +36,15 @@ void output_init()
 }
 
 
-void led1(bool state)
+void led0(bool state)
 {
-	gpio_pinSet(pin_led_1, state);
+	gpio_pinSet(pin_led_0, state);
 }
 
 
-void led2(bool state)
+void led1(bool state)
 {
-	gpio_pinSet(pin_led_2, state);
+	gpio_pinSet(pin_led_1, state);
 }
 
 void powerLed(uint8_t mode)

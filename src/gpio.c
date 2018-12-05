@@ -11,7 +11,7 @@ void gpio_init()
 }
 
 
-void gpio_pinCfg(gpio_pin_t pin, uint8_t cfg, uint8_t af) //TODO: add parameter error checking
+void gpio_pinCfg(gpio_pin_t pin, gpio_cfg_t cfg, uint8_t af) //TODO: add parameter error checking
 {
 	pin.port->MODER &= ~(0x3 << (2*pin.pinNr));
 	pin.port->MODER |= ((cfg & 0x3) << (2*pin.pinNr));

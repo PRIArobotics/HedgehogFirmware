@@ -20,7 +20,7 @@ static gpio_pin_t digitalPin[DIGITAL_COUNT] = {
 	{GPIOE, 1}};
 
 
-static uint8_t mode[DIGITAL_COUNT] = {
+static pin_mode_t mode[DIGITAL_COUNT] = {
 	PIN_MODE_IN_FLOATING,
 	PIN_MODE_IN_FLOATING,
 	PIN_MODE_IN_FLOATING,
@@ -38,17 +38,34 @@ static uint8_t mode[DIGITAL_COUNT] = {
 	PIN_MODE_IN_FLOATING,
 	PIN_MODE_IN_FLOATING};
 
+static bool pinInUse[DIGITAL_COUNT] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+
 
 void digitalIO_init()
 {
 	uint8_t i;
 	for(i=8; i<16; i++) digitalIO_setMode(i, mode[i]);
+
+	//inputs 0-7 as external interrupts 0-7 for encoder inputs, both edges
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+	SYSCFG->EXTICR[0] |= (3<<0) | (3<<4) | (3<<8) | (3<<12);
+	SYSCFG->EXTICR[1] |= (3<<0) | (3<<4) | (3<<8) | (3<<12);
+	EXTI->RTSR |= 0x00FF;
+	EXTI->FTSR |= 0x00FF;
+	EXTI->PR |= 0x00FF;
+	NVIC_EnableIRQ(EXTI9_5_IRQn);
+	NVIC_EnableIRQ(EXTI4_IRQn);
+	NVIC_EnableIRQ(EXTI3_IRQn);
+	NVIC_EnableIRQ(EXTI2_IRQn);
+	NVIC_EnableIRQ(EXTI1_IRQn);
+	NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
 
-void digitalIO_setMode(uint8_t pin, uint8_t pinMode)
+void digitalIO_setMode(uint8_t pin, pin_mode_t pinMode)
 {
 	if(pin >= DIGITAL_COUNT) return;
+	if(pinInUse[pin] && pinMode == PIN_MODE_OUT) return;
 
 	mode[pin] = pinMode;
 
@@ -75,5 +92,17 @@ bool digitalIO_getState(uint8_t pin)
 void digitalIO_setState(uint8_t pin, bool state)
 {
 	if(pin >= DIGITAL_COUNT) return;
-	return gpio_pinSet(digitalPin[pin], state);
+	gpio_pinSet(digitalPin[pin], state);
+}
+
+
+void digitalIO_usePinEnc(uint8_t pin)
+{
+	pinInUse[pin] = true;
+	digitalIO_setMode(pin, PIN_MODE_IN_PULLUP);
+}
+
+void digitalIO_freePin(uint8_t pin)
+{
+	pinInUse[pin] = false;
 }
