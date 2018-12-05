@@ -14,11 +14,6 @@ void hcp_handler_digitalReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLengt
 		ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
 		return;
 	}
-	if((port < DIGITAL_COUNT) && (digitalIO_getMode(port) == PIN_MODE_OUT))
-	{
-		ringbuffer_push(conn.txBuffer, HCP_INVALID_IO);
-		return;
-	}
 
 	ringbuffer_push(conn.txBuffer, HCP_DIGITAL_REP);
 	ringbuffer_push(conn.txBuffer, port);

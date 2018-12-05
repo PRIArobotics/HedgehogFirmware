@@ -16,11 +16,6 @@ void hcp_handler_analogReq(hcp_conn_t conn, uint8_t opcode, size_t payloadLength
 		ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
 		return;
 	}
-	if((port < ANALOG_COUNT) && (digitalIO_getMode(port) == PIN_MODE_OUT))
-	{
-		ringbuffer_push(conn.txBuffer, HCP_INVALID_IO);
-		return;
-	}
 
 	uint16_t value;
 	if(port == HCP_ANALOG_SUPPLY_PORT) value = power_getInputVoltage_mV();
