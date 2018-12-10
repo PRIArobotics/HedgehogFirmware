@@ -76,7 +76,7 @@ void digitalIO_setMode(uint8_t pin, pin_mode_t pinMode)
 }
 
 
-uint8_t digitalIO_getMode(uint8_t pin)
+pin_mode_t digitalIO_getMode(uint8_t pin)
 {
 	return mode[pin];
 }

@@ -25,7 +25,7 @@ void digitalIO_init();
 void digitalIO_setMode(uint8_t pin, pin_mode_t pinMode);
 
 //returns pin mode (see defines above), input: digital input number 0...15, pinMode: see defines above
-uint8_t digitalIO_getMode(uint8_t pin);
+pin_mode_t digitalIO_getMode(uint8_t pin);
 
 //returns state of (input) pin, input: digital input number 0...15
 bool digitalIO_getState(uint8_t pin);
