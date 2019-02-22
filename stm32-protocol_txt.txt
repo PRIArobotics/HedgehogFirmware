@@ -35,7 +35,7 @@ commands:
     --> DIGITAL_REP u8, port u8, value bool
     --> (error codes)
 
-    MOTOR u8, port u8, mode u8, s16
+    MOTOR u8, port u8, mode u8, amount s16
     --> (status codes)
 
     MOTOR_CONFIG_DC u8, port u8
@@ -46,6 +46,15 @@ commands:
 
     MOTOR_CONFIG_STEPPER u8, port u8
     --> (status codes)
+    
+    MOTOR_POSITIONAL u8, port u8, mode u8, amount s16, relative bool|done_mode u7, position s32
+    --> (status codes)
+    
+    MOTOR_SERVO u8, port u8, max_velocity u16, relative bool, position s32
+    --> (status codes)
+    
+    (asynchronous)
+    --> MOTOR_DONE_UPDATE u8, port u8
 
     SERVO u8, port u8, active bool|value u15
     --> (status codes)
@@ -122,8 +131,12 @@ codes:
     special digital ports (output only):
         LED0                    0x90
         LED1                    0x91
-    motor modes:
+    motor & motor_positional modes:
         POWER                   0x00
         BRAKE                   0x01
         VELOCITY                0x02
-        POSITION                0x03
+    motor_positional done_modes:
+        OFF                     0x00
+        BRAKE                   0x01
+        ACTIVE_BRAKE            0x02
+    
