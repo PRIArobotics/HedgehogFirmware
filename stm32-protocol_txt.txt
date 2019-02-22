@@ -94,7 +94,7 @@ codes:
     command opcodes:
         VERSION_REQ             0x01
         EMERGENCY_RELEASE       0x05
-        IO_STATE                0x10
+        IO_CONFIG               0x10
         ANALOG_REQ              0x20
         IMU_RATE_REQ            0x22
         IMU_ACCEL_REQ           0x23
