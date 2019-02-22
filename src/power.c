@@ -115,8 +115,8 @@ void power_update()
 			if(button_pressed_timestamp == 0) //has just started being pressed
 			{
 				button_pressed_timestamp = systick_getUptime();
-				emergency_stop_active = true;
-				emergency_stop_send_flag = true;
+				//emergency_stop_active = true; //FIXME reactivate
+				//emergency_stop_send_flag = true; //FIXME reactivate
 			}
 			else if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 2, 0)) //button was pressed for 2s
 				shutdown = true;
