@@ -6,8 +6,7 @@
 #include "motor.h"
 
 
-//TODO: better position mode, see hlc implementation
-void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //TODO: error replies
+void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
 	if(opcode == HCP_MOTOR)
 	{
@@ -28,7 +27,7 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //
 			ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
 			return;
 		}
-		if(mode > 3)
+		if(mode > HCP_MOTOR_MODE_VELOCITY)
 		{
 			ringbuffer_push(conn.txBuffer, HCP_INVALID_MODE);
 			return;
@@ -40,6 +39,90 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //
 		}
 
 		motor_set(port, mode, pvp);
+	}
+	else if(opcode == HCP_MOTOR_POSITIONAL) //TODO: add check if motor is of type encoder or stepper
+	{
+		uint8_t port;
+		if(ringbuffer_pop(conn.rxBuffer, &port)) return;
+
+		uint8_t mode;
+		if(ringbuffer_pop(conn.rxBuffer, &mode)) return;
+
+		uint8_t pvp_h;
+		if(ringbuffer_pop(conn.rxBuffer, &pvp_h)) return;
+		uint8_t pvp_l;
+		if(ringbuffer_pop(conn.rxBuffer, &pvp_l)) return;
+		int16_t pvp = (pvp_h << 8) | pvp_l;
+
+		uint8_t rel_doneMode;
+		if(ringbuffer_pop(conn.rxBuffer, &rel_doneMode)) return;
+		bool relative = rel_doneMode & 0x80;
+		uint8_t done_mode = rel_doneMode & ~0x80;
+
+		uint8_t pos_3;
+		if(ringbuffer_pop(conn.rxBuffer, &pos_3)) return;
+		uint8_t pos_2;
+		if(ringbuffer_pop(conn.rxBuffer, &pos_2)) return;
+		uint8_t pos_1;
+		if(ringbuffer_pop(conn.rxBuffer, &pos_1)) return;
+		uint8_t pos_0;
+		if(ringbuffer_pop(conn.rxBuffer, &pos_0)) return;
+		int32_t pos = (pos_3 << 24) | (pos_2 << 16) | (pos_1 << 8) | pos_0;
+
+		if(port >= MOTOR_COUNT)
+		{
+			ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
+			return;
+		}
+		if(mode > HCP_MOTOR_MODE_VELOCITY)
+		{
+			ringbuffer_push(conn.txBuffer, HCP_INVALID_MODE);
+			return;
+		}
+		if((mode == MOTOR_MODE_POWER || mode == MOTOR_MODE_BRAKE) && abs(pvp) > MOTOR_MAX_POWER)
+		{
+			ringbuffer_push(conn.txBuffer, HCP_INVALID_VALUE);
+			return;
+		}
+		if(done_mode > HCP_MOTOR_POS_DONE_MODE_ACTIVE_BRAKE)
+		{
+			ringbuffer_push(conn.txBuffer, HCP_INVALID_MODE);
+			return;
+		}
+
+		//TODO: motor_positional command
+	}
+	else if(opcode == HCP_MOTOR_SERVO) //TODO: add check if motor is of type encoder
+	{
+		uint8_t port;
+		if(ringbuffer_pop(conn.rxBuffer, &port)) return;
+
+		uint8_t vel_h;
+		if(ringbuffer_pop(conn.rxBuffer, &vel_h)) return;
+		uint8_t vel_l;
+		if(ringbuffer_pop(conn.rxBuffer, &vel_l)) return;
+		int16_t vel = (vel_h << 8) | vel_l;
+
+		uint8_t relative;
+		if(ringbuffer_pop(conn.rxBuffer, &relative)) return;
+
+		uint8_t pos_3;
+		if(ringbuffer_pop(conn.rxBuffer, &pos_3)) return;
+		uint8_t pos_2;
+		if(ringbuffer_pop(conn.rxBuffer, &pos_2)) return;
+		uint8_t pos_1;
+		if(ringbuffer_pop(conn.rxBuffer, &pos_1)) return;
+		uint8_t pos_0;
+		if(ringbuffer_pop(conn.rxBuffer, &pos_0)) return;
+		int32_t pos = (pos_3 << 24) | (pos_2 << 16) | (pos_1 << 8) | pos_0;
+
+		if(port >= MOTOR_COUNT)
+		{
+			ringbuffer_push(conn.txBuffer, HCP_INVALID_PORT);
+			return;
+		}
+
+		//TODO: motor_servo command
 	}
 	else if(opcode == HCP_MOTOR_CONFIG_DC)
 	{

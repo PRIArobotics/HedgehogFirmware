@@ -20,7 +20,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  13
 	{HCP_UNUSED},																		//  14
 	{HCP_UNUSED},																		//  15
-	{HCP_IO_CONFIG, 0, 2, hcp_handler_ioConfig},											//  16 0x10
+	{HCP_IO_CONFIG, 0, 2, hcp_handler_ioConfig},										//  16 0x10
 	{HCP_UNUSED},																		//  17
 	{HCP_UNUSED},																		//  18
 	{HCP_UNUSED},																		//  19
@@ -69,16 +69,16 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  62
 	{HCP_UNUSED},																		//  63
 	{HCP_MOTOR, 0, 4, hcp_handler_motor},												//  64 0x40
-	{HCP_MOTOR_CONFIG_DC, 0, 1, hcp_handler_motor},										//  65 0x41
-	{HCP_MOTOR_CONFIG_ENC, 0, 3, hcp_handler_motor},									//  66 0x42
-	{HCP_MOTOR_CONFIG_STEP, 0, 1, hcp_handler_motor},									//  67 0x43
+	{HCP_MOTOR_POSITIONAL, 0, 9, hcp_handler_motor},									//  65 0x41
+	{HCP_MOTOR_SERVO, 0, 8, hcp_handler_motor},											//  66 0x42
+	{HCP_UNUSED},																		//  67
 	{HCP_UNUSED},																		//  68
 	{HCP_UNUSED},																		//  69
 	{HCP_UNUSED},																		//  70
 	{HCP_UNUSED},																		//  71
-	{HCP_UNUSED},																		//  72
-	{HCP_UNUSED},																		//  73
-	{HCP_UNUSED},																		//  74
+	{HCP_MOTOR_CONFIG_DC, 0, 1, hcp_handler_motor},										//  72 0x48
+	{HCP_MOTOR_CONFIG_ENC, 0, 3, hcp_handler_motor},									//  73 0x49
+	{HCP_MOTOR_CONFIG_STEP, 0, 1, hcp_handler_motor},									//  74 0x4A
 	{HCP_UNUSED},																		//  75
 	{HCP_UNUSED},																		//  76
 	{HCP_UNUSED},																		//  77
@@ -100,7 +100,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		//  93
 	{HCP_UNUSED},																		//  94
 	{HCP_UNUSED},																		//  95
-	{HCP_UART, HCP_VPL_FLAG, 0, hcp_handler_uart},									//  96 0x60
+	{HCP_UART, HCP_VPL_FLAG, 0, hcp_handler_uart},										//  96 0x60
 	{HCP_UNUSED},																		//  97
 	{HCP_UNUSED},																		//  98
 	{HCP_UNUSED},																		//  99
@@ -197,9 +197,9 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 190
 	{HCP_UNUSED},																		// 191
 	{HCP_UNUSED},																		// 192
-	{HCP_UART_UPDATE, HCP_VPL_FLAG, 0, NULL},											// 193 0xE1
+	{HCP_UNUSED},																		// 193
 	{HCP_UNUSED},																		// 194
-	{HCP_UNUSED},																		// 195
+	{HCP_MOTOR_DONE_UPDATE, 0, 1, NULL},												// 195 0xC3
 	{HCP_UNUSED},																		// 196
 	{HCP_UNUSED},																		// 197
 	{HCP_UNUSED},																		// 198
@@ -229,7 +229,7 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 222
 	{HCP_UNUSED},																		// 223
 	{HCP_UNUSED},																		// 224
-	{HCP_UNUSED},																		// 225
+	{HCP_UART_UPDATE, HCP_VPL_FLAG, 0, NULL},											// 225 0xE1
 	{HCP_UNUSED},																		// 226
 	{HCP_UNUSED},																		// 227
 	{HCP_UNUSED},																		// 228

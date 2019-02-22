@@ -14,9 +14,11 @@
 #define HCP_IMU_POSE_REQ		0x24
 #define HCP_DIGITAL_REQ     	0x30
 #define HCP_MOTOR           	0x40
-#define HCP_MOTOR_CONFIG_DC		0x41
-#define HCP_MOTOR_CONFIG_ENC	0x42
-#define HCP_MOTOR_CONFIG_STEP	0x43
+#define HCP_MOTOR_POSITIONAL	0x41
+#define HCP_MOTOR_SERVO			0x42
+#define HCP_MOTOR_CONFIG_DC		0x48
+#define HCP_MOTOR_CONFIG_ENC	0x49
+#define HCP_MOTOR_CONFIG_STEP	0x4A
 #define HCP_SERVO           	0x50
 #define HCP_UART          		0x60
 #define HCP_SPEAKER				0x70
@@ -32,11 +34,12 @@
 #define HCP_INVALID_FLAGS   	0x86
 #define HCP_INVALID_VALUE   	0x87
 #define HCP_ANALOG_REP      	0xA1
-#define HCP_DIGITAL_REP     	0xB1
-#define HCP_UART_UPDATE   		0xE1
 #define HCP_IMU_RATE_REP      	0xA2
 #define HCP_IMU_ACCEL_REP      	0xA3
 #define HCP_IMU_POSE_REP      	0xA4
+#define HCP_DIGITAL_REP     	0xB1
+#define HCP_MOTOR_DONE_UPDATE	0xC3
+#define HCP_UART_UPDATE   		0xE1
 
 //commands to RPi
 #define HCP_SHUTDOWN			0x03
@@ -45,12 +48,15 @@
 //replies from RPi
 #define HCP_EMERGENCY_RELEASE	0x05
 
-
 //motor modes
-#define HCP_MOTOR_MODE_POWER 0x00
-#define HCP_MOTOR_MODE_BRAKE 0x01
+#define HCP_MOTOR_MODE_POWER 	0x00
+#define HCP_MOTOR_MODE_BRAKE 	0x01
 #define HCP_MOTOR_MODE_VELOCITY 0x02
-#define HCP_MOTOR_MODE_POSITION 0x03
+
+//motor_positional done_modes
+#define HCP_MOTOR_POS_DONE_MODE_OFF 			0x00
+#define HCP_MOTOR_POS_DONE_MODE_BRAKE 			0x01
+#define HCP_MOTOR_POS_DONE_MODE_ACTIVE_BRAKE	0x02
 
 //special analog/digital ports
 #define HCP_ANALOG_SUPPLY_PORT 0x80
