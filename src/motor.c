@@ -116,25 +116,25 @@ void motor_update(uint8_t motor)
 				dutyCycle[motor] = (uint16_t)(power + 0.5);
 				break;
 			}
-			else if(mode[motor] == MOTOR_MODE_POSITION)
-			{
-				int16_t position_err = pow_vel_pos[motor] - position[motor];
-				int16_t position_err_diff = position_err - position_err_last[motor];
-				position_err_integral[motor] += position_err;
-				float power = (float)position_err * MOTOR_POSITION_P + (float)position_err_integral[motor] * MOTOR_POSITION_I + (float)position_err_diff * MOTOR_POSITION_D;
-				if(power >= 0)
-				{
-					direction[motor] = MOTOR_DIR_FWD;
-				}
-				else
-				{
-					direction[motor] = MOTOR_DIR_BWD;
-					power = -power;
-				}
-				if(power > MOTOR_MAX_POWER) power = MOTOR_MAX_POWER;
-				dutyCycle[motor] = (uint16_t)(power + 0.5);
-				break;
-			}
+//			else if(mode[motor] == MOTOR_MODE_POSITION) //TODO
+//			{
+//				int16_t position_err = pow_vel_pos[motor] - position[motor];
+//				int16_t position_err_diff = position_err - position_err_last[motor];
+//				position_err_integral[motor] += position_err;
+//				float power = (float)position_err * MOTOR_POSITION_P + (float)position_err_integral[motor] * MOTOR_POSITION_I + (float)position_err_diff * MOTOR_POSITION_D;
+//				if(power >= 0)
+//				{
+//					direction[motor] = MOTOR_DIR_FWD;
+//				}
+//				else
+//				{
+//					direction[motor] = MOTOR_DIR_BWD;
+//					power = -power;
+//				}
+//				if(power > MOTOR_MAX_POWER) power = MOTOR_MAX_POWER;
+//				dutyCycle[motor] = (uint16_t)(power + 0.5);
+//				break;
+//			}
 			//else: fallthrough
 		case MOTOR_TYPE_DC:
 			if(mode[motor] == MOTOR_MODE_BRAKE) direction[motor] = MOTOR_DIR_BRAKE;
@@ -351,28 +351,28 @@ void motor_configure(uint8_t motor, motor_type_t motorType, uint8_t encoder_a, u
 
 	switch(motorType)
 	{
-	case MOTOR_TYPE_DC:
-		break;
-	case MOTOR_TYPE_ENC:
-		digitalIO_usePinEnc(encoder_a);
-		digitalIO_usePinEnc(encoder_b);
-		enc_in_a[motor] = encoder_a;
-		enc_in_b[motor] = encoder_b;
-		EXTI->IMR |= (1 << enc_in_a[motor]);
-		EXTI->IMR |= (1 << enc_in_b[motor]);
-		break;
-	case MOTOR_TYPE_STEP:
-		//TODO: stepper
-		break;
+		case MOTOR_TYPE_DC:
+			break;
+		case MOTOR_TYPE_ENC:
+			digitalIO_usePinEnc(encoder_a);
+			digitalIO_usePinEnc(encoder_b);
+			enc_in_a[motor] = encoder_a;
+			enc_in_b[motor] = encoder_b;
+			EXTI->IMR |= (1 << enc_in_a[motor]);
+			EXTI->IMR |= (1 << enc_in_b[motor]);
+			break;
+		case MOTOR_TYPE_STEP:
+			//TODO: stepper
+			break;
 	}
 
 	type[motor] = motorType;
-	mode[motor] = MOTOR_MODE_POWER;
+	mode[motor] = MOTOR_MODE_POWER; //TODO: not for stepper
 	pow_vel_pos[motor] = 0;
 	motor_update(motor);
 }
 
-//TODO: better position mode, see hlc implementation
+//TODO: better position mode, see hcp implementation
 void motor_set(uint8_t motor, motor_mode_t motorMode, int16_t power_velocity_position)
 {
 	if((motor >= MOTOR_COUNT) || (motorMode > 3)) return;
