@@ -46,13 +46,13 @@ commands:
 
     MOTOR_CONFIG_STEPPER u8, port u8
     --> (status codes)
-    
+
     MOTOR_POSITIONAL u8, port u8, mode u8, amount s16, relative bool|done_mode u7, position s32
     --> (status codes)
-    
+
     MOTOR_SERVO u8, port u8, max_velocity u16, relative bool, position s32
     --> (status codes)
-    
+
     (asynchronous)
     --> MOTOR_DONE_UPDATE u8, port u8
 
@@ -101,11 +101,13 @@ codes:
         IMU_POSE_REQ            0x24
         DIGITAL_REQ             0x30
         MOTOR                   0x40
-        MOTOR_CONFIG_DC         0x41
-        MOTOR_CONFIG_ENCODER    0x42
-        MOTOR_CONFIG_STEPPER    0x43
+        MOTOR_POSITIONAL        0x41
+        MOTOR_SERVO             0x42
+        MOTOR_CONFIG_DC         0x45
+        MOTOR_CONFIG_ENCODER    0x46
+        MOTOR_CONFIG_STEPPER    0x47
         SERVO                   0x50
-        SERIAL                  0x60
+        UART                    0x60
         SPEAKER                 0x70
     reply opcodes:
         VERSION_REP             0x02
@@ -124,7 +126,9 @@ codes:
         IMU_ACCEL_REP           0xA3
         IMU_POSE_REP            0xA4
         DIGITAL_REP             0xB1
-        SERIAL_UPDATE           0xE1
+        MOTOR_DONE_UPDATE       0xC1
+        UART_UPDATE             0xE1
+
     number analog and digital ports together, servo and motor ports separately
     special analog ports:
         BATTERY_VOLTAGE         0x80
