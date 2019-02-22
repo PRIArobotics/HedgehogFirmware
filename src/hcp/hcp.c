@@ -26,6 +26,12 @@ void hcp_init()
 
 void hcp_update()
 {
+	if(power_getEmergencyStopSendFlag())
+	{
+		ringbuffer_push(conn.txBuffer, HCP_EMERGENCY_STOP);
+		power_clearEmergencyStopSendFlag();
+	}
+
 	if(connectionState == WAIT_OPCODE)
 	{
 		if(ringbuffer_pop(conn.rxBuffer, &opcode)) return; //get opcode if available
@@ -70,13 +76,6 @@ void hcp_update()
 		}
 		connectionState = WAIT_OPCODE;
 	}
-
-	if(power_getEmergencyStopSendFlag())
-	{
-		ringbuffer_push(conn.txBuffer, HCP_EMERGENCY_STOP);
-		power_clearEmergencyStopSendFlag();
-	}
-
 }
 
 void hcp_sendShutdown()
