@@ -6,7 +6,7 @@
 #include "motor.h"
 
 
-void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
+void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //TODO: add check: for stepper only velocity and brake modes are allowed
 {
 	if(opcode == HCP_MOTOR)
 	{
@@ -16,11 +16,11 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 		uint8_t mode;
 		if(ringbuffer_pop(conn.rxBuffer, &mode)) return;
 
-		uint8_t pvp_h;
-		if(ringbuffer_pop(conn.rxBuffer, &pvp_h)) return;
-		uint8_t pvp_l;
-		if(ringbuffer_pop(conn.rxBuffer, &pvp_l)) return;
-		int16_t pvp = (pvp_h << 8) | pvp_l;
+		uint8_t pv_h;
+		if(ringbuffer_pop(conn.rxBuffer, &pv_h)) return;
+		uint8_t pv_l;
+		if(ringbuffer_pop(conn.rxBuffer, &pv_l)) return;
+		int16_t pv = (pv_h << 8) | pv_l;
 
 		if(port >= MOTOR_COUNT)
 		{
@@ -32,15 +32,15 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 			ringbuffer_push(conn.txBuffer, HCP_INVALID_MODE);
 			return;
 		}
-		if((mode == MOTOR_MODE_POWER || mode == MOTOR_MODE_BRAKE) && abs(pvp) > MOTOR_MAX_POWER)
+		if((mode == MOTOR_MODE_POWER || mode == MOTOR_MODE_BRAKE) && abs(pv) > MOTOR_MAX_POWER)
 		{
 			ringbuffer_push(conn.txBuffer, HCP_INVALID_VALUE);
 			return;
 		}
 
-		motor_set(port, mode, pvp);
+		motor_set(port, mode, pv);
 	}
-	else if(opcode == HCP_MOTOR_POSITIONAL) //TODO: add check if motor is of type encoder or stepper
+	else if(opcode == HCP_MOTOR_POSITIONAL) //TODO: add check if motor is of type encoder or stepper, for stepper only velocity and brake modes are allowed
 	{
 		uint8_t port;
 		if(ringbuffer_pop(conn.rxBuffer, &port)) return;
@@ -48,11 +48,11 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 		uint8_t mode;
 		if(ringbuffer_pop(conn.rxBuffer, &mode)) return;
 
-		uint8_t pvp_h;
-		if(ringbuffer_pop(conn.rxBuffer, &pvp_h)) return;
-		uint8_t pvp_l;
-		if(ringbuffer_pop(conn.rxBuffer, &pvp_l)) return;
-		int16_t pvp = (pvp_h << 8) | pvp_l;
+		uint8_t pv_h;
+		if(ringbuffer_pop(conn.rxBuffer, &pv_h)) return;
+		uint8_t pv_l;
+		if(ringbuffer_pop(conn.rxBuffer, &pv_l)) return;
+		int16_t pv = (pv_h << 8) | pv_l;
 
 		uint8_t rel_doneMode;
 		if(ringbuffer_pop(conn.rxBuffer, &rel_doneMode)) return;
@@ -79,7 +79,7 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 			ringbuffer_push(conn.txBuffer, HCP_INVALID_MODE);
 			return;
 		}
-		if((mode == MOTOR_MODE_POWER || mode == MOTOR_MODE_BRAKE) && abs(pvp) > MOTOR_MAX_POWER)
+		if((mode == MOTOR_MODE_POWER || mode == MOTOR_MODE_BRAKE) && abs(pv) > MOTOR_MAX_POWER)
 		{
 			ringbuffer_push(conn.txBuffer, HCP_INVALID_VALUE);
 			return;
@@ -90,7 +90,7 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 			return;
 		}
 
-		//TODO: motor_positional command
+		motor_positional(port, mode, pv, done_mode, relative, pos);
 	}
 	else if(opcode == HCP_MOTOR_SERVO) //TODO: add check if motor is of type encoder
 	{
@@ -122,7 +122,7 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 			return;
 		}
 
-		//TODO: motor_servo command
+		motor_servo(port, vel, relative, pos);
 	}
 	else if(opcode == HCP_MOTOR_CONFIG_DC)
 	{

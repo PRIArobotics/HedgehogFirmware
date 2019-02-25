@@ -49,6 +49,12 @@ static uint16_t counter_overflows[MOTOR_COUNT] = {0, 0, 0, 0};
 static int16_t velocity[MOTOR_COUNT] = {0, 0, 0, 0};
 static int16_t position[MOTOR_COUNT] = {0, 0, 0, 0};
 
+//pid
+static int16_t velocity_err_last[MOTOR_COUNT] = {0,0,0,0};
+static int32_t velocity_err_integral[MOTOR_COUNT] = {0,0,0,0};
+static int16_t position_err_last[MOTOR_COUNT] = {0,0,0,0};
+static int32_t position_err_integral[MOTOR_COUNT] = {0,0,0,0};
+
 //pwm
 static motor_dir_t direction[MOTOR_COUNT] = {MOTOR_DIR_FWD, MOTOR_DIR_FWD, MOTOR_DIR_FWD, MOTOR_DIR_FWD}; //direction/braking
 static uint16_t dutyCycle[MOTOR_COUNT] = {0, 0, 0, 0}; //0-MOTOR_MAX_POWER, anything above is interpreted as MOTOR_MAX_POWER
@@ -88,16 +94,10 @@ void motor_init()
 
 void motor_update(uint8_t motor)
 {
-	static int16_t velocity_err_last[MOTOR_COUNT] = {0,0,0,0};
-	static int32_t velocity_err_integral[MOTOR_COUNT] = {0,0,0,0};
-
-	static int16_t position_err_last[MOTOR_COUNT] = {0,0,0,0};
-	static int32_t position_err_integral[MOTOR_COUNT] = {0,0,0,0};
-
 	switch(type[motor])
 	{
 		case MOTOR_TYPE_ENC:
-			if(mode[motor] == MOTOR_MODE_VELOCITY)
+			if(mode[motor] == MOTOR_MODE_VELOCITY) //TODO: improve velocity=0, maybe just full power against rotation direction?
 			{
 				int16_t velocity_err = pow_vel_pos[motor] - velocity[motor];
 				int16_t velocity_err_diff = velocity_err - velocity_err_last[motor];
@@ -372,19 +372,37 @@ void motor_configure(uint8_t motor, motor_type_t motorType, uint8_t encoder_a, u
 	motor_update(motor);
 }
 
-//TODO: better position mode, see hcp implementation
-void motor_set(uint8_t motor, motor_mode_t motorMode, int16_t power_velocity_position)
+
+void motor_set(uint8_t motor, motor_mode_t motorMode, int16_t power_velocity)
 {
 	if((motor >= MOTOR_COUNT) || (motorMode > 3)) return;
 	if(type[motor] == MOTOR_TYPE_DC && !(motorMode == MOTOR_MODE_POWER || motorMode == MOTOR_MODE_BRAKE)) return;
-	if(type[motor] == MOTOR_TYPE_STEP && motorMode == MOTOR_MODE_POWER && power_velocity_position != 0) return;
+	if(type[motor] == MOTOR_TYPE_STEP && motorMode == MOTOR_MODE_POWER && power_velocity != 0) return;
 	if(power_getEmergencyStop()) return;
 
 	mode[motor] = motorMode;
-	if((motorMode == MOTOR_MODE_POWER || motorMode == MOTOR_MODE_BRAKE) && power_velocity_position > MOTOR_MAX_POWER) power_velocity_position = MOTOR_MAX_POWER;
-	pow_vel_pos[motor] = power_velocity_position;
+	if(motorMode == MOTOR_MODE_POWER || motorMode == MOTOR_MODE_BRAKE)
+	{
+		if(power_velocity > MOTOR_MAX_POWER) power_velocity = MOTOR_MAX_POWER;
+		else if(power_velocity < -MOTOR_MAX_POWER) power_velocity = -MOTOR_MAX_POWER;
+	}
+	pow_vel_pos[motor] = power_velocity;
+
+	if(motorMode != MOTOR_MODE_VELOCITY) velocity_err_integral[motor] = 0;
 
 	motor_update(motor);
+}
+
+
+void motor_positional(uint8_t motor, motor_mode_t motorMode, int16_t power_velocity, motor_pos_done_mode_t doneMode, bool relative, int32_t position)
+{
+	//TODO
+}
+
+
+void motor_servo(uint8_t motor, int16_t velocity_max, bool relative, int32_t position)
+{
+	//TODO
 }
 
 
