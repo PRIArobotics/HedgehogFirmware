@@ -12,8 +12,11 @@ commands:
     (asynchronous)
     --> EMERGENCY_STOP u8
 
-    EMERGENCY_RELEASE u8
+    EMERGENCY_ACTION u8, activate bool
     --> (status codes)
+
+    EMERGENCY_REQ u8
+    --> EMERGENCY_REP u8, active bool
 
     IO_CONFIG u8, port u8, on bool|pulldown bool|pullup bool|output bool
     --> (status codes)
@@ -93,7 +96,8 @@ status codes:
 codes:
     command opcodes:
         VERSION_REQ             0x01
-        EMERGENCY_RELEASE       0x05
+        EMERGENCY_ACTION        0x05
+        EMERGENCY_REQ           0x06
         IO_CONFIG               0x10
         ANALOG_REQ              0x20
         IMU_RATE_REQ            0x22
@@ -113,6 +117,7 @@ codes:
         VERSION_REP             0x02
         SHUTDOWN                0x03
         EMERGENCY_STOP          0x04
+        EMERGENCY_REP           0x05
         OK                      0x80
         UNKNOWN_OPCODE          0x81
         INVALID_OPCODE          0x82
