@@ -124,6 +124,7 @@ codes:
         INVALID_MODE            0x85
         INVALID_FLAGS           0x86
         INVALID_VALUE           0x87
+        FAIL_EMERG_ACT          0x88
         ANALOG_REP              0xA1
         IMU_RATE_REP            0xA2
         IMU_ACCEL_REP           0xA3
