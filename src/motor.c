@@ -21,10 +21,16 @@ static gpio_pin_t pin_a[MOTOR_COUNT] = {
 	{GPIOC, 9},
 	{GPIOC, 11},
 	{GPIOA, 8},
-	#if HW_VERSION==2
+	#ifndef HW_VERSION
+		{}};
+		#error No HW_VERSION defined!
+	#elif ((HW_VERSION == 3) || (HW_VERSION == 4) || (HW_VERSION == 10))
+		{GPIOE, 7}};
+	#elif (HW_VERSION == 2)
 		{GPIOB, 10}};
 	#else
-		{GPIOE, 7}};
+		{}};
+		#error Defined HW_VERSION is not supported by this firmware!
 	#endif
 
 static gpio_pin_t pin_b[MOTOR_COUNT] = {

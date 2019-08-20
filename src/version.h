@@ -4,7 +4,7 @@
 // HW_VERSION, set in Makefile
 #ifndef HW_VERSION
 	#error No HW_VERSION defined!
-#elif ((HW_VERSION != 2) && (HW_VERSION != 3) && (HW_VERSION != 4))
+#elif !((HW_VERSION == 2) || (HW_VERSION == 3) || (HW_VERSION == 4) || (HW_VERSION == 10))
 	#error Defined HW_VERSION is not supported by this firmware!
 #endif
 

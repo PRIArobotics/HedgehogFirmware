@@ -8,13 +8,20 @@
 
 #define ANALOG_COUNT 16
 
-//input voltage in mV when adc-value = 0xFFFF (voltage divider and 1/4 internal divider)
-#if HW_VERSION==4
-	#define MAX_INPUT_VOLTAGE 101200
-#elif HW_VERSION==2
-	#define MAX_INPUT_VOLTAGE 112200
+//input voltage in mV when adc-value = 0x0FFF (voltage divider and 1/4 internal divider)
+
+#ifndef HW_VERSION
+	#error No HW_VERSION defined!
+#elif (HW_VERSION == 10)
+	#define MAX_INPUT_VOLTAGE 101200 //v1.0
+#elif (HW_VERSION == 4)
+	#define MAX_INPUT_VOLTAGE 101200 //v0.4
+#elif (HW_VERSION == 3)
+	#define MAX_INPUT_VOLTAGE 79200 //v0.3
+#elif (HW_VERSION == 2)
+	#define MAX_INPUT_VOLTAGE 112200 //v0.2
 #else
-	#define MAX_INPUT_VOLTAGE 79200
+	#error Defined HW_VERSION is not supported by this firmware!
 #endif
 
 

@@ -7,7 +7,8 @@ PROJ_NAME = HedgehogFirmware
 # 2: prototype v0.2
 # 3: prototype v0.3
 # 4: prototype v0.4
-HW_VERSION = 4
+# 10: production v1.0
+HW_VERSION = 10
 
 # remote flashing target
 REMOTE = pi@raspberrypi.local

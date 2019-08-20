@@ -7,10 +7,14 @@
 
 static gpio_pin_t pin_led_0 = {GPIOB,8};
 static gpio_pin_t pin_led_1 = {GPIOB,9};
-#if HW_VERSION==2
+#ifndef HW_VERSION
+	#error No HW_VERSION defined!
+#elif ((HW_VERSION == 3) || (HW_VERSION == 4) || (HW_VERSION == 10))
+	static gpio_pin_t pin_led_power = {GPIOB,10};
+#elif (HW_VERSION == 2)
 	static gpio_pin_t pin_led_power = {GPIOE,7};
 #else
-	static gpio_pin_t pin_led_power = {GPIOB,10};
+	#error Defined HW_VERSION is not supported by this firmware!
 #endif
 static gpio_pin_t pin_speaker_1 = {GPIOE,8};
 static gpio_pin_t pin_speaker_2 = {GPIOE,9};
