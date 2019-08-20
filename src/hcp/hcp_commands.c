@@ -9,9 +9,9 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_VERS_REP, 0, 14, NULL},														//   2 0x02
 	{HCP_SHUTDOWN, 0, 0, NULL},															//   3 0x03
 	{HCP_EMERGENCY_STOP, 0, 0, NULL},													//   4 0x04
-	{HCP_EMERGENCY_RELEASE, 0, 0, hcp_handler_emergency},								//   5 0x05
-	{HCP_UNUSED},																		//   6
-	{HCP_UNUSED},																		//   7
+	{HCP_EMERGENCY_ACTION, 0, 1, hcp_handler_emergency},								//   5 0x05
+	{HCP_EMERGENCY_REQ, 0, 0, hcp_handler_emergency},									//   6 0x06
+	{HCP_EMERGENCY_REP, 0, 1, NULL},													//   7 0x07
 	{HCP_UNUSED},																		//   8
 	{HCP_UNUSED},																		//   9
 	{HCP_UNUSED},																		//  10

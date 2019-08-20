@@ -7,6 +7,8 @@
 
 //commands from RPi
 #define HCP_VERS_REQ			0x01
+#define	HCP_EMERGENCY_ACTION    0x05
+#define	HCP_EMERGENCY_REQ       0x06
 #define HCP_IO_CONFIG        	0x10
 #define HCP_ANALOG_REQ      	0x20
 #define HCP_IMU_RATE_REQ		0x22
@@ -25,28 +27,27 @@
 
 //replies to RPi
 #define HCP_VERS_REP			0x02
+#define	HCP_EMERGENCY_REP       0x07
 #define HCP_OK              	0x80
-#define HCP_UNKNOWN_OPCODE 		0x81
+#define HCP_UNKNOWN_OPCODE 		0x81 //FIXME: this and below wrong in commands
 #define HCP_UNSUPPORTED_OPCODE 	0x82
 #define HCP_INVALID_PORT    	0x83
 #define HCP_INVALID_CONFIG     	0x84
 #define HCP_INVALID_MODE    	0x85
 #define HCP_INVALID_FLAGS   	0x86
 #define HCP_INVALID_VALUE   	0x87
+#define HCP_FAIL_EMERG_ACT      0x88 //FIXME: add to commands
 #define HCP_ANALOG_REP      	0xA1
 #define HCP_IMU_RATE_REP      	0xA2
 #define HCP_IMU_ACCEL_REP      	0xA3
 #define HCP_IMU_POSE_REP      	0xA4
 #define HCP_DIGITAL_REP     	0xB1
-#define HCP_MOTOR_DONE_UPDATE	0xC3
-#define HCP_UART_UPDATE   		0xE1
 
-//commands to RPi
+//updates to RPi
 #define HCP_SHUTDOWN			0x03
 #define HCP_EMERGENCY_STOP		0x04
-
-//replies from RPi
-#define HCP_EMERGENCY_RELEASE	0x05
+#define HCP_MOTOR_DONE_UPDATE	0xC3
+#define HCP_UART_UPDATE   		0xE1
 
 //motor modes
 #define HCP_MOTOR_MODE_POWER 	0x00

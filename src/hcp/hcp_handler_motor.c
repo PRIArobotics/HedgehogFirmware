@@ -32,10 +32,26 @@ void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //
 			ringbuffer_push(conn.txBuffer, HCP_INVALID_MODE);
 			return;
 		}
-		if((mode == MOTOR_MODE_POWER || mode == MOTOR_MODE_BRAKE) && abs(pv) > MOTOR_MAX_POWER)
+		if((mode == MOTOR_MODE_POWER || mode == MOTOR_MODE_BRAKE))
 		{
-			ringbuffer_push(conn.txBuffer, HCP_INVALID_VALUE);
-			return;
+			if(abs(pv) > MOTOR_MAX_POWER)
+			{
+				ringbuffer_push(conn.txBuffer, HCP_INVALID_VALUE);
+				return;
+			}
+			if((power_getEmergencyStop()) && (pv != 0))
+			{
+				ringbuffer_push(conn.txBuffer, HCP_FAIL_EMERG_ACT);
+				return;
+			}
+		}
+		else
+		{
+			if(power_getEmergencyStop())
+			{
+				ringbuffer_push(conn.txBuffer, HCP_FAIL_EMERG_ACT);
+				return;
+			}
 		}
 
 		motor_set(port, mode, pv);

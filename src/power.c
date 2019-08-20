@@ -79,9 +79,14 @@ bool power_getEmergencyStop()
 	return emergency_stop_active;
 }
 
-void power_clearEmergencyStop()
+void power_setEmergencyStop(bool state)
 {
-	emergency_stop_active = false;
+	emergency_stop_active = state;
+	if(emergency_stop_active)
+	{
+		motor_allOff();
+		servo_allOff();
+	}
 }
 
 bool power_getEmergencyStopSendFlag()
@@ -89,9 +94,9 @@ bool power_getEmergencyStopSendFlag()
 	return emergency_stop_send_flag;
 }
 
-void power_clearEmergencyStopSendFlag()
+void power_setEmergencyStopSendFlag(bool state)
 {
-	emergency_stop_send_flag = false;
+	emergency_stop_send_flag = state;
 }
 
 battery_status_t power_getBatteryStatus()
@@ -115,8 +120,8 @@ void power_update()
 			if(button_pressed_timestamp == 0) //has just started being pressed
 			{
 				button_pressed_timestamp = systick_getUptime();
-				emergency_stop_active = true;
-				emergency_stop_send_flag = true;
+				power_setEmergencyStop(true);
+				power_setEmergencyStopSendFlag(true);
 			}
 			else if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 2, 0)) //button was pressed for 2s
 				shutdown = true;
@@ -144,7 +149,7 @@ void power_update()
 			break;
 	}
 
-	if(emergency_stop_active)
+	if(power_getEmergencyStop()) //keep actuators off
 	{
 		motor_allOff();
 		servo_allOff();

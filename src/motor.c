@@ -384,7 +384,7 @@ void motor_set(uint8_t motor, motor_mode_t motorMode, int16_t power_velocity)
 	if((motor >= MOTOR_COUNT) || (motorMode > 3)) return;
 	if(type[motor] == MOTOR_TYPE_DC && !(motorMode == MOTOR_MODE_POWER || motorMode == MOTOR_MODE_BRAKE)) return;
 	if(type[motor] == MOTOR_TYPE_STEP && motorMode == MOTOR_MODE_POWER && power_velocity != 0) return;
-	if(power_getEmergencyStop()) return;
+	if(power_getEmergencyStop() && (power_velocity != 0)) return; //TODO: allow only power and brake with power_velocity=0
 
 	mode[motor] = motorMode;
 	if(motorMode == MOTOR_MODE_POWER || motorMode == MOTOR_MODE_BRAKE)
