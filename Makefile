@@ -96,7 +96,7 @@ flash:
 	openocd/flash_hex.sh $(BUILDDIR)/$(PROJ_NAME).hex
 
 #flash remotely via HedgehogFirmwareBundle
-remote-flash:
+flash-remote:
 	rsync -avz $(BUILDDIR)/$(PROJ_NAME).hex $(REMOTE):/tmp/
 	ssh $(REMOTE) "cd $(REMOTE_BUNDLE) && make flash-tmp"
 	
