@@ -3,6 +3,7 @@
 #include "hcp_opcodes.h"
 #include "ringbuffer.h"
 #include "servo.h"
+#include "power.h"
 
 
 void hcp_handler_servo(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
@@ -26,6 +27,11 @@ void hcp_handler_servo(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 	if((ontime > SERVO_MAX_ONTIME) || ((ontime < SERVO_MIN_ONTIME)))
 	{
 		ringbuffer_push(conn.txBuffer, HCP_INVALID_VALUE);
+		return;
+	}
+	if(enabled && power_getEmergencyStop())
+	{
+		ringbuffer_push(conn.txBuffer, HCP_FAIL_EMERG_ACT);
 		return;
 	}
 

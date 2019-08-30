@@ -29,14 +29,14 @@
 #define HCP_VERS_REP			0x02
 #define	HCP_EMERGENCY_REP       0x07
 #define HCP_OK              	0x80
-#define HCP_UNKNOWN_OPCODE 		0x81 //FIXME: this and below wrong in commands
+#define HCP_UNKNOWN_OPCODE 		0x81
 #define HCP_UNSUPPORTED_OPCODE 	0x82
 #define HCP_INVALID_PORT    	0x83
 #define HCP_INVALID_CONFIG     	0x84
 #define HCP_INVALID_MODE    	0x85
 #define HCP_INVALID_FLAGS   	0x86
 #define HCP_INVALID_VALUE   	0x87
-#define HCP_FAIL_EMERG_ACT      0x88 //FIXME: add to commands
+#define HCP_FAIL_EMERG_ACT      0x88 //TODO: implement
 #define HCP_ANALOG_REP      	0xA1
 #define HCP_IMU_RATE_REP      	0xA2
 #define HCP_IMU_ACCEL_REP      	0xA3

@@ -6,7 +6,7 @@
 #include "motor.h"
 
 
-void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //TODO: add check: for stepper only velocity and brake modes are allowed
+void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //TODO: add check: for stepper only velocity and brake modes are allowed, check for emergency active everywhere
 {
 	if(opcode == HCP_MOTOR)
 	{

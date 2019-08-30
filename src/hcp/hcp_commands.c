@@ -133,14 +133,14 @@ hcp_cmd_t hcp_cmds[256] = {
 	{HCP_UNUSED},																		// 126
 	{HCP_UNUSED},																		// 127
 	{HCP_OK, 0, 0, NULL},																// 128 0x80
-	{HCP_INVALID_PORT, 0, 0, NULL},														// 129 0x81
-	{HCP_INVALID_CONFIG, 0, 0, NULL},													// 130 0x82
-	{HCP_INVALID_MODE, 0, 0, NULL},														// 131 0x83
-	{HCP_INVALID_FLAGS, 0, 0, NULL},													// 132 0x84
-	{HCP_INVALID_VALUE, 0, 0, NULL},													// 133 0x85
-	{HCP_UNUSED},																		// 134
-	{HCP_UNUSED},																		// 135
-	{HCP_UNUSED},																		// 136
+	{HCP_UNKNOWN_OPCODE, 0, 0, NULL},													// 129 0x81
+	{HCP_UNSUPPORTED_OPCODE, 0, 0, NULL},												// 130 0x82
+	{HCP_INVALID_PORT, 0, 0, NULL},														// 131 0x83
+	{HCP_INVALID_CONFIG, 0, 0, NULL},													// 132 0x84
+	{HCP_INVALID_MODE, 0, 0, NULL},														// 133 0x85
+	{HCP_INVALID_FLAGS, 0, 0, NULL},													// 134 0x86
+	{HCP_INVALID_VALUE, 0, 0, NULL},													// 135 0x87
+	{HCP_FAIL_EMERG_ACT, 0, 0, NULL},													// 136 0x88
 	{HCP_UNUSED},																		// 137
 	{HCP_UNUSED},																		// 138
 	{HCP_UNUSED},																		// 139
