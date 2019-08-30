@@ -10,6 +10,8 @@
 static uint64_t button_pressed_timestamp = 0;
 static bool button_initial_press = true;
 volatile static bool shutdown = false;
+volatile static bool immidiateShutdown = false;
+
 volatile static bool emergency_stop_active = false;
 volatile static bool emergency_stop_send_flag = false;
 
@@ -74,6 +76,11 @@ bool power_getShutdown()
 	return shutdown;
 }
 
+bool power_getImmidiateShutdown()
+{
+	return immidiateShutdown;
+}
+
 bool power_getEmergencyStop()
 {
 	return emergency_stop_active;
@@ -123,8 +130,13 @@ void power_update()
 				power_setEmergencyStop(true);
 				power_setEmergencyStopSendFlag(true);
 			}
-			else if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 2, 0)) //button was pressed for 2s
-				shutdown = true;
+			else
+			{
+				if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 2, 0)) //button was pressed for 2s
+					shutdown = true;
+				if((systick_getUptime() - button_pressed_timestamp) > systick_timeToTicks(0, 0, 4, 0)) //button was pressed for 4s
+					immidiateShutdown = true;
+			}
 		}
 	}
 	else

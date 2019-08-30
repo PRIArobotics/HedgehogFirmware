@@ -18,10 +18,13 @@
 
 bool rpi_was_active = false;
 
-
+//TODO: make some variables constant or volatile
+//TODO: use enums instead of defines for modes and status returns
+//TODO: error checking everywhere the ringbuffer functions are used
+//TODO: hcp handlers should use error codes from set-functions
 int main()
 {
-	//NVIC_SetPriorityGrouping(0); //TODO
+	//NVIC_SetPriorityGrouping(0); //TODO interrupt priorities
 	systick_init();
 	gpio_init();
 	adc_init();
@@ -45,7 +48,12 @@ int main()
 	uart_init();
 	hcp_init();
 
-	while(!power_getShutdown())
+	//FIXME: remove, testing:
+	//motor_configure(0, MOTOR_TYPE_ENC, 0, 1);
+	//motor_set(0, MOTOR_MODE_VELOCITY, 100);
+	//motor_set(0, MOTOR_MODE_POSITION, 0);
+
+	while(!power_getShutdown() && !power_getImmidiateShutdown())
 	{
 		if(power_getRPiActive())
 		{
@@ -63,9 +71,11 @@ int main()
 	power_regMsEnable(false);
 
 	uint64_t timeout = systick_getUptime() + systick_timeToTicks(0, 0, SHUTDOWN_TIMEOUT, 0);
-	while((power_getRPiActive()) && (systick_getUptime() < timeout));
+	while((power_getRPiActive()) && (systick_getUptime() < timeout && !power_getImmidiateShutdown())); // wait for active pin to go low or timeout or button kept pressed after beep
+	if(rpi_was_active && !power_getImmidiateShutdown()) systick_busyWait(systick_timeToTicks(0, 0, 3, 0)); // wait for RPi fully off
 
 	power_regRpiEnable(false);
+	powerLed(POWER_LED_MODE_OFF);
 	power_off();
 
 	return 0;

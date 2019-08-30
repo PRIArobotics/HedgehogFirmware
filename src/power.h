@@ -28,6 +28,7 @@ bool power_getRegMsPG();
 bool power_getButtonState();
 bool power_getRPiActive();
 bool power_getShutdown();
+bool power_getImmidiateShutdown();
 bool power_getEmergencyStop();
 void power_setEmergencyStop(bool state);
 bool power_getEmergencyStopSendFlag();
