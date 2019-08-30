@@ -108,6 +108,11 @@ flash-stlink:
 	st-flash --reset write $(BUILDDIR)/$(PROJ_NAME).bin 0x8000000
 	@echo flash finished
 
+#flash using openocd
+flash-stlink-openocd:
+	openocd -f interface/stlink-v2-1.cfg -f target/stm32f4x.cfg -c "program $(BUILDDIR)/$(PROJ_NAME).hex 0x00 verify; reset run; exit"
+	@echo flash finished
+
 
 #shows size of .elf
 size: $(BUILDDIR)/$(PROJ_NAME).elf
