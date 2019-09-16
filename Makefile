@@ -111,6 +111,7 @@ flash-stlink:
 #flash using openocd
 flash-stlink-openocd:
 	openocd -f interface/stlink-v2-1.cfg -f target/stm32f4x.cfg -c "program $(BUILDDIR)/$(PROJ_NAME).hex 0x00 verify; reset run; exit"
+	openocd -f interface/stlink-v2-1.cfg -f target/stm32f4x.cfg -c "init" -c "mdw 0x1FFF7A10 3" -c "exit"
 	@echo flash finished
 
 
