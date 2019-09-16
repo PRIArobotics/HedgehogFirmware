@@ -21,6 +21,8 @@ static gpio_pin_t pin_speaker_2 = {GPIOE,9};
 
 static power_led_mode_t power_led_mode = POWER_LED_MODE_OFF;
 
+static bool speaker_playingSequence = false;
+static uint16_t speaker_frequency = 0;
 
 void output_init()
 {
@@ -69,7 +71,7 @@ void powerLed(uint8_t mode)
 }
 
 
-void speaker(uint16_t frequency)
+static void speaker(uint16_t frequency)
 {
 	if((frequency < 50) || (frequency > 15000))
 	{
@@ -84,22 +86,39 @@ void speaker(uint16_t frequency)
 	}
 }
 
+void speaker_setFrequency(uint16_t frequency)
+{
+
+	speaker_frequency = frequency;
+	if(!speaker_playingSequence) speaker(speaker_frequency);
+}
+
 void speaker_startup()
 {
+	speaker_playingSequence = true;
+
 	speaker(500);
 	systick_busyWait(systick_timeToTicks(0, 0, 0, 200)); //wait 0.2s
 	speaker(2000);
 	systick_busyWait(systick_timeToTicks(0, 0, 0, 100)); //wait 0.1s
 	speaker(0);
+
+	speaker_playingSequence = false;
+	speaker(speaker_frequency);
 }
 
 void speaker_shutdown()
 {
+	speaker_playingSequence = true;
+
 	speaker(2000);
 	systick_busyWait(systick_timeToTicks(0, 0, 0, 200)); //wait 0.2s
 	speaker(500);
 	systick_busyWait(systick_timeToTicks(0, 0, 0, 100)); //wait 0.1s
 	speaker(0);
+
+	speaker_playingSequence = false;
+	speaker(speaker_frequency);
 }
 
 
@@ -108,7 +127,10 @@ void output_update(void)
 	if(power_getBatteryStatus() == BATTERY_STATUS_LOW)
 	{
 		if(systick_getUptime() % SPEAKER_BAT_LOW_INTERVAL == 0)
+		{
+			speaker_playingSequence = true;
 			speaker(1000);
+		}
 		if((systick_getUptime() - 100) % SPEAKER_BAT_LOW_INTERVAL == 0)
 			speaker(0);
 		if((systick_getUptime() - 200) % SPEAKER_BAT_LOW_INTERVAL == 0)
@@ -118,7 +140,11 @@ void output_update(void)
 		if((systick_getUptime() - 400) % SPEAKER_BAT_LOW_INTERVAL == 0)
 			speaker(1000);
 		if((systick_getUptime() - 500) % SPEAKER_BAT_LOW_INTERVAL == 0)
+		{
 			speaker(0);
+			speaker_playingSequence = false;
+			speaker(speaker_frequency);
+		}
 
 		if(power_led_mode == POWER_LED_MODE_ON) power_led_mode = POWER_LED_MODE_BLINK;
 	}
@@ -127,7 +153,7 @@ void output_update(void)
 		if(power_led_mode == POWER_LED_MODE_BLINK) power_led_mode = POWER_LED_MODE_ON;
 	}
 
-	switch(power_led_mode)
+	switch(power_led_mode) //TODO: add gamma correction
 	{
 		case POWER_LED_MODE_OFF:
 			TIM5->CCR1 = 0;

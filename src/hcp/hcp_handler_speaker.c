@@ -11,7 +11,7 @@ void hcp_handler_speaker(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 	if(ringbuffer_pop(conn.rxBuffer, &frequency_l)) return;
 	uint16_t frequency = (frequency_h << 8) | frequency_l;
 
-	speaker(frequency); //TODO: avoid overwriting startup/shutdown/battery-tones
+	speaker_setFrequency(frequency);
 
 	ringbuffer_push(conn.txBuffer, HCP_OK);
 }
