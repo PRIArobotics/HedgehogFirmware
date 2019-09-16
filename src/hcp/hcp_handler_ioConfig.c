@@ -5,7 +5,7 @@
 #include "output.h"
 
 
-void hcp_handler_ioConfig(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //TODO: avoid enc pins getting set as output
+void hcp_handler_ioConfig(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
 	uint8_t port;
 	if(ringbuffer_pop(conn.rxBuffer, &port)) return;
@@ -44,6 +44,11 @@ void hcp_handler_ioConfig(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 
 	if(output)
 	{
+		if(digitalIO_isInUse(port))
+		{
+			ringbuffer_push(conn.txBuffer, HCP_INVALID_CONFIG);
+			return;
+		}
 		digitalIO_setMode(port, PIN_MODE_OUT);
 		digitalIO_setState(port, state);
 	}

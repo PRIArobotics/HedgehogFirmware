@@ -39,5 +39,8 @@ void digitalIO_usePinEnc(uint8_t pin);
 //input no longer used for anything
 void digitalIO_freePin(uint8_t pin);
 
+//return if input is used for anything
+bool digitalIO_isInUse(uint8_t pin);
+
 
 #endif /* DIGITALIO_H_ */

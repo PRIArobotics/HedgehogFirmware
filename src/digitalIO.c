@@ -106,3 +106,8 @@ void digitalIO_freePin(uint8_t pin)
 {
 	pinInUse[pin] = false;
 }
+
+bool digitalIO_isInUse(uint8_t pin)
+{
+	return pinInUse[pin];
+}
