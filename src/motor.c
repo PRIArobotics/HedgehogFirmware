@@ -343,8 +343,8 @@ void EXTI0_IRQHandler(void)
 void motor_configure(uint8_t motor, motor_type_t motorType, uint8_t encoder_a, uint8_t encoder_b)
 {
 	if(motor >= MOTOR_COUNT) return;
-	if(encoder_a > 7) return;
-	if(encoder_b > 7) return;
+	if(encoder_a >= DIGITAL_COUNT) return;
+	if(encoder_b >= DIGITAL_COUNT) return;
 	if(encoder_a == encoder_b) return;
 
 	if(type[motor] == MOTOR_TYPE_ENC)
