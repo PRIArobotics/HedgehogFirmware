@@ -31,7 +31,7 @@ void led1(bool state);
 void powerLed(power_led_mode_t mode);
 
 //sets speaker frequency, frequency: 50-15000Hz, anything else-->speaker off
-void speaker(uint16_t frequency);
+void speaker_setFrequency(uint16_t frequency);
 
 //play startup sound
 void speaker_startup();
