@@ -2,6 +2,7 @@
 #include <stm32f4xx.h>
 #include "power.h"
 #include "output.h"
+#include "imu.h"
 
 
 static volatile uint64_t systick_count = 0;
@@ -39,4 +40,5 @@ void SysTick_Handler()
 	systick_count++;
 	power_update();
 	output_update();
+	imu_update();
 }

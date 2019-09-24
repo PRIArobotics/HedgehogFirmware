@@ -6,7 +6,13 @@
 #include <stdbool.h>
 
 
+#define READ 0x80
+#define WRITE 0x00
+
+
 void imu_init();
+
+void imu_update();
 
 int16_t imu_getRateX();
 int16_t imu_getRateY();
