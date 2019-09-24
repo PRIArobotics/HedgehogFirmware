@@ -72,7 +72,7 @@ int main()
 
 	uint64_t timeout = systick_getUptime() + systick_timeToTicks(0, 0, SHUTDOWN_TIMEOUT, 0);
 	while((power_getRPiActive()) && (systick_getUptime() < timeout && !power_getImmidiateShutdown())); // wait for active pin to go low or timeout or button kept pressed after beep
-	if(rpi_was_active && !power_getImmidiateShutdown()) systick_busyWait(systick_timeToTicks(0, 0, 3, 0)); // wait for RPi fully off
+	if(rpi_was_active && !power_getImmidiateShutdown()) systick_busyWait(systick_timeToTicks(0, 0, 8, 0)); // wait for RPi fully off
 
 	power_regRpiEnable(false);
 	powerLed(POWER_LED_MODE_OFF);
