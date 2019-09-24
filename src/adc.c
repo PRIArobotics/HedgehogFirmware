@@ -96,7 +96,15 @@ uint16_t adc_getAnalogInput(uint8_t input)
 }
 
 
-uint16_t adc_getInputVoltage_mV() //FIXME offset
+uint16_t adc_getInputVoltage_mV()
 {
-	return (uint16_t)(((float)(ADC1->JDR1)) / 4095.0 * MAX_INPUT_VOLTAGE + 0.5);
+	uint16_t adc_value = ADC1->JDR1;
+
+	if(adc_value < 325) //offset fix TODO: improve
+	{
+		uint16_t diff = 325 - adc_value;
+		adc_value = (uint16_t)((float)adc_value * 380./(380. + diff) + 0.5);
+	}
+
+	return (uint16_t)(((float)adc_value) / 4095.0 * MAX_INPUT_VOLTAGE + 0.5);
 }

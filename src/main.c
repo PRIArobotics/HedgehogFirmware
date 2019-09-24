@@ -48,11 +48,6 @@ int main()
 	uart_init();
 	hcp_init();
 
-	//FIXME: remove, testing:
-	//motor_configure(0, MOTOR_TYPE_ENC, 0, 1);
-	//motor_set(0, MOTOR_MODE_VELOCITY, 100);
-	//motor_set(0, MOTOR_MODE_POSITION, 0);
-
 	while(!power_getShutdown() && !power_getImmidiateShutdown())
 	{
 		if(power_getRPiActive())
