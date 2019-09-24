@@ -63,8 +63,8 @@ CFLAGS += -DHW_VERSION=$(HW_VERSION)
 LDFLAGS += -T$(SYSTEMDIR)/STM32F401XB_FLASH.ld
 
 #libraries
+LDFLAGS += -lm #math
 #LDFLAGS += -lc -lnosys #newlib (e.g. for printf)
-#LDFLAGS += -lm #math
 
 #system source files
 SRC = startup_stm32f401xc.s system.c
@@ -135,29 +135,29 @@ $(BUILDDIR)/$(PROJ_NAME).bin: $(BUILDDIR)/$(PROJ_NAME).elf | $(BUILDDIR)
 $(BUILDDIR)/$(PROJ_NAME).elf: $(OBJS) | $(OBJDIR) $(BUILDDIR)
 	@echo
 	@echo linking $@ from $(OBJS)
-	@$(LD) $(LDFLAGS) -o $@ $(OBJS)
+	@$(LD) -o $@ $(OBJS) $(LDFLAGS)
 	@echo
 
 
 #compile user .c file to .o
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
-	@$(CC) $(CFLAGS) -o $@ $<
+	@$(CC) -o $@ $< $(CFLAGS)
 
 #compile user hcp .c file to .o
 $(OBJDIR)/%.o: $(HCPDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
-	@$(CC) $(CFLAGS) -o $@ $<
+	@$(CC) -o $@ $< $(CFLAGS)
 
 #compile system .c file to .o
 $(OBJDIR)/%.o: $(SYSTEMDIR)/%.c | $(OBJDIR)
 	@echo compiling $@ from $<
-	@$(CC) $(CFLAGS) -o $@ $<
+	@$(CC) -o $@ $< $(CFLAGS)
 
 #compile system .s file to .o
 $(OBJDIR)/%.o: $(SYSTEMDIR)/%.s | $(OBJDIR)
 	@echo compiling $@ from $<
-	@$(CC) $(CFLAGS) -o $@ $<
+	@$(CC) -o $@ $< $(CFLAGS)
 
 
 #create directory for objects
