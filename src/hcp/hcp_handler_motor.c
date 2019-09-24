@@ -4,6 +4,7 @@
 #include "hcp_opcodes.h"
 #include "ringbuffer.h"
 #include "motor.h"
+#include "power.h"
 
 
 void hcp_handler_motor(hcp_conn_t conn, uint8_t opcode, size_t payloadLength) //TODO: add check: for stepper only velocity and brake modes are allowed, check for emergency active everywhere
