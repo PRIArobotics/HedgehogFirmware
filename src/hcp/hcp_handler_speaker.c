@@ -2,6 +2,7 @@
 #include "hcp_opcodes.h"
 #include "ringbuffer.h"
 #include "output.h"
+#include "power.h"
 
 void hcp_handler_speaker(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 {
