@@ -51,8 +51,12 @@ void USART1_IRQHandler(void)
 
 static void uart_startFifoTransmit()
 {
-	if(USART1->SR & USART_SR_TXE) //if Tx data register is empty
+	if(USART1->SR & USART_SR_TXE) //if Tx data register is empty TODO: and not busy?
+	{
+		NVIC_DisableIRQ(USART1_IRQn); //disable UART1 global interrupts TODO: is it possible to make this interrupt-safe?
 		ringbuffer_pop(&uart_tx_rb, (uint8_t*)(&USART1->DR)); //send first byte to start transmission TODO: add buffer underflow error
+		NVIC_EnableIRQ(USART1_IRQn); //enable UART1 global interrupts
+	}
 }
 
 
