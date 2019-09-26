@@ -60,9 +60,16 @@ int main()
 		hcp_update();
 	}
 
+	led0(false);
+	led1(false);
+	speaker_setFrequency(0);
+	motor_allOff();
+	servo_allOff();
+
 	hcp_sendShutdown();
 	powerLed(POWER_LED_MODE_SHUTDOWN);
 	speaker_shutdown();
+
 	power_regMsEnable(false);
 
 	uint64_t timeout = systick_getUptime() + systick_timeToTicks(0, 0, SHUTDOWN_TIMEOUT, 0);
