@@ -11,6 +11,12 @@ void hcp_handler_speaker(hcp_conn_t conn, uint8_t opcode, size_t payloadLength)
 	if(ringbuffer_pop(conn.rxBuffer, &frequency_l)) return;
 	uint16_t frequency = (frequency_h << 8) | frequency_l;
 
+	if(power_getEmergencyStop() && frequency)
+	{
+		ringbuffer_push(conn.txBuffer, HCP_FAIL_EMERG_ACT);
+		return;
+	}
+
 	speaker_setFrequency(frequency);
 
 	ringbuffer_push(conn.txBuffer, HCP_OK);

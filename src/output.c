@@ -88,7 +88,7 @@ static void speaker(uint16_t frequency)
 
 void speaker_setFrequency(uint16_t frequency)
 {
-
+	if(power_getEmergencyStop() && frequency) return;
 	speaker_frequency = frequency;
 	if(!speaker_playingSequence) speaker(speaker_frequency);
 }

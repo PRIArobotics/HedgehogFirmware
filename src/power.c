@@ -93,6 +93,7 @@ void power_setEmergencyStop(bool state)
 	{
 		motor_allOff();
 		servo_allOff();
+		speaker_setFrequency(0);
 	}
 }
 
