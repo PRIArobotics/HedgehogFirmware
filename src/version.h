@@ -9,6 +9,6 @@
 #endif
 
 //SW_VERSION
-#define SW_VERSION 2
+#define SW_VERSION 3
 
 #endif /* SERVO_H_ */
