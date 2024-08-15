@@ -148,14 +148,26 @@ void power_update()
 
 	//input voltage monitoring
 	input_voltage_mV = (uint16_t)(input_voltage_mV * 0.9 + adc_getInputVoltage_mV() * 0.1 + 0.5);
+	uint16_t battery_empty_threshold;
+	uint16_t battery_low_threshold;
+	if(input_voltage_mV<=7700) 
+	{
+		battery_empty_threshold = BATTERY_EMPTY_THRESHOLD_LIFE;
+		battery_low_threshold = BATTERY_LOW_THRESHOLD_LIFE;
+	}
+	else
+	{
+		battery_empty_threshold = BATTERY_EMPTY_THRESHOLD_LIPO;
+		battery_low_threshold = BATTERY_LOW_THRESHOLD_LIPO;
+	}
 	switch(batteryStatus)
 	{
 		case BATTERY_STATUS_OK:
-			if(input_voltage_mV < BATTERY_LOW_THRESHOLD - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_LOW;
+			if(input_voltage_mV < battery_low_threshold - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_LOW;
 			break;
 		case BATTERY_STATUS_LOW:
-			if(input_voltage_mV > BATTERY_LOW_THRESHOLD + BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_OK;
-			if(input_voltage_mV < BATTERY_EMPTY_THRESHOLD - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_EMPTY;
+			if(input_voltage_mV > battery_low_threshold + BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_OK;
+			if(input_voltage_mV < battery_empty_threshold - BATTERY_VOLTAGE_HYSTERESIS) batteryStatus = BATTERY_STATUS_EMPTY;
 			break;
 		case BATTERY_STATUS_EMPTY:
 			shutdown = true;

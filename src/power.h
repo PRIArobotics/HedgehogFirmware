@@ -7,9 +7,12 @@
 
 
 //voltages in mV
-#define BATTERY_EMPTY_THRESHOLD 9100 //battery voltage below which the power gets switched off
-#define BATTERY_LOW_THRESHOLD 9900 //battery voltage below which low battery indication occurs
 #define BATTERY_VOLTAGE_HYSTERESIS 100
+#define BATTERY_EMPTY_THRESHOLD_LIPO 9100 //battery voltage below which the power gets switched off
+#define BATTERY_LOW_THRESHOLD_LIPO 9900 //battery voltage below which low battery indication occurs
+#define BATTERY_EMPTY_THRESHOLD_LIFE 6000 //battery voltage below which the power gets switched off
+#define BATTERY_LOW_THRESHOLD_LIFE 6200 //battery voltage below which low battery indication occurs
+
 
 typedef enum battery_status_e
 {
