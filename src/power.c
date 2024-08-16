@@ -150,15 +150,15 @@ void power_update()
 	input_voltage_mV = (uint16_t)(input_voltage_mV * 0.9 + adc_getInputVoltage_mV() * 0.1 + 0.5);
 	uint16_t battery_empty_threshold;
 	uint16_t battery_low_threshold;
-	if(input_voltage_mV<=7700) 
+	if(input_voltage_mV <= BATTERY_LIFE_LIPO_LIMIT)
 	{
-		battery_empty_threshold = BATTERY_EMPTY_THRESHOLD_LIFE;
-		battery_low_threshold = BATTERY_LOW_THRESHOLD_LIFE;
+		battery_empty_threshold = BATTERY_LIFE_EMPTY_THRESHOLD;
+		battery_low_threshold = BATTERY_LIFE_LOW_THRESHOLD;
 	}
 	else
 	{
-		battery_empty_threshold = BATTERY_EMPTY_THRESHOLD_LIPO;
-		battery_low_threshold = BATTERY_LOW_THRESHOLD_LIPO;
+		battery_empty_threshold = BATTERY_LIPO_EMPTY_THRESHOLD;
+		battery_low_threshold = BATTERY_LIPO_LOW_THRESHOLD;
 	}
 	switch(batteryStatus)
 	{

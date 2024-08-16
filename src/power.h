@@ -6,12 +6,25 @@
 #include <stdbool.h>
 
 
-//voltages in mV
+// voltages in mV
+// voltages are a bit off (nonlinear behavior?)
+// the comments contains the real voltage that the value corresponds to
+
 #define BATTERY_VOLTAGE_HYSTERESIS 100
-#define BATTERY_EMPTY_THRESHOLD_LIPO 9100 //battery voltage below which the power gets switched off
-#define BATTERY_LOW_THRESHOLD_LIPO 9900 //battery voltage below which low battery indication occurs
-#define BATTERY_EMPTY_THRESHOLD_LIFE 6000 //battery voltage below which the power gets switched off
-#define BATTERY_LOW_THRESHOLD_LIFE 6200 //battery voltage below which low battery indication occurs
+
+// battery voltage below which the battery is probably LiFe
+// LiPo 3S: 11.1V, LiFe 2S: 6.6V (nominal voltage when fully charged)
+#define BATTERY_LIFE_LIPO_LIMIT 6900 // 7.7V
+
+// battery voltage below which low battery indication occurs
+#define BATTERY_LIPO_LOW_THRESHOLD 1070 // 10.9V
+// battery voltage below which the power gets switched off
+#define BATTERY_LIPO_EMPTY_THRESHOLD 9500 // 9.7V
+
+// note that the voltage regulator only goes down to 6V, so we should
+// warn and shut down before coming too close to that
+#define BATTERY_LIFE_LOW_THRESHOLD 5100 // 6.3V
+#define BATTERY_LIFE_EMPTY_THRESHOLD 4900 // 6.1V
 
 
 typedef enum battery_status_e
